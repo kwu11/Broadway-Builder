@@ -37,13 +37,15 @@ namespace ServiceLayer.Services
         {
             return _dbContext.Theaters.Select(theater => new
             {
+                TheaterID = theater.TheaterID,
                 TheaterName = theater.TheaterName,
                 CompanyName = theater.CompanyName,
                 StreetAddress = theater.StreetAddress,
                 City = theater.City,
                 State = theater.State,
                 Country = theater.Country,
-                PhoneNumber = theater.PhoneNumber
+                PhoneNumber = theater.PhoneNumber,
+                Production = theater.Production
             }).ToList();
         }
 

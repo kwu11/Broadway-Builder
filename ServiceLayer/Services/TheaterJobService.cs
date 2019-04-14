@@ -40,6 +40,7 @@ namespace ServiceLayer.Services
                     .Select(job => new {
                         Title = job.Title,
                         Position = job.Position,
+                        JobType = job.JobType,
                         Hours = job.Hours,
                         Description = job.Description,
                         Requirements = job.Requirements,

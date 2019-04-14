@@ -1,7 +1,8 @@
 <template>
   <div class="theaterprofile">
     <div class="hero-body">
-      <h1>CECS Dept |</h1>Broadway Builder
+      <h1>{{theater.TheaterName}} |</h1>
+      {{theater.CompanyName}}
       <div class="container has-text-centered">
         <div class="columns is-vcentered">
           <div class="column is-6 is-half">
@@ -25,9 +26,10 @@
       <div class="columns is-mobile is-centered">
         <div class="field is-grouped is-grouped-multiline">
           <div class="control">
-            <span class="button is-danger is-rounded is-medium">
-              <router-link to="/theater/{theaterid}/userproductioninfo">Past Productions</router-link>
-            </span>
+            <span
+              v-on:click="goToPictures(theater)"
+              class="button is-danger is-rounded is-medium"
+            >Past Productions</span>
           </div>
           <div class="control">
             <span class="button is-danger is-rounded is-medium">Information / Contact Us</span>
@@ -47,15 +49,28 @@
 import axios from "axios";
 
 export default {
-  name: "TheaterProfile"
-  // data() {
-  //   return {
-  //     theatername: String,
-  //     companyname: String,
-  //     contactinfo: []
-  //   };
-  // },
-  // props: ["theater"]
+  name: "TheaterProfile",
+  data() {
+    return {
+      TheaterName: this.$route.params.TheaterName,
+      theater: {}
+    };
+  },
+  async mounted() {
+    await axios
+      .get("https://api.broadwaybuilder.xyz/theater/" + this.TheaterName)
+      .then(response => (this.theater = response.data));
+  },
+  methods: {
+    goToPictures(theater) {
+      this.$router.push({
+        name: "userproductioninfo",
+        params: {
+          TheaterID: theater.TheaterID
+        }
+      });
+    }
+  }
 };
 </script>
 

@@ -12,8 +12,12 @@
           <div class="card-content">
             <div class="content">
               <p id="Position">
+                <strong>Job Type: &nbsp;</strong>
+                <u>{{ job.JobType }}</u>
+                <br>
                 <strong>Position: &nbsp;</strong>
                 <u>{{ job.Position }}</u>
+                <br>
               </p>
               <strong>Description</strong>
               <p id="Description">{{ job.Description }}</p>
@@ -105,8 +109,10 @@ export default {
     filteredValues() {
       if (!this.filters.length) return this.jobPostings;
 
-      return this.jobPostings.filter(job =>
-        this.filters.includes(job.Position)
+      return this.jobPostings.filter(
+        job =>
+          this.filters.includes(job.Position) ||
+          this.filters.includes(job.JobType)
       );
     }
   },
@@ -124,7 +130,8 @@ export default {
           Title: job.Title,
           Description: job.Description,
           Hours: job.Hours,
-          Requirements: job.Requirements
+          Requirements: job.Requirements,
+          JobType: job.JobType
         })
         .then(response => console.log("Job Updated!", response));
 

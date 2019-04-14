@@ -9,6 +9,8 @@
             <ul class="menu-list">
               <li>
                 <a v-on:click="performPublish">Publish Site</a>
+                <a v-on:click="createTheater"> Create Theater </a>
+                <a v-on:click="deleteTheater"> Delete Theater </a>
                 <a>Manage Users</a>
                 <ul>
                   <li>
@@ -48,6 +50,8 @@
           </section>
           <div class="column is-9">
             <PublishSite v-if="publish === true" @cancel="cancelPublish"/>
+            <CreateTheater v-if="theaterCreated === true" @cancelCreateTheater="cancelCreateTheater"/>
+            <DeleteTheater v-if="theaterDeleted === true" @cancelDeleteTheater="cancelDeleteTheater"/>
           </div>
         </div>
       </div>
@@ -58,22 +62,47 @@
 
 <script>
 import PublishSite from "@/components/SystemAdmin/PublishSite.vue";
+import CreateTheater from "@/components/SystemAdmin/CreateTheater.vue";
+import DeleteTheater from "@/components/SystemAdmin/DeleteTheater.vue";
+
 export default {
   name: "SysAdminAccount",
   components: {
-    PublishSite
+    PublishSite,
+    CreateTheater,
+    DeleteTheater
   },
   data() {
     return {
-      publish: false
+      publish: false,
+      theaterCreated: false,
+      theaterDeleted: false,
     };
   },
   methods: {
     performPublish() {
       this.publish = !this.publish;
+      this.theaterCreated = false;
+      this.theaterDeleted = false;
     },
     cancelPublish(cancel) {
       this.publish = cancel;
+    },
+    createTheater() {
+      this.publish = false;
+      this.theaterCreated = !this.theaterCreated;
+      this.theaterDeleted = false;
+    },
+    cancelCreateTheater(cancel) {
+      this.theaterCreated = cancel;
+    },
+    deleteTheater() {
+      this.theaterDeleted = !this.theaterDeleted;
+      this.publish = false;
+      this.theaterCreated = false;
+    },
+    cancelDeleteTheater(cancel){
+      this.theaterDeleted = cancel;
     }
   }
 };

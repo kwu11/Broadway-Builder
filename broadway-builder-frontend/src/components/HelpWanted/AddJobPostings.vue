@@ -30,32 +30,27 @@
               </div>
             </div>
           </div>
-          <div class="column is-6 is-narrow">
-            <div>
-              <strong>Type of Job</strong>
+          <div class="column is-3 is-narrow">
+            <strong>Type of Job (This cannot be changed!)</strong>
+            <br>
+            <div class="filters" v-for="(type, index) in jobTypes" :key="index">
+              <input type="radio" :value="type" name="jobType" v-model="job.JobType">
+              <label>{{ type }}</label>
               <br>
-              <input type="radio" id="jobType" value="Full-Time" v-model="jobType">
-              <label for="one">Full-Time</label>
-
-              <input type="radio" id="jobType" value="Part-Time" v-model="jobType">
-              <label for="two">Part-Time</label>
-
-              <input type="radio" id="jobType" value="Seasonal" v-model="jobType">
-              <label for="two">Seasonal</label>
-              <br>
-              <br>
-              <strong>Role (This cannot be changed!)</strong>
             </div>
+          </div>
+          <div class="column is-3 is-narrow">
+            <strong>Role (This cannot be changed!)</strong>
 
-            <div class="addJobPosition" v-for="(position, index) in positions" :key="index">
+            <div class="filters" v-for="(position, index) in positions" :key="index">
               <input
                 type="radio"
-                id="jobType"
+                id="jobPosition"
                 :value="position"
                 name="jobPosition"
                 v-model="job.Position"
               >
-              <label for="one">{{ position }}</label>
+              <label>{{ position }}</label>
             </div>
           </div>
         </div>
@@ -76,6 +71,7 @@ export default {
   data() {
     return {
       categories: ["Description", "Hours", "Requirements"],
+      jobTypes: ["Full Time", "Part Time", "Seasonal"],
       positions: [
         "Actors",
         "Stagehands",
@@ -108,10 +104,7 @@ export default {
           "https://api.broadwaybuilder.xyz/helpwanted/createtheaterjob",
           this.job
         )
-        .then(
-          response => console.log(response.data),
-          this.$emit("add", this.job)
-        );
+        .then(response => this.$emit("add", this.job));
     },
     // Cancel the creation of a new job
     cancelNewJobPosting() {
@@ -132,7 +125,7 @@ export default {
 a
   color: #6F0000
 
-#jobType
+.filters
   margin: 1em
 
 .addJobPosition

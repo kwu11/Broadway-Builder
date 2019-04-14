@@ -1,34 +1,36 @@
 <template>
-  <v-carousel>
-    <v-carousel-item
-      v-for="(item,i) in items"
-      :key="i"
-      :src="item.src"
-      reverse-transition="fade"
-      transition="fade"
-    ></v-carousel-item>
-  </v-carousel>
+  <div class="AdminPictureWheel">
+    <v-carousel>
+      <v-carousel-item
+        v-for="(pic,i) in pics"
+        :key="i"
+        :src="pic"
+        reverse-transition="fade"
+        transition="fade"
+      ></v-carousel-item>
+    </v-carousel>
+  </div>
 </template>
 
 <script>
+import axios from "axios";
 export default {
+  name: "AdminPictureWheel",
   data() {
     return {
-      items: [
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg"
-        },
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/sky.jpg"
-        },
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/bird.jpg"
-        },
-        {
-          src: "https://cdn.vuetifyjs.com/images/carousel/planet.jpg"
-        }
-      ]
+      pics: [],
+      viewPix: true,
+      currentProd: this.$attrs.currentProd
     };
+  },
+  async mounted() {
+    await axios
+      .get(
+        "https://api.broadwaybuilder.xyz/production/" +
+          this.currentProd +
+          "/getPhotos"
+      )
+      .then(response => (this.pics = response.data));
   }
 };
 </script>
