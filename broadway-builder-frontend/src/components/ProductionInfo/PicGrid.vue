@@ -1,6 +1,6 @@
 <template>
   <div class="PicGrid">
-    <v-container fluid grid-list-md>
+    <v-container v-if="viewPix === false" fluid grid-list-md>
       <v-layout row wrap>
         <v-flex v-for="(production, index) in productions" :key="index">
           <div v-show="production.TheaterID == TheaterID" class="card">
@@ -14,7 +14,7 @@
             </div>
             <footer class="card-footer">
               <div class="card-footer-item">
-                <a>Pictures.</a> |
+                <a v-on:click="viewCarousel(production.ProductionID)">Pictures</a> |
                 <a>Program</a>
               </div>
             </footer>
@@ -22,19 +22,25 @@
         </v-flex>
       </v-layout>
     </v-container>
+
+    <a v-if="viewPix === true" v-on:click="viewPix=false">Back</a>
+    <v-gallery v-if="viewPix === true" type="carousel" :images="pics"></v-gallery>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import { isDate } from "util";
+
 export default {
   name: "PicGrid",
   data() {
     return {
       productions: [],
       theaters: [],
-      TheaterID: this.$attrs.TheaterID
+      TheaterID: this.$attrs.TheaterID,
+      viewPix: false,
+      picSrcs: [],
+      pics: []
     };
   },
   props: {
@@ -46,6 +52,22 @@ export default {
         "https://api.broadwaybuilder.xyz/production/getProductions?previousDate=3%2F23%2F2019"
       )
       .then(response => (this.productions = response.data));
+  },
+  methods: {
+    async viewCarousel(ProductionID) {
+      await axios
+        .get(
+          "https://api.broadwaybuilder.xyz/production/" +
+            ProductionID +
+            "/getPhotos"
+        )
+        .then(response => (this.picSrcs = response.data));
+      this.viewPix = !this.viewPix;
+      var aLength = this.picSrcs.length;
+      for (var i = 0; i < aLength; i++) {
+        this.pics[i] = { title: " ", url: this.picSrcs[i] };
+      }
+    }
   }
 };
 </script>

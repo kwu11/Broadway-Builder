@@ -147,7 +147,7 @@ namespace BroadwayBuilder.Api.Controllers
 
         [Route("getProductions")]
         [HttpGet]
-        public IHttpActionResult GetProductions(DateTime? currentDate = null, DateTime? previousDate = null)
+        public IHttpActionResult GetProductions(DateTime? currentDate = null, DateTime? previousDate = null, int? theaterID = null)
         {
             try
             {
@@ -159,108 +159,53 @@ namespace BroadwayBuilder.Api.Controllers
                     {
                         if (previousDate != null) {
 
-                            // List of past productions
-                            var pastProductions = productionService.GetProductionsByPreviousDate((DateTime)previousDate);
-
-                            // List to hold production responses
-                            var productionResponses = new List<ProductionResponseModel>();
-
-                            /* Looping over productions entities, 
-                             * converting to production response models 
-                             * and adding them to the production response model list
-                             */
-                            foreach (var production in pastProductions)
-                            {
-                                // List to hold production date time responses
-                                var productionDateTimeResponseModel = new List<ProductionDateTimeResponseModel>();
-
-                                /* Looping over the production date time entities,
-                                 * Converting to production date time response models 
-                     /            * and adding them to the production date time reponse model list
-                                 */
-                                foreach (var datetime in production.ProductionDateTime)
+                            var productionResponses = productionService.GetProductionsByPreviousDate((DateTime)previousDate, theaterID)
+                                .Select(production => new ProductionResponseModel()
                                 {
-                                    // Converting to production response models and adding them to the production response model list
-                                    productionDateTimeResponseModel.Add(new ProductionDateTimeResponseModel()
-                                    {
-                                        Date = datetime.Date,
-                                        Time = datetime.Time,
-                                        ProductionDateTimeId = datetime.ProductionDateTimeId
-                                    });
-                                }
-
-                                // Converting to production response models and adding them to the production response model list
-                                productionResponses.Add(new ProductionResponseModel() {
-
-                                    ProductionID = production.ProductionID,
-                                    ProductionName = production.ProductionName,
                                     DirectorFirstName = production.DirectorFirstName,
                                     DirectorLastName = production.DirectorLastName,
-                                    Street = production.Street,
-                                    City = production.City,
+                                    ProductionID = production.ProductionID,
+                                    ProductionName = production.ProductionName,
                                     StateProvince = production.StateProvince,
-                                    Zipcode = production.Zipcode,
-                                    Country = production.Country,
+                                    Street = production.Street,
                                     TheaterID = production.TheaterID,
-                                    DateTimes = productionDateTimeResponseModel
-
-
-                                });
-                            }
-
+                                    Zipcode = production.Zipcode,
+                                    City = production.City,
+                                    Country = production.Country,
+                                    DateTimes = production.ProductionDateTime.Select(datetime => new ProductionDateTimeResponseModel()
+                                    {
+                                        Date = datetime.Date,
+                                        ProductionDateTimeId = datetime.ProductionDateTimeId,
+                                        Time = datetime.Time
+                                    }).ToList()
+                                }).ToList();
 
                             return Ok(productionResponses);
                         }
                         else if (currentDate != null)
                         {
-                            // List of productions
-                            var currentAndFutureProductions = productionService.GetProductionsByCurrentAndFutureDate((DateTime)currentDate);
-
-                            // List of production response models
-                            var productionResponseModels = new List<ProductionResponseModel>();
-
-                            /* Looping over productions entities, 
-                             * converting to production response models 
-                             * and adding them to the production response model list
-                             */
-                            foreach (var production in currentAndFutureProductions)
-                            {
-                                // A list to hold production date time response models
-                                var productionDateTimeResponseModels = new List<ProductionDateTimeResponseModel>();
-
-                                /* Looping over the production date time entities,
-                                 * Converting to production date time response models 
-                                 * and adding them to the production date time reponse model list
-                                 */
-                                foreach (var datetime in production.ProductionDateTime)
+                            var productionResponses = productionService.GetProductionsByCurrentAndFutureDate((DateTime)currentDate)
+                                .Select(production => new ProductionResponseModel()
                                 {
-                                    // Converting to production date time response models and adding them to the production date time reponse model list
-                                    productionDateTimeResponseModels.Add(new ProductionDateTimeResponseModel()
-                                    {
-                                        ProductionDateTimeId = datetime.ProductionDateTimeId,
-                                        Date = datetime.Date,
-                                        Time = datetime.Time
-                                    });
-                                }
-
-                                // Converting to production response models and adding them to the production response model list
-                                productionResponseModels.Add(new ProductionResponseModel()
-                                {
-                                    ProductionID = production.ProductionID,
-                                    ProductionName = production.ProductionName,
+                                    City = production.City,
                                     DirectorFirstName = production.DirectorFirstName,
                                     DirectorLastName = production.DirectorLastName,
-                                    Street = production.Street,
-                                    City = production.City,
-                                    StateProvince = production.StateProvince,
-                                    Zipcode = production.Zipcode,
                                     Country = production.Country,
+                                    ProductionID = production.ProductionID,
+                                    ProductionName = production.ProductionName,
+                                    StateProvince = production.StateProvince,
+                                    Street = production.Street,
                                     TheaterID = production.TheaterID,
-                                    DateTimes = productionDateTimeResponseModels
-                                });
-                            }
+                                    Zipcode = production.Zipcode,
+                                    DateTimes = production.ProductionDateTime.Select(datetime => new ProductionDateTimeResponseModel()
+                                    {
+                                        Date = datetime.Date,
+                                        ProductionDateTimeId = datetime.ProductionDateTimeId,
+                                        Time = datetime.Time
+                                    }).ToList()
+                                }).ToList();
 
-                            return Ok(productionResponseModels);
+                            return Ok(productionResponses);
                         }
 
                         // none of the if conditions were met therfore...
@@ -359,6 +304,7 @@ namespace BroadwayBuilder.Api.Controllers
             {
                 //get the content, headers, etc the full request of the current http request
                 var httpRequest = HttpContext.Current.Request;
+               
 
                 // Todo: Check if length of httpRequest.Files <= 10 to ensure only 10 photos is uploaded
 
@@ -370,10 +316,11 @@ namespace BroadwayBuilder.Api.Controllers
 
                 var count = 0;
 
-                foreach (string filename in httpRequest.Files)
+                for (int i= 0; i < httpRequest.Files.Count; i++)
                 {
                     // Grab current file of the request
-                    var putFile = httpRequest.Files[filename];
+                    //var putFile = httpRequest.Files[filename];
+                    var putFile = httpRequest.Files[i];
 
                     // Continue if the file has content
                     if (putFile != null && putFile.ContentLength > 0)

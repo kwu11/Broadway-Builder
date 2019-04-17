@@ -16,6 +16,7 @@
     "buefy": "^0.7.3",
     "bulma": "^0.7.4",
     "es6-promise": "^4.2.6",
+    "v-gallery": "^1.2.4",
     "vue": "^2.5.22",
     "vue-read-more": "^1.1.1",
     "vue-router": "^3.0.2",

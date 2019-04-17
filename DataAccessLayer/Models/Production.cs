@@ -15,7 +15,7 @@ namespace DataAccessLayer
         [Key]
         // [Column(Order = 1)]
         // [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int? ProductionID { get; set; }
+        public int ProductionID { get; set; }
         /* Info: productionId is nullable in code for data validation purposes. BUT in database PK is still not nullable. It can't be null in DB.
         If we create a response model then we can set that to be nullable and it will sperate the concern of the frontend models and the backend entities.
              */ 

@@ -1,21 +1,31 @@
 <template>
   <div class="AdminProductionInfo">
-    <h1>CECS Theatre Dept. |</h1>The Fantastic 5 Ampitheatre
-    <AdminPicGrid/>
-    <AdminPictureWheel/>
+    <h1>{{theater.TheaterName}} > {{theater.CompanyName}}</h1>
+
+    <PicGrid v-bind:TheaterID="TheaterID" :today="today"/>
   </div>
 </template>
 
 <script>
-import AdminPicGrid from "@/components/ProductionInfo/AdminPicGrid.vue";
-import AdminPictureWheel from "@/components/ProductionInfo/AdminPictureWheel.vue";
+import PicGrid from "@/components/ProductionInfo/PicGrid.vue";
 import axios from "axios";
 
 export default {
   name: "AdminProductionInfo",
   components: {
-    AdminPicGrid,
-    AdminPictureWheel
+    PicGrid
+  },
+  data() {
+    return {
+      TheaterID: this.$route.params.TheaterID,
+      theater: {},
+      today: new Date("2019-12-30T10:20:20Z")
+    };
+  },
+  async mounted() {
+    await axios
+      .get("https://api.broadwaybuilder.xyz/theater/get/" + this.TheaterID)
+      .then(response => (this.theater = response.data));
   }
 };
 </script>

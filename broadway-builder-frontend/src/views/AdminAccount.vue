@@ -9,6 +9,21 @@
             <ul class="menu-list">
               <li>
                 <a v-on:click="editTheaterComp">Edit Profile</a>
+                <a>Manage Theater Productions</a>
+                <ul>
+                  <li>
+                    <a v-on:click="createProductionForTheater">Create Production</a>
+                  </li>
+                  <li>
+                    <a>Display Productions</a>
+                  </li>
+                  <li>
+                    <a>Edit Production</a>
+                  </li>
+                  <li>
+                    <a>Delete Production</a>
+                  </li>
+                </ul>
                 <a>Manage Users</a>
                 <ul>
                   <li>
@@ -186,6 +201,7 @@
               </div>
             </div>
             <EditTheater v-if="editTheater === true" v-bind:theater="theater"/>
+            <CreateProduction v-if="createProduction === true" v-bind:theater="theater"/>
           </div>
         </div>
       </div>
@@ -196,14 +212,17 @@
 
 <script>
 import EditTheater from "@/components/Admin/EditTheater.vue";
+import CreateProduction from "@/components/Admin/CreateProduction.vue";
 export default {
   name: "AdminAccount",
   components: {
-    EditTheater
+    EditTheater,
+    CreateProduction
   },
   data() {
     return {
       editTheater: false,
+      createProduction: false,
       theater: {
         TheaterName: "Theater",
         CompanyName: "Company",
@@ -219,6 +238,9 @@ export default {
   methods: {
     editTheaterComp() {
       this.editTheater = !this.editTheater;
+    },
+    createProductionForTheater() {
+      this.createProduction = !this.createProduction;
     }
   }
 };
@@ -237,4 +259,7 @@ export default {
     -webkit-box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1)
     box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1)
     color: #4a4a4a
+
+a:hover
+  font-weight: bold
 </style>

@@ -33,11 +33,6 @@ export default new Router({
       component: () => import("./views/SysAdminAccount.vue")
     },
     {
-      path: "/contactus",
-      name: "contactus",
-      component: () => import("./views/ContactUs.vue")
-    },
-    {
       path: "/theater/{theaterid}/helpwanted",
       name: "adminhelpwanted",
       component: () => import("./views/HelpWanted/AdminHelpWanted.vue")

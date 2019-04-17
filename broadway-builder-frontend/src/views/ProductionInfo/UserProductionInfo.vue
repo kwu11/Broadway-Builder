@@ -1,7 +1,7 @@
 <template>
   <div class="UserProductionInfo">
-    <h1>{{theater.TheaterName}} |</h1>
-    {{theater.CompanyName}}.
+    <h1>{{theater.TheaterName}} > {{theater.CompanyName}}</h1>
+
     <PicGrid v-bind:TheaterID="TheaterID" :today="today"/>
   </div>
 </template>
@@ -9,7 +9,6 @@
 <script>
 import PicGrid from "@/components/ProductionInfo/PicGrid.vue";
 import axios from "axios";
-import { isDate } from "util";
 
 export default {
   name: "UserProductionInfo",
