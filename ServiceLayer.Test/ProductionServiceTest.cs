@@ -212,6 +212,10 @@ namespace ServiceLayer.Test
             }
 
             // Assert
+            productionService.DeleteProduction(production);
+            dbcontext.SaveChanges();
+            theaterService.DeleteTheater(theater);
+            dbcontext.SaveChanges();
             Assert.AreEqual(expected, actual);
 
         }
