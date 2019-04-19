@@ -14,13 +14,7 @@
                   <a v-on:click="createProductionForTheater">Create Production</a>
                 </li>
                 <li>
-                  <a>Display Productions</a>
-                </li>
-                <li>
-                  <a>Edit Production</a>
-                </li>
-                <li>
-                  <a>Delete Production</a>
+                  <a v-on:click="displayProductions">Display Productions</a>
                 </li>
               </ul>
               <a>Manage Users</a>
@@ -87,7 +81,7 @@
               </article>
             </div>
           </div>
-          <ProductionsTable/>
+          <ProductionsTable v-if="viewProductions === true"/>
         </section>
         <div class="columns">
           <EditTheater v-if="editTheater === true" v-bind:theater="theater"/>
@@ -114,6 +108,7 @@ export default {
     return {
       editTheater: false,
       createProduction: false,
+      viewProductions: false,
       theater: {
         TheaterName: "Theater",
         CompanyName: "Company",
@@ -132,6 +127,9 @@ export default {
     },
     createProductionForTheater() {
       this.createProduction = !this.createProduction;
+    },
+    displayProductions() {
+      this.viewProductions = !this.viewProductions;
     }
   }
 };

@@ -23,7 +23,7 @@
           <td>{{production.Street}}, {{production.City}}, {{production.StateProvince}} {{production.Zipcode}}</td>
           <td>{{production.DateTimes[0].Date}}</td>
           <td>
-            <a v-on:click="showModal">editing</a>
+            <a v-on:click="showModal" v-bind:production="production">editing</a>
           </td>
 
           <td>
