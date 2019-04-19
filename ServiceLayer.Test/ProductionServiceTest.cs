@@ -52,7 +52,7 @@ namespace ServiceLayer.Test
             var dbcontext_ = new BroadwayBuilderContext();
             var productionService_ = new ProductionService(dbcontext_);
 
-            productionService.DeleteProduction(production);
+            productionService.DeleteProduction(production.ProductionID);
             dbcontext.SaveChanges();
             theaterService.DeleteTheater(theater);
             dbcontext.SaveChanges();
@@ -109,7 +109,7 @@ namespace ServiceLayer.Test
             }
 
             // Assert
-            productionService.DeleteProduction(production);
+            productionService.DeleteProduction(production.ProductionID);
             dbcontext.SaveChanges();
             theaterService.DeleteTheater(theater);
             dbcontext.SaveChanges();
@@ -161,7 +161,7 @@ namespace ServiceLayer.Test
             dbcontext.SaveChanges();
 
             // Assert
-            productionService.DeleteProduction(production);
+            productionService.DeleteProduction(production.ProductionID);
             dbcontext.SaveChanges();
             theaterService.DeleteTheater(theater);
             dbcontext.SaveChanges();
@@ -212,13 +212,12 @@ namespace ServiceLayer.Test
             }
 
             // Assert
-            productionService.DeleteProduction(production);
+            productionService.DeleteProduction(production.ProductionID);
             dbcontext.SaveChanges();
             theaterService.DeleteTheater(theater);
             dbcontext.SaveChanges();
             Assert.AreEqual(expected, actual);
 
         }
-
     }
 }

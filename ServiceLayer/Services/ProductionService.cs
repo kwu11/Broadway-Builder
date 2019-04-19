@@ -84,10 +84,10 @@ namespace ServiceLayer.Services
         }
 
 
-        public void DeleteProduction(Production production)
+        public void DeleteProduction(int productionid)
         {
             Production productionToDelete = _dbContext.Productions
-                .Where(o => o.ProductionID == production.ProductionID)
+                .Where(o => o.ProductionID == productionid)
                 .FirstOrDefault(); //gives you first production that satisfies the where
                 //if item doesn't exist it returns null Todo: throw a specific exception
 
