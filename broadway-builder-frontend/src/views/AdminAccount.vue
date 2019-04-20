@@ -3,44 +3,26 @@
   <div class="adminaccount">
     <div class="columns">
       <div class="column is-3">
-        <aside class="menu">
+        <aside class="menu" style="padding-left: 1em">
           <p style="padding-top: 15px" class="menu-label">Administration</p>
           <ul class="menu-list">
             <li>
               <a v-on:click="editTheaterComp">Edit Profile</a>
-              <a>Manage Theater Productions</a>
-              <ul>
-                <li>
-                  <a v-on:click="createProductionForTheater">Create Production</a>
-                </li>
-                <li>
-                  <a v-on:click="displayProductions">Display Productions</a>
-                </li>
-              </ul>
-              <a>Manage Users</a>
-              <ul>
-                <li>
-                  <a>Staff</a>
-                </li>
-                <li>
-                  <a>User Collected Data</a>
-                </li>
-                <li>
-                  <a>Blacklist</a>
-                </li>
-              </ul>
+            </li>
+          </ul>
+          <p class="menu-label">Manage Productions</p>
+          <ul class="menu-list">
+            <li>
+              <a v-on:click="createProductionForTheater">Create Production</a>
+            </li>
+            <li>
+              <a v-on:click="displayProductions">Display Productions</a>
             </li>
           </ul>
           <p class="menu-label">Help Wanted</p>
           <ul class="menu-list">
             <li>
               <router-link to="/theater/{theaterid}/helpwanted">Job Postings</router-link>
-            </li>
-          </ul>
-          <p class="menu-label">Production Info</p>
-          <ul class="menu-list">
-            <li>
-              <router-link to="/theater/{theaterid}/adminproductioninfo">Edit Past Production Info</router-link>
             </li>
           </ul>
         </aside>

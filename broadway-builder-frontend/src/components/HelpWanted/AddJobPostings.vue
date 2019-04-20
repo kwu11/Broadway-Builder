@@ -3,7 +3,7 @@
     <div class="card">
       <header class="card-header">
         <p class="card-header-title">
-          <input class="input" v-model="job.Title" placeholder="Title / Subject">
+          <input class="input" v-model="job.Title" placeholder="Title / Subject" required>
         </p>
       </header>
       <div class="card-content">
@@ -15,17 +15,17 @@
               <div class="control">
                 <!-- Description input -->
                 <div v-if="index === 0">
-                  <textarea v-model="job.Description" class="textarea"></textarea>
+                  <textarea v-model="job.Description" class="textarea" required></textarea>
                 </div>
 
                 <!-- Hours input -->
                 <div v-else-if="index === 1">
-                  <textarea v-model="job.Hours" class="textarea"></textarea>
+                  <textarea v-model="job.Hours" class="textarea" required></textarea>
                 </div>
 
                 <!-- Requirements input -->
                 <div v-else>
-                  <textarea v-model="job.Requirements" class="textarea"></textarea>
+                  <textarea v-model="job.Requirements" class="textarea" required></textarea>
                 </div>
               </div>
             </div>
@@ -34,7 +34,7 @@
             <strong>Type of Job (This cannot be changed!)</strong>
             <br>
             <div class="filters" v-for="(type, index) in jobTypes" :key="index">
-              <input type="radio" :value="type" name="jobType" v-model="job.JobType">
+              <input type="radio" :value="type" name="jobType" v-model="job.JobType" required>
               <label>{{ type }}</label>
               <br>
             </div>
@@ -49,6 +49,7 @@
                 :value="position"
                 name="jobPosition"
                 v-model="job.Position"
+                required
               >
               <label>{{ position }}</label>
             </div>
@@ -70,6 +71,7 @@ import axios from "axios";
 export default {
   data() {
     return {
+      error: "",
       categories: ["Description", "Hours", "Requirements"],
       jobTypes: ["Full Time", "Part Time", "Seasonal"],
       positions: [
@@ -104,7 +106,20 @@ export default {
           "https://api.broadwaybuilder.xyz/helpwanted/createtheaterjob",
           this.job
         )
-        .then(response => this.$emit("add", this.job));
+        .then(response => this.$emit("add", this.job))
+        .catch(err => {
+          let statusCode = err.status;
+
+          switch (statusCode) {
+            default:
+              alert(
+                "An unexpected server error has occured. Please try again momentarily."
+              );
+              this.cancelNewJobPosting();
+
+              break;
+          }
+        });
     },
     // Cancel the creation of a new job
     cancelNewJobPosting() {
@@ -131,6 +146,10 @@ a
 .addJobPosition
   float: right
   width: 50%
+
+input:invalid 
+  border-color: #800000;
+  border-width: 3px;
 
 </style>
 
