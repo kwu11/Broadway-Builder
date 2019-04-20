@@ -12,6 +12,7 @@
           <th>Created</th>
           <th>Edit</th>
           <th>Delete</th>
+          <th>Upload New Program</th>
         </tr>
       </thead>
       <tbody v-for="(production, index) in productions" :key="index">
@@ -28,6 +29,19 @@
 
           <td>
             <a v-on:click="deleteProduction(production.ProductionID)">deleting</a>
+          </td>
+          <td>
+            <input
+              type="file"
+              id="file"
+              ref="file"
+              @change="programIDSelect(production.ProductionID), onFileChange"
+            >
+            <button
+              v-if="programID === production.ProductionID"
+              v-on:click="uploadProgram(production.ProductionID)"
+              type="submit"
+            >Submit</button>
           </td>
         </tr>
       </tbody>
@@ -47,7 +61,9 @@ export default {
   data() {
     return {
       productions: [],
-      isModalVisible: false
+      isModalVisible: false,
+      file: "",
+      programID: Number
     };
   },
   async mounted() {
@@ -65,11 +81,35 @@ export default {
         )
         .then(alert("Production Successfully Deleted"));
     },
+    async uploadProgram(ProductionID) {
+      let formData = new FormData();
+      formData.append("file", this.file);
+      await axios
+        .put(
+          "https://api.broadwaybuilder.xyz/production/" +
+            ProductionID +
+            "/uploadProgram",
+          formData
+        )
+        .then(alert("New Program Added!"));
+    },
     showModal() {
       this.isModalVisible = true;
     },
     closeModal() {
       this.isModalVisible = false;
+    },
+    onFileChange(e) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      var reader = new FileReader();
+      reader.onload = e => {
+        this.program = e.target.result;
+      };
+      reader.readAsDataURL(files[0]);
+    },
+    programIDSelect(id) {
+      this.programID = id;
     }
   }
 };
