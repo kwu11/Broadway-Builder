@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import ResumeUpload from "@/components/HelpWanted/ResumeUpload.vue";
+// import ResumeUpload from "@/components/HelpWanted/ResumeUpload.vue";
 import DisplayJobPostings from "@/components/HelpWanted/DisplayJobPostings.vue";
 import JobFilter from "@/components/HelpWanted/JobFilter.vue";
 import axios from "axios";
@@ -24,7 +24,7 @@ import axios from "axios";
 export default {
   name: "UserHelpWanted",
   components: {
-    ResumeUpload,
+    // ResumeUpload,
     DisplayJobPostings,
     JobFilter
   },
@@ -42,7 +42,12 @@ export default {
     async getAllJobPostings() {
       // Obtain all jobs from the database
       await axios
-        .get("https://api.broadwaybuilder.xyz/helpwanted/1")
+        .get("https://api.broadwaybuilder.xyz/helpwanted/1", {
+          params: {
+            startingPoint: 0,
+            numberOfItems: 3
+          }
+        })
         .then(response => (this.jobs = response.data));
 
       for (var i = 0; i < this.jobs.length; i++) {

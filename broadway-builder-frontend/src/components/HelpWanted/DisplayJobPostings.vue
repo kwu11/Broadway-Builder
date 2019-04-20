@@ -2,12 +2,23 @@
   <div>
     <div class="columns" v-for="(job, index) in filteredValues" v-bind:key="index">
       <!-- This coloumn just displays a brief description for the job posting -->
-      <div class="column is-6">
+      <div class="column is-12">
         <div class="card">
           <header class="card-header">
             <p class="card-header-title">
-              <strong id="Title">{{ job.Title }}</strong>
+              <input class="input" type="text" v-model="job.Title" v-if="job.edit">
+              <strong id="Title" v-else>{{ job.Title }}</strong>
             </p>
+            <a
+              v-on:click="job.show = false; job.edit = false"
+              v-if="job.show"
+              class="card-header-icon"
+              aria-label="more options"
+            >
+              <span class="icon">
+                <FontAwesomeIcon icon="times"/>
+              </span>
+            </a>
           </header>
           <div class="card-content">
             <div class="content">
@@ -19,59 +30,31 @@
                 <u>{{ job.Position }}</u>
                 <br>
               </p>
-              <strong>Description</strong>
-              <p id="Description">{{ job.Description }}</p>
-              <em id="DatePosted">
-                Posted
-                <strong>{{ calculateDateDifference(job.DateCreated) }}</strong> day(s) ago
-              </em>
             </div>
-            <div class="content"></div>
-          </div>
-          <footer class="card-footer">
-            <a class="card-footer-item" v-on:click="job.show = !job.show">View</a>
-          </footer>
-        </div>
-      </div>
-
-      <!-- This column shows additional information about the job posting -->
-      <div class="column is-6">
-        <div class="card" v-if="job.show">
-          <header class="card-header">
-            <p class="card-header-title">
-              <input class="input" type="text" v-model="job.Title" v-if="job.edit">
-              <strong id="Title" v-else>{{ job.Title }}</strong>
-            </p>
-            <a
-              v-on:click="job.show = false"
-              v-if="!job.edit"
-              class="card-header-icon"
-              aria-label="more options"
-            >
-              <span class="icon">
-                <FontAwesomeIcon icon="times"/>
-              </span>
-            </a>
-          </header>
-          <div class="card-content">
             <div class="content">
               <strong>Description</strong>
               <textarea class="textarea" v-model="job.Description" v-if="job.edit"></textarea>
               <p id="Description" v-else>{{ job.Description }}</p>
             </div>
-            <div class="content">
+            <div class="content" v-if="job.show">
               <strong>Hours</strong>
               <textarea class="textarea" v-model="job.Hours" v-if="job.edit"></textarea>
               <p id="Hours" v-else>{{ job.Hours }}</p>
             </div>
-            <div class="content">
+            <div class="content" v-if="job.show">
               <strong>Requirements</strong>
               <textarea class="textarea" v-model="job.Requirements" v-if="job.edit"></textarea>
               <p id="Requirements" v-else>{{ job.Requirements }}</p>
             </div>
+            <em id="DatePosted">
+              Posted
+              <strong>{{ calculateDateDifference(job.DateCreated) }}</strong> day(s) ago
+            </em>
           </div>
-
-          <footer class="card-footer" v-if="hasPermission">
+          <footer class="card-footer" v-if="!job.show">
+            <a class="card-footer-item" v-on:click="job.show = true">View</a>
+          </footer>
+          <footer class="card-footer" v-if="hasPermission && job.show">
             <a class="card-footer-item" v-if="!job.edit" v-on:click="editJobPosting(job)">Edit</a>
             <a
               class="card-footer-item"
@@ -84,7 +67,7 @@
               v-on:click="removeJobPosting(job, index)"
             >Delete</a>
           </footer>
-          <footer class="card-footer" v-else>
+          <footer class="card-footer" v-else-if="!hasPermission && job.show">
             <a class="card-footer-item">Accept Job</a>
           </footer>
         </div>
@@ -170,6 +153,11 @@ export default {
 
 <style lang="sass" scoped>
 @import '../../../node_modules/bulma/bulma.sass'
+
+nav
+  background-image: white
+  font-family: 'Roboto'
+
 
 .card    
   margin: 1.25em 0 1.25em 0
