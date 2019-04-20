@@ -37,7 +37,7 @@ namespace ServiceLayer.Test
             }
 
             productionJobService.DeleteProductionJob(jobPosting);
-            productionService.DeleteProduction(production);
+            productionService.DeleteProduction(production.ProductionID);
             theaterService.DeleteTheater(theater);
             dbcontext.SaveChanges();
             //Assert 
@@ -74,7 +74,7 @@ namespace ServiceLayer.Test
                 actual = true;
             }
 
-            productionService.DeleteProduction(production);
+            productionService.DeleteProduction(production.ProductionID);
             theaterService.DeleteTheater(theater);
             dbcontext.SaveChanges();
             //Assert 
@@ -111,7 +111,7 @@ namespace ServiceLayer.Test
             }
 
             productionJobService.DeleteProductionJob(jobPosting);
-            productionService.DeleteProduction(production);
+            productionService.DeleteProduction(production.ProductionID);
             theaterService.DeleteTheater(theater);
             dbcontext.SaveChanges();
             //Assert 

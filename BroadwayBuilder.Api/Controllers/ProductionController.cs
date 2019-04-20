@@ -259,9 +259,9 @@ namespace BroadwayBuilder.Api.Controllers
 
         }
 
-        [Route("delete")]
+        [Route("delete/{productionid}")]
         [HttpDelete]
-        public IHttpActionResult deleteProduction(Production productionToDelete)
+        public IHttpActionResult deleteProduction(int productionid)
         {
             using (var dbcontext = new BroadwayBuilderContext())
             {
@@ -269,16 +269,7 @@ namespace BroadwayBuilder.Api.Controllers
 
                 try
                 {
-                    if (productionToDelete == null)
-                    {
-                        return BadRequest("no production object provided");
-                    }
-                    else if (productionToDelete.ProductionID == null)
-                    {
-                        return BadRequest("Production id is null");
-                    }
-
-                    productionService.DeleteProduction(productionToDelete);
+                    productionService.DeleteProduction(productionid);
                     dbcontext.SaveChanges();
 
                     return Ok("Production deleted succesfully");
