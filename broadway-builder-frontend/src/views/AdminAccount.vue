@@ -3,7 +3,7 @@
   <div class="adminaccount">
     <div class="columns">
       <div class="column is-3">
-        <aside class="menu">
+        <aside class="menu" style="padding-left: 1em">
           <p style="padding-top: 15px" class="menu-label">Administration</p>
           <ul class="menu-list">
             <li>
