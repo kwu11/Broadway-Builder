@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer;
+using DataAccessLayer.Models;
 using ServiceLayer.Exceptions;
 using ServiceLayer.Services;
 using System;
@@ -339,6 +340,96 @@ namespace BroadwayBuilder.Api.Controllers
                 }
             }
             catch(Exception e)
+            {
+                return Content((HttpStatusCode)500, e.Message);
+            }
+        }
+
+        [HttpPost,Route("apply/{id}/{helpwantedid}")] //apply to a theater job
+        public IHttpActionResult ApplyToJob(int id,int helpwantedid)
+        {
+            try
+            {
+                using (var dbcontext = new BroadwayBuilderContext())
+                {
+                    var resumeService = new ResumeService(dbcontext);
+                    Resume resume = resumeService.GetResumeByUserID(id);
+                    if (resume == null)//check if user has already submitted a resume
+                    {
+                        throw new Exception("No resume on file");
+                    }
+                    var theaterjobservice = new TheaterJobService(dbcontext);
+                    TheaterJobPosting job = theaterjobservice.GetTheaterJob(helpwantedid);
+                    if (job == null)//check if job exists
+                    {
+                        throw new Exception("No job on file");
+                    }
+
+                    var resumejobposting = new ResumeTheaterJob(job.HelpWantedID,resume.ResumeID);
+                    var resumejobservice = new ResumeTheaterJobService(dbcontext);
+                    resumejobservice.CreateResumeTheaterJob(resumejobposting);
+                    return Content((HttpStatusCode)200, "Successfully Applied!");
+                }
+            }
+            catch(Exception e)
+            {
+                return Content((HttpStatusCode)400, e.Message);
+            }
+        }
+
+        [HttpGet,Route("getResume/{theaterid}")] // all resumes submitted to the theater -- dont recommend this
+        public IHttpActionResult GetResumesForAllTheaterJobs(int theaterid)
+        {
+            try
+            {
+                using (var dbcontext = new BroadwayBuilderContext())
+                {
+                    var theaterService = new TheaterService(dbcontext);
+                    if (theaterService.GetTheaterByID(theaterid) == null)
+                    {
+                        throw new Exception("theater does not exist");
+                    }
+                    var resumetheaterjobservice = new ResumeTheaterJobService(dbcontext);
+                    var resumelist = resumetheaterjobservice.GetAllResumeGuidsTheater(theaterid);
+                    List<string> urlList = null;
+                    foreach(Guid guid in resumelist)
+                    {
+                        string url = "https://api.broadwaybuilder.xyz/Resumes/" + guid + "/" + guid + ".pdf";
+                        urlList.Add(url);
+                    }
+                    return Content((HttpStatusCode)200, urlList);
+                }
+            }
+            catch(Exception e)
+            {
+                return Content((HttpStatusCode)500, e.Message);
+            }
+        }
+
+        [HttpGet,Route("getResumesForJob/{helpwantedid}")] //get all resumes for a single job posting
+        public IHttpActionResult GetResumesforTheaterJob(int helpwantedid)
+        {
+            try
+            {
+                using (var dbcontext = new BroadwayBuilderContext())
+                {
+                    var theaterjobService = new TheaterJobService(dbcontext);
+                    if (theaterjobService.GetTheaterJob(helpwantedid) == null)
+                    {
+                        throw new Exception("theater job does not exist");
+                    }
+                    var resumetheaterjobservice = new ResumeTheaterJobService(dbcontext);
+                    var resumelist = resumetheaterjobservice.GetAllResumeGuidsForTheaterJob(helpwantedid);
+                    List<string> urlList = null;
+                    foreach (Guid guid in resumelist)
+                    {
+                        string url = "https://api.broadwaybuilder.xyz/Resumes/" + guid + "/" + guid + ".pdf";
+                        urlList.Add(url);
+                    }
+                    return Content((HttpStatusCode)200, urlList);
+                }
+            }
+            catch (Exception e)
             {
                 return Content((HttpStatusCode)500, e.Message);
             }
