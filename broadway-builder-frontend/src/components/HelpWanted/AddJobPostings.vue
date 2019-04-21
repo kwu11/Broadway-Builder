@@ -106,7 +106,7 @@ export default {
           "https://api.broadwaybuilder.xyz/helpwanted/createtheaterjob",
           this.job
         )
-        .then(response => this.$emit("add", this.job))
+        .then(this.$emit("add", this.job))
         .catch(err => {
           let statusCode = err.status;
 
