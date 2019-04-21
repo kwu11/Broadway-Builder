@@ -1,6 +1,12 @@
 <template>
   <div class="EditTheater">
     <div class="field">
+      <label class="label">Theater ID</label>
+      <div class="control">
+        <input class="input" v-model="theater.TheaterID">
+      </div>
+    </div>
+    <div class="field">
       <label class="label">Company Name</label>
       <div class="control">
         <input class="input" v-model="theater.CompanyName">
@@ -64,13 +70,25 @@
 import axios from "axios";
 export default {
   name: "EditTheater",
-  props: ["theater"],
+  data() {
+    return {
+      theater: {
+        TheaterID: null,
+        TheaterName: "",
+        CompanyName: "",
+        StreetAddress: "",
+        City: "",
+        State: "",
+        Country: "",
+        PhoneNumber: ""
+      }
+    };
+  },
   methods: {
-    async editTheaterInfo() {
-      await axios.post(
-        "http://localhost:8080/theater/updateTheater",
-        this.theater
-      );
+    editTheaterInfo() {
+      axios
+      .put("https://api.broadwaybuilder.xyz/theater/updateTheater",{ data: this.theater })
+      .then(response => {console.log(response)});
     }
   }
 };

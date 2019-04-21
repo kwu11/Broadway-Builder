@@ -58,6 +58,11 @@ export default new Router({
       path: "/theater/{theaterid}/adminproductioninfo/{productionid}",
       name: "adminpicturewheel",
       component: () => import("./views/ProductionInfo/AdminProductionInfo.vue")
+    },
+    {
+      path: "/sysadminaccount/{userID}/SysAdminViewAllTheaters",
+      name: "SysAdminViewAllTheaters",
+      component: () => import("./views/SysAdminViewAllTheaters.vue")
     }
   ]
 });
