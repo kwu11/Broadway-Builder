@@ -42,11 +42,12 @@
               ref="file"
               @change="programIDSelect(production.ProductionID), onFileChange"
             >
-            <button
+            <a
+              class="button is-primary"
               v-if="programID === production.ProductionID"
               v-on:click="uploadProgram(production.ProductionID)"
               type="submit"
-            >Submit</button>
+            >Submit</a>
           </td>
         </tr>
       </tbody>
@@ -125,6 +126,8 @@ a
 img
  width: 2em
  height: 2em
+.button 
+  color:black
 
 </style>
 
