@@ -31,26 +31,34 @@
                 <br>
               </p>
             </div>
+            <!-- Job Description -->
             <div class="content">
               <strong>Description</strong>
               <textarea class="textarea" v-model="job.Description" v-if="job.edit"></textarea>
-              <p id="Description" v-else>{{ job.Description }}</p>
+              <p
+                v-else-if="!job.edit && !job.show"
+              >{{ formatLongText(job.Description, maxTextLength, textTail) }}</p>
+              <p v-if="job.show">{{ job.Description }}</p>
             </div>
+            <!-- Job Hours -->
             <div class="content" v-if="job.show">
               <strong>Hours</strong>
               <textarea class="textarea" v-model="job.Hours" v-if="job.edit"></textarea>
               <p id="Hours" v-else>{{ job.Hours }}</p>
             </div>
+            <!-- Job Requirements -->
             <div class="content" v-if="job.show">
               <strong>Requirements</strong>
               <textarea class="textarea" v-model="job.Requirements" v-if="job.edit"></textarea>
               <p id="Requirements" v-else>{{ job.Requirements }}</p>
             </div>
+            <!-- Job Date Created -->
             <em id="DatePosted">
               Posted
               <strong>{{ calculateDateDifference(job.DateCreated) }}</strong> day(s) ago
             </em>
           </div>
+          <!-- Card options for interacting with a job -->
           <footer class="card-footer" v-if="!job.show">
             <a class="card-footer-item" v-on:click="job.show = true">View</a>
           </footer>
@@ -64,12 +72,19 @@
             <a
               class="card-footer-item"
               v-if="!job.edit"
-              v-on:click="removeJobPosting(job, index)"
+              v-on:click="deleteConfirmation = true"
             >Delete</a>
           </footer>
           <footer class="card-footer" v-else-if="!hasPermission && job.show">
             <a class="card-footer-item">Accept Job</a>
           </footer>
+          <div class="modal" v-if="deleteConfirmation">
+            <div class="modal-background"></div>
+            <div class="modal-content">
+              <!-- Any other Bulma elements you want -->
+            </div>
+            <button class="modal-close is-large" aria-label="close"></button>
+          </div>
         </div>
       </div>
     </div>
@@ -84,8 +99,11 @@ export default {
   data() {
     return {
       categories: ["Description", "Hours", "Requirements"],
+      maxTextLength: 340,
+      textTail: "...",
       jobs: this.jobPostings,
-      jobFilters: this.filters
+      jobFilters: this.filters,
+      deleteConfirmation: false
     };
   },
   computed: {
@@ -100,6 +118,19 @@ export default {
     }
   },
   methods: {
+    formatLongText(text, length, tail) {
+      // Create new div element
+      var node = document.createElement("div");
+      // Add the text to the newly created div element
+      node.innerHTML = text;
+      // Get the text content to be potentially modified
+      var content = node.textContent;
+      // If the content length is too long slice it and append a tail to the text
+      // Else, just return the content unmodified
+      return content.length > length
+        ? content.slice(0, length) + tail
+        : content;
+    },
     editJobPosting(job) {
       job.edit = true;
     },
@@ -158,11 +189,10 @@ nav
   background-image: white
   font-family: 'Roboto'
 
-
 .card    
   margin: 1.25em 0 1.25em 0
   box-shadow: 0 14px 75px rgba(0,0,0,0.19), 0 10px 10px rgba(0,0,0,0.22)
-  transition: all 0.5s ease 0s;
+  transition: all 0.5s ease 0s; 
 
 .card-header-icon
   color: #6F0000
@@ -177,6 +207,9 @@ nav
 
 a 
   color: #6F0000
+
+#shortDescription
+  margin-bottom: 100px
 
 #Title
   font-size: 20px

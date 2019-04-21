@@ -1,7 +1,8 @@
 <template>
   <div class="AdminHelpWanted">
     <h1>
-      <strong>Job Opportunities</strong> | Insert Theater Name Here
+      <strong>Job Opportunities</strong>
+      | Insert Theater Name Here
     </h1>
     <div class="columns">
       <div class="column is-2 is-narrow">
@@ -30,18 +31,14 @@
           <a
             class="pagination-previous"
             v-if="currentPage != minPage"
-            v-on:click="currentPage -= 1"
+            v-on:click="prevPage()"
           >Previous</a>
           <a class="pagination-previous" disabled v-else>Previous</a>
-          <a
-            class="pagination-next"
-            v-if="currentPage != maxPage"
-            v-on:click="currentPage += 1"
-          >Next page</a>
+          <a class="pagination-next" v-if="currentPage != maxPage" v-on:click="nextPage()">Next page</a>
           <a class="pagination-next" disabled v-else>Next page</a>
 
           <ul class="pagination-list">
-            <li v-for="(page, index) in 5" :key="index">
+            <li v-for="(page, index) in maxPage" :key="index">
               <a
                 v-if="page === currentPage"
                 class="pagination-link is-current"
@@ -50,7 +47,7 @@
               >{{ index + 1 }}</a>
               <a
                 v-else
-                v-on:click="changePage(index)"
+                v-on:click="choosePage(index)"
                 class="pagination-link"
                 aria-label="Page 1"
                 aria-current="page"
@@ -80,11 +77,16 @@ export default {
     return {
       // This array stores the jobs obtained from the database.
       jobs: [],
+      // Stores the current page the user is on
       currentPage: 1,
+      // The minimum number of pages
       minPage: 1,
-      maxPage: 20,
+      // The maximum number of pages (this will change)
+      maxPage: 2,
+      // Starting point to start getting jobs
       startingPoint: 0,
-      numberOfItems: 5,
+      // The amount of jobs to retrive
+      numberOfItems: 3,
       // Boolean value to display new job posting inputs
       addJob: false,
       filters: []
@@ -113,21 +115,31 @@ export default {
     filterJobPostings(jobFilters) {
       this.filters = jobFilters;
     },
-    changePage(page) {
+    choosePage(page) {
       this.currentPage = page + 1;
+      this.getJobPostings();
+    },
+    prevPage() {
+      this.currentPage -= 1;
+      this.getJobPostings();
+    },
+    nextPage() {
+      this.currentPage += 1;
+      this.getJobPostings();
     },
     async getJobPostings() {
-      // Obtain all jobs from the database
+      // Obtain all jobs from the database within a range
       await axios
         .get("https://api.broadwaybuilder.xyz/helpwanted/1", {
           params: {
-            startingPoint: 0,
-            numberOfItems: 3
+            // Algorithm to get the starting index to query from
+            startingPoint: this.numberOfItems * (this.currentPage - 1),
+            // The number of items starting at the startingPoint
+            numberOfItems: this.numberOfItems
           }
         })
-        .then(
-          response => ((this.jobs = response.data), console.log(response.data))
-        );
+        // Set the jobs to the queryed job posting selection
+        .then(response => (this.jobs = response.data));
 
       for (var i = 0; i < this.jobs.length; i++) {
         // Appends a "show" attribute to display more details about the job
@@ -135,11 +147,27 @@ export default {
         // Appends a "edit" attribute to check if a job is being editted
         this.$set(this.jobs[i], "edit", false);
       }
+    },
+    // Gets the max pages to set the pagination to
+    async getMaxPage() {
+      await axios
+        .get("https://api.broadwaybuilder.xyz/helpwanted/length", {
+          params: {
+            theaterid: 1
+          }
+        })
+        .then(
+          response =>
+            // Uses the total number of jobs and number of items to calculate
+            // the max number of pages
+            (this.maxPage = Math.floor(response.data / this.numberOfItems) + 1)
+        );
     }
   },
   mounted() {
     // On initial load, get all jobs from the database
     this.getJobPostings();
+    this.getMaxPage();
   }
 };
 </script>
