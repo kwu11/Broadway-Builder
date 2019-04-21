@@ -35,6 +35,7 @@ export default new Router({
     {
       path: "/theater/{theaterid}/helpwanted",
       name: "adminhelpwanted",
+      props: true,
       component: () => import("./views/HelpWanted/AdminHelpWanted.vue")
     },
     {
