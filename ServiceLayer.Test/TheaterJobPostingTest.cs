@@ -9,6 +9,25 @@ namespace ServiceLayer.Test
     public class TheaterJobPostingTest
     {
         [TestMethod]
+        public void TheaterJobSerice_GetTheaterJobPostingLength_Pass()
+        {
+            var dbcontext = new BroadwayBuilderContext();
+            var theaterService = new TheaterService(dbcontext);
+            var theaterJobService = new TheaterJobService(dbcontext);
+            var expected = true;
+            var actual = false;
+
+            var length = theaterJobService.GetTheaterJobsCount();
+            if (length > 0)
+            {
+                actual = true;
+            }
+
+            Assert.AreEqual(expected, actual);
+
+        }
+
+        [TestMethod]
         public void TheaterJobService_CreateTheaterJobPosting_Pass()
         {
             //Arrange

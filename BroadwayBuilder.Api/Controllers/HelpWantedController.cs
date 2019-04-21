@@ -18,6 +18,24 @@ namespace BroadwayBuilder.Api.Controllers
     public class HelpWantedController : ApiController
     {
         public HelpWantedController() { }
+
+        [HttpGet, Route("length")]
+        public IHttpActionResult GetThaterJobsCount()
+        {
+            using (var dbcontext = new BroadwayBuilderContext())
+            {
+                try
+                {
+                    TheaterJobService service = new TheaterJobService(dbcontext);
+                    return Content((HttpStatusCode)200, service.GetTheaterJobsCount());
+                }
+                catch
+                {
+                    return Content((HttpStatusCode)404, "Unable to get count of job postings");
+                }
+            }
+        }
+
         [HttpGet,Route("{theaterid}")]
         public IHttpActionResult GetTheaterJobs(int theaterid, int startingPoint, int numberOfItems)//needs to be changed to string for encryption purposes
         {
