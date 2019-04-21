@@ -14,10 +14,11 @@ namespace ServiceLayer.Test
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
             var theaterJobService = new TheaterJobService(dbcontext);
+            var theaterId = 1;
             var expected = true;
             var actual = false;
 
-            var length = theaterJobService.GetTheaterJobsCount();
+            var length = theaterJobService.GetTheaterJobsCount(theaterId);
             if (length > 0)
             {
                 actual = true;
