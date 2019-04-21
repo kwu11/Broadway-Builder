@@ -13,7 +13,16 @@
           <a class="button is-rounded is-medium">View Resumes</a>
         </div>
         <div id="buttons" v-else>
-          <a class="button is-rounded is-medium">Submit Resume</a>
+          <!-- Upload resume functionality -->
+          <div class="file has-name is-boxed">
+            <label class="file-label">
+              <input class="file-input" type="file" ref="file" v-on:change="onFileChange()">
+              <span class="file-cta">
+                <span class="file-label">Upload your resume</span>
+              </span>
+              <span class="file-name">{{ file.name }}</span>
+            </label>
+          </div>
         </div>
 
         <!-- This is the JOB FILTER checkboxes (Still a work in progress) -->
@@ -35,8 +44,13 @@
           :hasPermission="true"
           :filters="filters"
         />
-        <DisplayJobPostings v-else :jobPostings="jobs" :hasPermission="false" :filters="filters"/>
-
+        <DisplayJobPostings
+          v-else
+          :jobPostings="jobs"
+          :hasPermission="false"
+          :filters="filters"
+          :file="file"
+        />
         <h1 v-if="jobs.length === 0">No job postings available</h1>
         <nav v-else class="pagination" is-medium role="navigation" aria-label="pagination">
           <a
@@ -102,7 +116,8 @@ export default {
       // Boolean value to display new job posting inputs
       addJob: false,
       // Filter applied to a job
-      filters: []
+      filters: [],
+      file: ""
     };
   },
   methods: {
@@ -139,6 +154,9 @@ export default {
     nextPage() {
       this.currentPage += 1;
       this.getJobPostings();
+    },
+    onFileChange() {
+      this.file = this.$refs.file.files[0];
     },
     async getJobPostings() {
       // Obtain all jobs from the database within a range
@@ -201,6 +219,7 @@ export default {
 
 #buttons
   text-align: center
+  margin-top: 1em
 
 h1 
   margin: 1em
