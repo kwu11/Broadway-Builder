@@ -147,7 +147,7 @@ namespace BroadwayBuilder.Api.Controllers
 
         [Route("getProductions")]
         [HttpGet]
-        public IHttpActionResult GetProductions(DateTime? currentDate = null, DateTime? previousDate = null)
+        public IHttpActionResult GetProductions(DateTime? currentDate = null, DateTime? previousDate = null, int? theaterID = null)
         {
             try
             {
@@ -159,108 +159,53 @@ namespace BroadwayBuilder.Api.Controllers
                     {
                         if (previousDate != null) {
 
-                            // List of past productions
-                            var pastProductions = productionService.GetProductionsByPreviousDate((DateTime)previousDate);
-
-                            // List to hold production responses
-                            var productionResponses = new List<ProductionResponseModel>();
-
-                            /* Looping over productions entities, 
-                             * converting to production response models 
-                             * and adding them to the production response model list
-                             */
-                            foreach (var production in pastProductions)
-                            {
-                                // List to hold production date time responses
-                                var productionDateTimeResponseModel = new List<ProductionDateTimeResponseModel>();
-
-                                /* Looping over the production date time entities,
-                                 * Converting to production date time response models 
-                     /            * and adding them to the production date time reponse model list
-                                 */
-                                foreach (var datetime in production.ProductionDateTime)
+                            var productionResponses = productionService.GetProductionsByPreviousDate((DateTime)previousDate, theaterID)
+                                .Select(production => new ProductionResponseModel()
                                 {
-                                    // Converting to production response models and adding them to the production response model list
-                                    productionDateTimeResponseModel.Add(new ProductionDateTimeResponseModel()
-                                    {
-                                        Date = datetime.Date,
-                                        Time = datetime.Time,
-                                        ProductionDateTimeId = datetime.ProductionDateTimeId
-                                    });
-                                }
-
-                                // Converting to production response models and adding them to the production response model list
-                                productionResponses.Add(new ProductionResponseModel() {
-
-                                    ProductionID = production.ProductionID,
-                                    ProductionName = production.ProductionName,
                                     DirectorFirstName = production.DirectorFirstName,
                                     DirectorLastName = production.DirectorLastName,
-                                    Street = production.Street,
-                                    City = production.City,
+                                    ProductionID = production.ProductionID,
+                                    ProductionName = production.ProductionName,
                                     StateProvince = production.StateProvince,
-                                    Zipcode = production.Zipcode,
-                                    Country = production.Country,
+                                    Street = production.Street,
                                     TheaterID = production.TheaterID,
-                                    DateTimes = productionDateTimeResponseModel
-
-
-                                });
-                            }
-
+                                    Zipcode = production.Zipcode,
+                                    City = production.City,
+                                    Country = production.Country,
+                                    DateTimes = production.ProductionDateTime.Select(datetime => new ProductionDateTimeResponseModel()
+                                    {
+                                        Date = datetime.Date,
+                                        ProductionDateTimeId = datetime.ProductionDateTimeId,
+                                        Time = datetime.Time
+                                    }).ToList()
+                                }).ToList();
 
                             return Ok(productionResponses);
                         }
                         else if (currentDate != null)
                         {
-                            // List of productions
-                            var currentAndFutureProductions = productionService.GetProductionsByCurrentAndFutureDate((DateTime)currentDate);
-
-                            // List of production response models
-                            var productionResponseModels = new List<ProductionResponseModel>();
-
-                            /* Looping over productions entities, 
-                             * converting to production response models 
-                             * and adding them to the production response model list
-                             */
-                            foreach (var production in currentAndFutureProductions)
-                            {
-                                // A list to hold production date time response models
-                                var productionDateTimeResponseModels = new List<ProductionDateTimeResponseModel>();
-
-                                /* Looping over the production date time entities,
-                                 * Converting to production date time response models 
-                                 * and adding them to the production date time reponse model list
-                                 */
-                                foreach (var datetime in production.ProductionDateTime)
+                            var productionResponses = productionService.GetProductionsByCurrentAndFutureDate((DateTime)currentDate)
+                                .Select(production => new ProductionResponseModel()
                                 {
-                                    // Converting to production date time response models and adding them to the production date time reponse model list
-                                    productionDateTimeResponseModels.Add(new ProductionDateTimeResponseModel()
-                                    {
-                                        ProductionDateTimeId = datetime.ProductionDateTimeId,
-                                        Date = datetime.Date,
-                                        Time = datetime.Time
-                                    });
-                                }
-
-                                // Converting to production response models and adding them to the production response model list
-                                productionResponseModels.Add(new ProductionResponseModel()
-                                {
-                                    ProductionID = production.ProductionID,
-                                    ProductionName = production.ProductionName,
+                                    City = production.City,
                                     DirectorFirstName = production.DirectorFirstName,
                                     DirectorLastName = production.DirectorLastName,
-                                    Street = production.Street,
-                                    City = production.City,
-                                    StateProvince = production.StateProvince,
-                                    Zipcode = production.Zipcode,
                                     Country = production.Country,
+                                    ProductionID = production.ProductionID,
+                                    ProductionName = production.ProductionName,
+                                    StateProvince = production.StateProvince,
+                                    Street = production.Street,
                                     TheaterID = production.TheaterID,
-                                    DateTimes = productionDateTimeResponseModels
-                                });
-                            }
+                                    Zipcode = production.Zipcode,
+                                    DateTimes = production.ProductionDateTime.Select(datetime => new ProductionDateTimeResponseModel()
+                                    {
+                                        Date = datetime.Date,
+                                        ProductionDateTimeId = datetime.ProductionDateTimeId,
+                                        Time = datetime.Time
+                                    }).ToList()
+                                }).ToList();
 
-                            return Ok(productionResponseModels);
+                            return Ok(productionResponses);
                         }
 
                         // none of the if conditions were met therfore...
@@ -314,9 +259,9 @@ namespace BroadwayBuilder.Api.Controllers
 
         }
 
-        [Route("delete")]
+        [Route("delete/{productionid}")]
         [HttpDelete]
-        public IHttpActionResult deleteProduction(Production productionToDelete)
+        public IHttpActionResult deleteProduction(int productionid)
         {
             using (var dbcontext = new BroadwayBuilderContext())
             {
@@ -324,16 +269,7 @@ namespace BroadwayBuilder.Api.Controllers
 
                 try
                 {
-                    if (productionToDelete == null)
-                    {
-                        return BadRequest("no production object provided");
-                    }
-                    else if (productionToDelete.ProductionID == null)
-                    {
-                        return BadRequest("Production id is null");
-                    }
-
-                    productionService.DeleteProduction(productionToDelete);
+                    productionService.DeleteProduction(productionid);
                     dbcontext.SaveChanges();
 
                     return Ok("Production deleted succesfully");

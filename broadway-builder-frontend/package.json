@@ -16,9 +16,11 @@
     "buefy": "^0.7.3",
     "bulma": "^0.7.4",
     "es6-promise": "^4.2.6",
+    "v-gallery": "^1.2.4",
     "vue": "^2.5.22",
     "vue-read-more": "^1.1.1",
     "vue-router": "^3.0.2",
+    "vue-sidebar-menu": "^3.7.0",
     "vue-tel-input": "^2.0.21",
     "vuetify": "^1.4.4",
     "vuex": "^3.1.0"
@@ -26,7 +28,7 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.4.0",
     "@vue/cli-plugin-eslint": "^3.4.0",
-    "@vue/cli-service": "^3.5.1",
+    "@vue/cli-service": "^3.6.0",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0",

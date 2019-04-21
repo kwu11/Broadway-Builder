@@ -33,12 +33,21 @@ namespace ServiceLayer.Services
                 .FirstOrDefault(); //if item doesn't exist it returns null Todo: throw a specific exception
         }
 
-        public List<Production> GetProductionsByPreviousDate(DateTime previousDate)
+        // Returns a list of productions by a previous date. 
+        // If a theaterid is passed then it will only return past productions by that theater id
+        public List<Production> GetProductionsByPreviousDate(DateTime previousDate, int? theaterID)
         {
-            return _dbContext.Productions
+            var pastProductionsQuery = _dbContext.Productions
                 .Include(production => production.ProductionDateTime)
-                .Where(production => production.ProductionDateTime.Where(productionDateTime => productionDateTime.Date <= previousDate).Any())
-                .ToList();
+                .Where(production => production.ProductionDateTime.Where(productionDateTime => productionDateTime.Date <= previousDate).Any());
+
+            if (theaterID != null)
+            {
+                pastProductionsQuery = pastProductionsQuery
+                    .Where(theater => theater.TheaterID == theaterID);
+            }
+
+            return pastProductionsQuery.ToList();
         }
 
         public List<Production> GetProductionsByCurrentAndFutureDate(DateTime currentDate)
@@ -75,10 +84,10 @@ namespace ServiceLayer.Services
         }
 
 
-        public void DeleteProduction(Production production)
+        public void DeleteProduction(int productionid)
         {
             Production productionToDelete = _dbContext.Productions
-                .Where(o => o.ProductionID == production.ProductionID)
+                .Where(o => o.ProductionID == productionid)
                 .FirstOrDefault(); //gives you first production that satisfies the where
                 //if item doesn't exist it returns null Todo: throw a specific exception
 

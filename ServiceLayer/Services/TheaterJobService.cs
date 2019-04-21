@@ -34,20 +34,27 @@ namespace ServiceLayer.Services
             return _dbContext.TheaterJobPostings.Find(helpwantedid);
         }
 
-        public IEnumerable GetAllJobsFromTheater(int theaterid)
+        public int GetTheaterJobsCount()
         {
-            return _dbContext.TheaterJobPostings.Where(job => job.TheaterID == theaterid)
-                    .Select(job => new {
-                        Title = job.Title,
-                        Position = job.Position,
-                        JobType = job.JobType,
-                        Hours = job.Hours,
-                        Description = job.Description,
-                        Requirements = job.Requirements,
-                        DateCreated = job.DateCreated,
-                        HelpWantedId = job.HelpWantedID,
-                        TheaterId = job.TheaterID
-                    }).ToList();
+            return _dbContext.TheaterJobPostings.Count();
+            
+        }
+
+
+        public IEnumerable GetAllJobsFromTheater(int theaterid, int startingPoint, int numberOfItems)
+        {
+            return _dbContext.TheaterJobPostings.OrderByDescending(job => job.DateCreated).Skip(startingPoint).Take(numberOfItems).Select(job => new
+            {
+                Title = job.Title,
+                Position = job.Position,
+                JobType = job.JobType,
+                Hours = job.Hours,
+                Description = job.Description,
+                Requirements = job.Requirements,
+                DateCreated = job.DateCreated,
+                HelpWantedId = job.HelpWantedID,
+                TheaterId = job.TheaterID
+            }).ToList();
         }
 
         public IEnumerable FilterTheaterJobPostingFromTheater(int theaterid,string title,string Postion,string Hours, string description, string requirements,DateTime date)
@@ -75,17 +82,6 @@ namespace ServiceLayer.Services
             }
             return list;
             
-        }
-        public void UpdateTheaterJob(TheaterJobPosting updatedTheaterJob, TheaterJobPosting originalTheaterJob)
-        {
-            if (originalTheaterJob != null)
-            {
-                originalTheaterJob.Title = updatedTheaterJob.Title;
-                originalTheaterJob.Hours = updatedTheaterJob.Hours;
-                originalTheaterJob.Position = updatedTheaterJob.Position;
-                originalTheaterJob.Requirements = updatedTheaterJob.Requirements;
-                originalTheaterJob.theater = updatedTheaterJob.theater;
-            }
         }
 
         public void UpdateTheaterJob(TheaterJobPosting updatedTheaterJob)

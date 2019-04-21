@@ -25,6 +25,39 @@
 
         <!-- This displays all jobs stored in the database as cards on the page -->
         <DisplayJobPostings :jobPostings="jobs" :hasPermission="true" :filters="filters"/>
+
+        <nav class="pagination" is-medium role="navigation" aria-label="pagination">
+          <a
+            class="pagination-previous"
+            v-if="currentPage != minPage"
+            v-on:click="currentPage -= 1"
+          >Previous</a>
+          <a class="pagination-previous" disabled v-else>Previous</a>
+          <a
+            class="pagination-next"
+            v-if="currentPage != maxPage"
+            v-on:click="currentPage += 1"
+          >Next page</a>
+          <a class="pagination-next" disabled v-else>Next page</a>
+
+          <ul class="pagination-list">
+            <li v-for="(page, index) in 5" :key="index">
+              <a
+                v-if="page === currentPage"
+                class="pagination-link is-current"
+                aria-label="Page 1"
+                aria-current="page"
+              >{{ index + 1 }}</a>
+              <a
+                v-else
+                v-on:click="changePage(index)"
+                class="pagination-link"
+                aria-label="Page 1"
+                aria-current="page"
+              >{{ index + 1 }}</a>
+            </li>
+          </ul>
+        </nav>
       </div>
     </div>
   </div>
@@ -47,6 +80,11 @@ export default {
     return {
       // This array stores the jobs obtained from the database.
       jobs: [],
+      currentPage: 1,
+      minPage: 1,
+      maxPage: 20,
+      startingPoint: 0,
+      numberOfItems: 5,
       // Boolean value to display new job posting inputs
       addJob: false,
       filters: []
@@ -75,11 +113,21 @@ export default {
     filterJobPostings(jobFilters) {
       this.filters = jobFilters;
     },
-    async getAllJobPostings() {
+    changePage(page) {
+      this.currentPage = page + 1;
+    },
+    async getJobPostings() {
       // Obtain all jobs from the database
       await axios
-        .get("https://api.broadwaybuilder.xyz/helpwanted/1")
-        .then(response => (this.jobs = response.data));
+        .get("https://api.broadwaybuilder.xyz/helpwanted/1", {
+          params: {
+            startingPoint: 0,
+            numberOfItems: 3
+          }
+        })
+        .then(
+          response => ((this.jobs = response.data), console.log(response.data))
+        );
 
       for (var i = 0; i < this.jobs.length; i++) {
         // Appends a "show" attribute to display more details about the job
@@ -87,19 +135,20 @@ export default {
         // Appends a "edit" attribute to check if a job is being editted
         this.$set(this.jobs[i], "edit", false);
       }
-
-      this.jobs.reverse();
     }
   },
   mounted() {
     // On initial load, get all jobs from the database
-    this.getAllJobPostings();
+    this.getJobPostings();
   }
 };
 </script>
 
 <style lang="sass" scoped>
 @import '../../../node_modules/bulma/bulma.sass'
+
+.AdminHelpWanted
+  margin: 2em 2em
 
 #buttons
   text-align: center

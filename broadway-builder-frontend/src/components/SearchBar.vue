@@ -49,6 +49,6 @@ h1 {
 }
 
 .control {
-  padding: 10em;
+  padding: 2em;
 }
 </style>

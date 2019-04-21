@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DataAccessLayer;
 using ServiceLayer.Services;
+using System.Collections.Generic;
 
 namespace ServiceLayer.Test
 {
@@ -39,13 +40,19 @@ namespace ServiceLayer.Test
 
             // Act
             productionService.CreateProduction(production);
-            var affectedRows = dbcontext.SaveChanges();
+            dbcontext.SaveChanges();
 
-            if (affectedRows > 0) 
+            if (production.ProductionID > 0)
+            {
                 actual = true;
+            }
 
             // Assert
-            productionService.DeleteProduction(production);
+
+            var dbcontext_ = new BroadwayBuilderContext();
+            var productionService_ = new ProductionService(dbcontext_);
+
+            productionService.DeleteProduction(production.ProductionID);
             dbcontext.SaveChanges();
             theaterService.DeleteTheater(theater);
             dbcontext.SaveChanges();
@@ -94,13 +101,15 @@ namespace ServiceLayer.Test
 
             // Act
             productionService.CreateProductionDateTime(productionDateTime);
-            var affectedRows = dbcontext.SaveChanges();
+            dbcontext.SaveChanges();
 
-            if (affectedRows > 0)
+            if (productionDateTime.ProductionDateTimeId > 0)
+            {
                 actual = true;
+            }
 
             // Assert
-            productionService.DeleteProduction(production);
+            productionService.DeleteProduction(production.ProductionID);
             dbcontext.SaveChanges();
             theaterService.DeleteTheater(theater);
             dbcontext.SaveChanges();
@@ -139,18 +148,76 @@ namespace ServiceLayer.Test
             production.StateProvince = "Utah";
             production.DirectorLastName = "Mangos";
 
-            var expected = production;
+            var expected = new List<string>()
+            {
+                "The Lion King 2",
+                "Utah",
+                "Mangos"
+            };
+
            
             // Act
             var actual = productionService.UpdateProduction(production);
             dbcontext.SaveChanges();
 
-            productionService.DeleteProduction(production);
+            // Assert
+            productionService.DeleteProduction(production.ProductionID);
+            dbcontext.SaveChanges();
             theaterService.DeleteTheater(theater);
             dbcontext.SaveChanges();
+            Assert.AreEqual(expected[0], actual.ProductionName);
+            Assert.AreEqual(expected[1], actual.StateProvince);
+            Assert.AreEqual(expected[2], actual.DirectorLastName);
 
         }
 
+        [TestMethod]
+        public void ProductionService_GetProductionById_Pass()
+        {
+            // Arrange
+            var dbcontext = new BroadwayBuilderContext();
+            var theaterService = new TheaterService(dbcontext);
 
+            var theater = new Theater("The Language", "Pantene", "123 Sesame St", "San Diego", "California", "U.S", "8587175730");
+            theaterService.CreateTheater(theater);
+            dbcontext.SaveChanges();
+
+            var productionService = new ProductionService(dbcontext);
+
+            var production = new Production
+            {
+                ProductionName = "The Pajama Game",
+                DirectorFirstName = "Doris",
+                DirectorLastName = "Day",
+                City = "San Diego",
+                StateProvince = "California",
+                Country = "U.S",
+                TheaterID = theater.TheaterID,
+                Street = "123 Sesame St",
+                Zipcode = "91911"
+            };
+
+            productionService.CreateProduction(production);
+            dbcontext.SaveChanges();
+
+            var expected = true;
+            var actual = false;
+
+            // Act 
+            var readProduction = productionService.GetProduction(production.ProductionID);
+
+            if (readProduction != null)
+            {
+                actual = true;
+            }
+
+            // Assert
+            productionService.DeleteProduction(production.ProductionID);
+            dbcontext.SaveChanges();
+            theaterService.DeleteTheater(theater);
+            dbcontext.SaveChanges();
+            Assert.AreEqual(expected, actual);
+
+        }
     }
 }
