@@ -309,5 +309,40 @@ namespace BroadwayBuilder.Api.Controllers
             }
         }
 
+        [HttpGet,Route("myresume/{id}")]
+        public IHttpActionResult GetResume(int id)
+        {
+            try
+            {
+                using (var dbcontext = new BroadwayBuilderContext())
+                {
+                    var userService = new UserService(dbcontext);
+                    User user = userService.GetUser(id);
+                    if (user == null)//check if user exists
+                    {
+                        throw new Exception("User does not exist");
+                    }
+                    var resumeService = new ResumeService(dbcontext);
+                    Resume resume = resumeService.GetResumeByUserID(id);
+                    if (resume == null)//check if user has already submitted a resume
+                    {
+                        throw new Exception("No resume on file");
+                    }
+                    var filepath = @"C:\Resumes\" + resume.ResumeID + @"\" + resume.ResumeGuid + ".pdf";
+                    string url = "";
+                    if (!Directory.Exists(filepath))
+                    {
+                        url = "https://api.broadwaybuilder.xyz/"+ resume.ResumeGuid + ".pdf";
+                        return Content((HttpStatusCode)200, url);
+                    }
+                    throw new Exception("No resume on file");
+                }
+            }
+            catch(Exception e)
+            {
+                return Content((HttpStatusCode)500, e.Message);
+            }
+        }
+
     }
 }
