@@ -4,10 +4,14 @@ using ServiceLayer.Services;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
+using System.Web.Hosting;
 using System.Web.Http;
 
 //get all job posting, edit job posting, delete job posting, create job posting
@@ -215,6 +219,93 @@ namespace BroadwayBuilder.Api.Controllers
                 {
                     return Content((HttpStatusCode)400, e.Message);
                 }
+            }
+        }
+
+        [HttpPut,Route("{userid}/uploadresume")]
+        public IHttpActionResult uploadResume(int userid)
+        {
+            //A list in case we want to accept more than one file type
+            IList<string> AllowedFileExtension = new List<string> { ".pdf" };
+            
+            // Max file size is 1MB
+            const int MaxContentLength = 1024 * 1024 * 1;
+
+            try
+            {
+                //get the content, headers, etc the full request of the current http request
+                var httpRequest = HttpContext.Current.Request;
+                if(httpRequest.Files.Count > 1)
+                {
+                    return Content((HttpStatusCode)401, "Only one file is allowed to be submitted");
+                }
+                // Grab current file of the request
+                var postedFile = httpRequest.Files[0];
+                if (postedFile != null && postedFile.ContentLength > 0)
+                {
+                    string extension = Path.GetExtension(postedFile.FileName).ToLower();//get extension of the file
+                    if (!AllowedFileExtension.Contains(extension))
+                    {
+                        throw new Exception(extension);
+                    }
+                    else if(postedFile.ContentLength > MaxContentLength)
+                    {
+                        throw new Exception("File Exceeds file limit");
+                    }
+                    else
+                    {
+                        using (var dbcontext = new BroadwayBuilderContext())
+                        {
+                            var userService = new UserService(dbcontext);
+                            User user = userService.GetUser(userid);
+                            if (user == null)//check if user exists
+                            {
+                                throw new Exception("User does not exist");
+                            }
+                            var resumeService = new ResumeService(dbcontext);
+                            Resume resume = resumeService.GetResumeByUserID(userid);
+                            if (resume == null)//check if user has already submitted a resume
+                            {
+                                Resume userResume = new Resume(userid, Guid.NewGuid());
+                                resumeService.CreateResume(userResume);
+                                var result = dbcontext.SaveChanges();
+                                if(result <= 0)
+                                {
+                                    throw new Exception("failed to add a resume");
+                                }
+                                resume = userResume;
+                            }
+                            var subdir = @"C:\Resumes\"+resume.ResumeID;
+                            var filePath = subdir+@"\"+resume.ResumeGuid+".pdf";
+
+                            if (!Directory.Exists(subdir))
+                            {
+                                Directory.CreateDirectory(subdir);
+                            }
+
+                            postedFile.SaveAs(filePath);
+                            return Content((HttpStatusCode)200, "File Uploaded");
+                        }
+                        
+                    }
+                }
+                throw new Exception("something went wrong");
+            }
+            catch(HttpException e)//HttpPostedFile.SaveAs exception
+            {
+                return Content((HttpStatusCode)500, e.Message);
+            }
+            catch(IOException e)//Exception thrown when creating directory
+            {
+                return Content((HttpStatusCode)500, e.Message);
+            }
+            catch(DbUpdateException e)//exception thrown while saving the database
+            {
+                return Content((HttpStatusCode)500, e.Message);
+            }
+            catch(Exception e)
+            {
+                return Content((HttpStatusCode)400, e.Message);
             }
         }
 
