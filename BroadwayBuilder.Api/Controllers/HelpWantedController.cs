@@ -41,7 +41,7 @@ namespace BroadwayBuilder.Api.Controllers
             }
         }
 
-        [HttpGet,Route("{theaterid}")]
+        [HttpGet, Route("{theaterid}")]
         public IHttpActionResult GetTheaterJobs(int theaterid, int startingPoint, int numberOfItems)//needs to be changed to string for encryption purposes
         {
             using(var dbcontext = new BroadwayBuilderContext())
@@ -144,8 +144,6 @@ namespace BroadwayBuilder.Api.Controllers
                 {
                     return Content((HttpStatusCode)400, e.Message);
                 }
-                
-
             }
         }
 

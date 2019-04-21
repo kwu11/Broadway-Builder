@@ -74,6 +74,10 @@ namespace ServiceLayer.Services
             {
                 _dbContext.Theaters.Remove(theaterToDelete);
             }
+            else
+            {
+                throw new Exception();
+            }
         }
 
         public Theater DeleteTheaterAgain(Theater theater)

@@ -36,14 +36,13 @@ namespace ServiceLayer.Services
 
         public int GetTheaterJobsCount(int theaterid)
         {
-            return _dbContext.TheaterJobPostings.Where(theater => theater.TheaterID == theaterid).Count();
+            return _dbContext.TheaterJobPostings.Where(job => job.TheaterID == theaterid).Count();
             
         }
 
-
         public IEnumerable GetAllJobsFromTheater(int theaterid, int startingPoint, int numberOfItems)
         {
-            return _dbContext.TheaterJobPostings.OrderByDescending(job => job.DateCreated).Skip(startingPoint).Take(numberOfItems).Select(job => new
+            return _dbContext.TheaterJobPostings.OrderByDescending(job => job.DateCreated).Where(job => job.TheaterID == theaterid).Skip(startingPoint).Take(numberOfItems).Select(job => new
             {
                 Title = job.Title,
                 Position = job.Position,
