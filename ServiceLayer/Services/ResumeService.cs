@@ -52,5 +52,10 @@ namespace ServiceLayer.Services
             return Findresume;
         }
 
+        public Guid GetGuid(int resumeid)
+        {
+            return _dbContext.Resumes.Where(resume => resume.ResumeID == resumeid).Select(resume => resume.ResumeGuid).FirstOrDefault<Guid>();
+        }
+
     }
 }

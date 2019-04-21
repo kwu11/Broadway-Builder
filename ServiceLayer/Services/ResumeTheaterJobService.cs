@@ -37,6 +37,29 @@ namespace ServiceLayer.Services
                 }).ToList();
         }
 
+        public IEnumerable GetAllResumesByHelpWantedID(int helpwantedid)
+        {
+            return _dbContext.ResumeTheaterJobs.Where(job=>job.HelpWantedID==helpwantedid)
+                .Select(submittedResumes => new
+            {
+                HelpWantedID = submittedResumes.HelpWantedID,
+                ResumeID = submittedResumes.ResumeID,
+                DateUploaded = submittedResumes.DateUploaded
+            }).ToList();
+        }
+
+        public IEnumerable<Guid> GetAllResumeGuidsTheater(int theaterid)
+        {
+            return _dbContext.ResumeTheaterJobs.Include(job => job.userResume).Include(job => job.theaterJobPosting)
+                .Where(job => job.theaterJobPosting.TheaterID == theaterid).Select(job => job.userResume.ResumeGuid).ToList<Guid>();
+        }
+
+        public IEnumerable<Guid> GetAllResumeGuidsForTheaterJob(int helpwantedid)
+        {
+            return _dbContext.ResumeTheaterJobs.Include(job => job.userResume)
+                .Where(job => job.HelpWantedID == helpwantedid).Select(job => job.userResume.ResumeGuid).ToList<Guid>();
+        }
+
         public void DeleteResumeTheaterJob(ResumeTheaterJob resumeTheaterJob)
         {
             ResumeTheaterJob deleteResumeJob = _dbContext.ResumeTheaterJobs.Find(resumeTheaterJob.ResumeTheaterJobID);
