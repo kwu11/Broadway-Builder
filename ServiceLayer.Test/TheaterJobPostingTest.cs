@@ -9,7 +9,7 @@ namespace ServiceLayer.Test
     public class TheaterJobPostingTest
     {
         [TestMethod]
-        public void TheaterJobSerice_GetTheaterJobPostingLength_Pass()
+        public void TheaterJobSerice_GetTheaterJobPostingCount_Pass()
         {
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
