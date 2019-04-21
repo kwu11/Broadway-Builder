@@ -34,16 +34,10 @@
           <div class="control">
             <span class="button is-danger is-rounded is-medium">Information / Contact Us</span>
           </div>
-          <div class="control" v-if="permission">
+          <div class="control">
             <span
               class="button is-danger is-rounded is-medium"
-              v-on:click="goToAdminHelpWanted(theater)"
-            >Help Wanted</span>
-          </div>
-          <div class="control" v-else>
-            <span
-              class="button is-danger is-rounded is-medium"
-              v-on:click="goToUserHelpWanted(theater)"
+              v-on:click="goToHelpWanted(theater, permission)"
             >Help Wanted</span>
           </div>
           <!-- Mocking permissions -->
@@ -86,20 +80,12 @@ export default {
         }
       });
     },
-    goToUserHelpWanted(theater) {
+    goToHelpWanted(theater, permission) {
       this.$router.push({
-        name: "userhelpwanted",
+        name: "helpwanted",
         params: {
-          TheaterID: theater.TheaterID,
-          TheaterName: theater.TheaterName
-        }
-      });
-    },
-    goToAdminHelpWanted(theater) {
-      this.$router.push({
-        name: "adminhelpwanted",
-        params: {
-          theater: theater
+          theater: theater,
+          hasPermission: permission
         }
       });
     }
