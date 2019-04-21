@@ -275,7 +275,7 @@ namespace BroadwayBuilder.Api.Controllers
                                 }
                                 resume = userResume;
                             }
-                            var subdir = @"C:\Resumes\"+resume.ResumeID;
+                            var subdir = @"C:\Resumes\"+resume.ResumeGuid;
                             var filePath = subdir+@"\"+resume.ResumeGuid+".pdf";
 
                             if (!Directory.Exists(subdir))
@@ -328,11 +328,11 @@ namespace BroadwayBuilder.Api.Controllers
                     {
                         throw new Exception("No resume on file");
                     }
-                    var filepath = @"C:\Resumes\" + resume.ResumeID + @"\" + resume.ResumeGuid + ".pdf";
+                    var filepath = @"C:\Resumes\" + resume.ResumeGuid + @"\" + resume.ResumeGuid + ".pdf";
                     string url = "";
                     if (!Directory.Exists(filepath))
                     {
-                        url = "https://api.broadwaybuilder.xyz/"+ resume.ResumeGuid + ".pdf";
+                        url = "https://api.broadwaybuilder.xyz/Resumes/"+ resume.ResumeGuid + @"\" + resume.ResumeGuid + ".pdf";
                         return Content((HttpStatusCode)200, url);
                     }
                     throw new Exception("No resume on file");
