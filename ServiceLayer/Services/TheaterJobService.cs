@@ -34,6 +34,12 @@ namespace ServiceLayer.Services
             return _dbContext.TheaterJobPostings.Find(helpwantedid);
         }
 
+        public int GetTheaterJobsCount()
+        {
+            return _dbContext.TheaterJobPostings.Count();
+            
+        }
+
 
         public IEnumerable GetAllJobsFromTheater(int theaterid, int startingPoint, int numberOfItems)
         {
