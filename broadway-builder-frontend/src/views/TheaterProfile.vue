@@ -34,11 +34,26 @@
           <div class="control">
             <span class="button is-danger is-rounded is-medium">Information / Contact Us</span>
           </div>
-          <div class="control">
-            <span class="button is-danger is-rounded is-medium">
-              <router-link to="/theater/{theaterid}/helpwanted/apply">Help Wanted</router-link>
-            </span>
+          <div class="control" v-if="permission">
+            <span
+              class="button is-danger is-rounded is-medium"
+              v-on:click="goToAdminHelpWanted(theater)"
+            >Help Wanted</span>
           </div>
+          <div class="control" v-else>
+            <span
+              class="button is-danger is-rounded is-medium"
+              v-on:click="goToUserHelpWanted(theater)"
+            >Help Wanted</span>
+          </div>
+          <!-- Mocking permissions -->
+          <input type="radio" name="permission" id="one" :value="true" v-model="permission">
+          <label for="permission">Admin</label>
+          <br>
+          <input type="radio" name="permission" id="two" :value="false" v-model="permission">
+          <label for="permission">User</label>
+          <br>
+          <span>Picked: {{ permission }}</span>
         </div>
       </div>
     </div>
@@ -53,7 +68,8 @@ export default {
   data() {
     return {
       TheaterName: this.$route.params.TheaterName,
-      theater: {}
+      theater: {},
+      permission: true
     };
   },
   async mounted() {
@@ -67,6 +83,23 @@ export default {
         name: "userproductioninfo",
         params: {
           TheaterID: theater.TheaterID
+        }
+      });
+    },
+    goToUserHelpWanted(theater) {
+      this.$router.push({
+        name: "userhelpwanted",
+        params: {
+          TheaterID: theater.TheaterID,
+          TheaterName: theater.TheaterName
+        }
+      });
+    },
+    goToAdminHelpWanted(theater) {
+      this.$router.push({
+        name: "adminhelpwanted",
+        params: {
+          theater: theater
         }
       });
     }
