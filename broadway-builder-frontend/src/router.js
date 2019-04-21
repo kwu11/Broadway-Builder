@@ -34,14 +34,9 @@ export default new Router({
     },
     {
       path: "/theater/{theaterid}/helpwanted",
-      name: "adminhelpwanted",
+      name: "helpwanted",
       props: true,
-      component: () => import("./views/HelpWanted/AdminHelpWanted.vue")
-    },
-    {
-      path: "/theater/{theaterid}/helpwanted/apply",
-      name: "userhelpwanted",
-      component: () => import("./views/HelpWanted/UserHelpWanted.vue")
+      component: () => import("./views/HelpWanted/HelpWanted.vue")
     },
     {
       path: "/theater/:TheaterID/userproductioninfo",
