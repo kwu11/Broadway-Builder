@@ -34,9 +34,9 @@ namespace ServiceLayer.Services
             return _dbContext.TheaterJobPostings.Find(helpwantedid);
         }
 
-        public int GetTheaterJobsCount()
+        public int GetTheaterJobsCount(int theaterid)
         {
-            return _dbContext.TheaterJobPostings.Count();
+            return _dbContext.TheaterJobPostings.Where(theater => theater.TheaterID == theaterid).Count();
             
         }
 
