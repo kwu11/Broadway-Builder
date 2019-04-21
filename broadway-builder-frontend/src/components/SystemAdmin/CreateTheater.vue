@@ -74,9 +74,21 @@ export default {
     isValid: '',
     country: '',
     async createTheater() {
-      await axios
-      .post("https://api.broadwaybuilder.xyz/theater/createtheater", this.theater)
-      .then(response => {console.log(response)});
+      var infoIsComplete = true;
+      for(var key in this.theater)
+      {
+        if(this.theater[key] == null || this.theater[key] == "") infoIsComplete = false;
+      }
+      if (infoIsComplete)
+      {
+        await axios
+          .post("https://api.broadwaybuilder.xyz/theater/createtheater", this.theater)
+          .then(response => alert(response.data));
+      }
+      else
+      {
+        alert("ALL FIELDS MUST BE FILLED");
+      }
     },
     cancelTheaterCreation() {
       this.$emit("cancelCreateTheater", false);
