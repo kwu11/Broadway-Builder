@@ -1,8 +1,8 @@
 <template>
   <div class="ProductionsTable">
+    Productions
     <table class="table is-hoverable">
       <thead>
-        <tr>Productions</tr>
         <tr>
           <th>Theater ID</th>
           <th>Production ID</th>
@@ -24,11 +24,16 @@
           <td>{{production.Street}}, {{production.City}}, {{production.StateProvince}} {{production.Zipcode}}</td>
           <td>{{production.DateTimes[0].Date}}</td>
           <td>
-            <a v-on:click="showModal" v-bind:production="production">editing</a>
+            <a v-on:click="showModal">
+              <img src="@/assets/edit.png" alt="Edit">
+            </a>
+            <modal :production="production" v-show="isModalVisible" @close="closeModal"/>
           </td>
 
           <td>
-            <a v-on:click="deleteProduction(production.ProductionID)">deleting</a>
+            <a v-on:click="deleteProduction(production.ProductionID)">
+              <img src="@/assets/tester.png" alt="Delete">
+            </a>
           </td>
           <td>
             <input
@@ -46,7 +51,6 @@
         </tr>
       </tbody>
     </table>
-    <modal v-show="isModalVisible" @close="closeModal"/>
   </div>
 </template>
 
@@ -118,6 +122,9 @@ export default {
 <style lang="sass" scoped>
 a
  color: black
+img
+ width: 2em
+ height: 2em
 
 </style>
 
