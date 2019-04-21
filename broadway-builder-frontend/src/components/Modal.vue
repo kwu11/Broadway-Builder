@@ -23,7 +23,7 @@
             <div class="field">
               <label class="label">Production Name</label>
               <div class="control">
-                <input class="input">
+                <input class="input" v-model="production.ProductionID">
               </div>
             </div>
             <div class="field">
@@ -75,7 +75,8 @@ export default {
     close() {
       this.$emit("close");
     }
-  }
+  },
+  props: ["production"]
 };
 </script>
 
