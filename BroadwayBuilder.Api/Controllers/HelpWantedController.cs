@@ -332,7 +332,7 @@ namespace BroadwayBuilder.Api.Controllers
                     string url = "";
                     if (!Directory.Exists(filepath))
                     {
-                        url = "https://api.broadwaybuilder.xyz/Resumes/"+ resume.ResumeGuid + @"\" + resume.ResumeGuid + ".pdf";
+                        url = "https://api.broadwaybuilder.xyz/Resumes/"+ resume.ResumeGuid + "/" + resume.ResumeGuid + ".pdf";
                         return Content((HttpStatusCode)200, url);
                     }
                     throw new Exception("No resume on file");
