@@ -62,7 +62,7 @@
           <footer class="card-footer" v-if="!job.show">
             <a class="card-footer-item" v-on:click="job.show = true">View</a>
           </footer>
-          <footer class="card-footer" v-if="hasPermission && job.show">
+          <footer class="card-footer" v-if="permission && job.show">
             <a class="card-footer-item" v-if="!job.edit" v-on:click="editJobPosting(job)">Edit</a>
             <a
               class="card-footer-item"
@@ -75,7 +75,7 @@
               v-on:click="deleteConfirmation = true"
             >Delete</a>
           </footer>
-          <footer class="card-footer" v-else-if="!hasPermission && job.show">
+          <footer class="card-footer" v-else-if="!permission && job.show">
             <a class="card-footer-item">Accept Job</a>
           </footer>
           <div class="modal" v-if="deleteConfirmation">
@@ -103,6 +103,7 @@ export default {
       textTail: "...",
       jobs: this.jobPostings,
       jobFilters: this.filters,
+      permission: this.hasPermission,
       deleteConfirmation: false
     };
   },
