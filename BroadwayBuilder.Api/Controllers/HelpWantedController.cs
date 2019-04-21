@@ -40,7 +40,7 @@ namespace BroadwayBuilder.Api.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet, Route("{theaterid}")]
         public IHttpActionResult GetTheaterJobs(int theaterid, int startingPoint, int numberOfItems)//needs to be changed to string for encryption purposes
         {
             using(var dbcontext = new BroadwayBuilderContext())
