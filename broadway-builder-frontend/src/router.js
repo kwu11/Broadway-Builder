@@ -34,13 +34,9 @@ export default new Router({
     },
     {
       path: "/theater/{theaterid}/helpwanted",
-      name: "adminhelpwanted",
-      component: () => import("./views/HelpWanted/AdminHelpWanted.vue")
-    },
-    {
-      path: "/theater/{theaterid}/helpwanted/apply",
-      name: "userhelpwanted",
-      component: () => import("./views/HelpWanted/UserHelpWanted.vue")
+      name: "helpwanted",
+      props: true,
+      component: () => import("./views/HelpWanted/HelpWanted.vue")
     },
     {
       path: "/theater/:TheaterID/userproductioninfo",
@@ -57,6 +53,11 @@ export default new Router({
       path: "/theater/{theaterid}/adminproductioninfo/{productionid}",
       name: "adminpicturewheel",
       component: () => import("./views/ProductionInfo/AdminProductionInfo.vue")
+    },
+    {
+      path: "/sysadminaccount/{userID}/SysAdminViewAllTheaters",
+      name: "SysAdminViewAllTheaters",
+      component: () => import("./views/SysAdminViewAllTheaters.vue")
     }
   ]
 });

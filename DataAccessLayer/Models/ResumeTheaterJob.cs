@@ -18,12 +18,12 @@ namespace DataAccessLayer.Models
         public TheaterJobPosting theaterJobPosting { get; set; }
         public Resume userResume { get; set; }
 
-        ResumeTheaterJob()
+        public ResumeTheaterJob()
         {
 
         }
 
-        ResumeTheaterJob(int helpid, int resumeid) {
+        public ResumeTheaterJob(int helpid, int resumeid) {
             this.HelpWantedID = helpid;
             this.ResumeID = resumeid;
         }

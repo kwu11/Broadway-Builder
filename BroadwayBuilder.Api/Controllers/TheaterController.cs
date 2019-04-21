@@ -24,6 +24,10 @@ namespace BroadwayBuilder.Api.Controllers
 
                 try
                 {
+                    if (theater.TheaterName == null)
+                    {
+                        throw new Exception();
+                    }
                     theaterService.CreateTheater(theater);
                     dbcontext.SaveChanges();
 
@@ -33,7 +37,7 @@ namespace BroadwayBuilder.Api.Controllers
                 // Todo: add proper error handling
                 catch (Exception e)
                 {
-                    return Content((HttpStatusCode)400,e.Message);
+                    return Content((HttpStatusCode)400, "Must provide a Theater Name");
                 }
 
             }
@@ -112,8 +116,15 @@ namespace BroadwayBuilder.Api.Controllers
                 try
                 {
                     var theaterService = new TheaterService(dbcontext);
-                    theaterService.UpdateTheater(theater);
-                    dbcontext.SaveChanges();
+                    var updatedTheater = theaterService.UpdateTheater(theater);
+                    if (updatedTheater != null)
+                    {
+                        dbcontext.SaveChanges();
+                    }
+                    else
+                    {
+                        throw new Exception();
+                    }
                     return Content((HttpStatusCode)200, theater);
                 }
                 catch
