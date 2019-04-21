@@ -40,7 +40,6 @@ namespace ServiceLayer.Services
             
         }
 
-
         public IEnumerable GetAllJobsFromTheater(int theaterid, int startingPoint, int numberOfItems)
         {
             return _dbContext.TheaterJobPostings.OrderByDescending(job => job.DateCreated).Where(job => job.TheaterID == theaterid).Skip(startingPoint).Take(numberOfItems).Select(job => new
