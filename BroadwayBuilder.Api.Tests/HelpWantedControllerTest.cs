@@ -125,8 +125,10 @@ namespace BroadwayBuilder.Api.Tests
             dbcontext.SaveChanges();
             //Arrange
             var controller = new HelpWantedController();
+            var currentPage = 1;
+            var numberOfItems = 100;
             //Act
-            var actionResult = controller.GetTheaterJobs(theater.TheaterID);
+            var actionResult = controller.GetTheaterJobs(theater.TheaterID, currentPage, numberOfItems);
             var response = actionResult as NegotiatedContentResult<IEnumerable>;
             var content = response.Content;
             //IEnumerable test;

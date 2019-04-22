@@ -31,7 +31,7 @@ namespace BroadwayBuilder.Api.Controllers
             {
                 try
                 {
-                    TheaterJobService service = new TheaterJobService(dbcontext);
+                    HelpWantedService service = new HelpWantedService(dbcontext);
                     return Content((HttpStatusCode)200, service.GetTheaterJobsCount(theaterid));
                 }
                 catch
@@ -48,7 +48,7 @@ namespace BroadwayBuilder.Api.Controllers
             {
                 try
                 {
-                    TheaterJobService service = new TheaterJobService(dbcontext);
+                    HelpWantedService service = new HelpWantedService(dbcontext);
                     var list = service.GetAllJobsFromTheater(theaterid, currentPage, numberOfItems);
                     if(list == null)
                     {
@@ -74,7 +74,7 @@ namespace BroadwayBuilder.Api.Controllers
             {
                 try
                 {
-                    TheaterJobService service = new TheaterJobService(dbcontext);
+                    HelpWantedService service = new HelpWantedService(dbcontext);
                     //TheaterJobPosting job = service.GetTheaterJob(helpwantedid);
                     if (job != null)
                     {
@@ -113,7 +113,7 @@ namespace BroadwayBuilder.Api.Controllers
         {
             using (var dbcontext = new BroadwayBuilderContext())
             {
-                TheaterJobService service = new TheaterJobService(dbcontext);
+                HelpWantedService service = new HelpWantedService(dbcontext);
                 TheaterJobPosting job = service.GetTheaterJob(helpWantedId);
                 try
                 {
@@ -152,7 +152,7 @@ namespace BroadwayBuilder.Api.Controllers
         {
             using(var dbcontext = new BroadwayBuilderContext())
             {
-                TheaterJobService jobService = new TheaterJobService(dbcontext);
+                HelpWantedService jobService = new HelpWantedService(dbcontext);
                 try
                 {
                     if (theaterJob == null)
@@ -356,7 +356,7 @@ namespace BroadwayBuilder.Api.Controllers
                     {
                         throw new Exception("No resume on file");
                     }
-                    var theaterjobservice = new TheaterJobService(dbcontext);
+                    var theaterjobservice = new HelpWantedService(dbcontext);
                     TheaterJobPosting job = theaterjobservice.GetTheaterJob(helpwantedid);
                     if (job == null)//check if job exists
                     {
@@ -411,7 +411,7 @@ namespace BroadwayBuilder.Api.Controllers
             {
                 using (var dbcontext = new BroadwayBuilderContext())
                 {
-                    var theaterjobService = new TheaterJobService(dbcontext);
+                    var theaterjobService = new HelpWantedService(dbcontext);
                     if (theaterjobService.GetTheaterJob(helpwantedid) == null)
                     {
                         throw new Exception("theater job does not exist");

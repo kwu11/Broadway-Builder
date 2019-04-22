@@ -13,7 +13,7 @@ namespace ServiceLayer.Test
         {
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
-            var theaterJobService = new TheaterJobService(dbcontext);
+            var theaterJobService = new HelpWantedService(dbcontext);
             var theaterId = 1;
             var expected = true;
             var actual = false;
@@ -34,7 +34,7 @@ namespace ServiceLayer.Test
             //Arrange
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
-            var theaterJobService = new TheaterJobService(dbcontext);
+            var theaterJobService = new HelpWantedService(dbcontext);
             var expected = true;
             var actual = false;
             
@@ -63,7 +63,7 @@ namespace ServiceLayer.Test
             //Arrange
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
-            var theaterJobService = new TheaterJobService(dbcontext);
+            var theaterJobService = new HelpWantedService(dbcontext);
             var expected = true;
             var actual = false;
 
@@ -93,7 +93,7 @@ namespace ServiceLayer.Test
             //Arrange
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
-            var theaterJobService = new TheaterJobService(dbcontext);
+            var theaterJobService = new HelpWantedService(dbcontext);
             var expected = true;
             var actual = false;
 
