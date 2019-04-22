@@ -66,7 +66,13 @@
         </section>
         <footer class="modal-footer">
           <slot name="footer">
-            <button type="button" class="btn-green" @click="close" aria-label="Close modal">Submit</button>
+            <button
+              v-on:click="editProductionInfo"
+              type="button"
+              class="btn-green"
+              @click="close"
+              aria-label="Close modal"
+            >Submit</button>
           </slot>
         </footer>
       </div>
@@ -75,15 +81,42 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "modal",
+
+  props: {
+    production: Object
+  },
+  data() {
+    return {
+      editProduction: {
+        ProductionID: this.production.ProductionID,
+        ProductionName: this.production.ProductionName,
+        DirectorFirstName: this.production.DirectorFirstName,
+        DirectorLastName: this.production.DirectorLastName,
+        Street: this.production.Street,
+        City: this.production.City,
+        StateProvince: this.production.StateProvince,
+        Country: this.production.Country,
+        Zipcode: this.production.Zipcode,
+        TheaterID: this.production.TheaterID
+      }
+    };
+  },
   methods: {
+    async editProductionInfo() {
+      await axios
+        .put(
+          "https://api.broadwaybuilder.xyz/production/update",
+          this.editProduction
+        )
+        .then(response => console.log(response));
+    },
     close() {
       this.$emit("close");
     }
-  },
-  props: {
-    production: Object
   }
 };
 </script>

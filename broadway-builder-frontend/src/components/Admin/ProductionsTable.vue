@@ -32,7 +32,6 @@
             <a v-on:click="showModal(production)">
               <img src="@/assets/edit.png" alt="Edit">
             </a>
-            <modal v-show="isModalVisible" v-bind:production="modalProduction" @close="closeModal"/>
           </td>
 
           <td>
@@ -61,6 +60,8 @@
         </tr>
       </tbody>
     </table>
+    <modal v-show="isModalVisible" v-bind:production="modalProduction" @close="closeModal"/>
+
     <nav class="pagination" is-medium role="navigation" aria-label="pagination">
       <a class="pagination-previous" v-if="currentPage != minPage" v-on:click="prevPage()">Previous</a>
       <a class="pagination-previous" disabled v-else>Previous</a>
