@@ -19,12 +19,6 @@
               <a v-on:click="displayProductions">Display Productions</a>
             </li>
           </ul>
-          <p class="menu-label">Help Wanted</p>
-          <ul class="menu-list">
-            <li>
-              <router-link to="/theater/{theaterid}/helpwanted">Job Postings</router-link>
-            </li>
-          </ul>
         </aside>
       </div>
       <div class="column is-9">
