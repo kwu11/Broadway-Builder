@@ -49,6 +49,11 @@ namespace ServiceLayer.Services
             }).ToList();
         }
 
+        public int GetTheaterCount()
+        {
+            return _dbContext.Theaters.Count();
+        }
+
         public IEnumerable GetAllTheatersPagination(int currentPage,int numItems)
         {
             var startingPoint = numItems * (currentPage - 1);
