@@ -1,6 +1,10 @@
 <template>
   <div class="ProductionsTable">
     Productions
+    <div v-if="programID > 0">
+      <input type="file" ref="file" id="file" v-on:change="onFileChange()">
+      <div class="button is-primary" v-on:click="uploadProgram(programID)">Submit</div>
+    </div>
     <table class="table is-hoverable">
       <thead>
         <tr>
@@ -36,19 +40,23 @@
             </a>
           </td>
           <td>
+            <a v-on:click="programIDSelect(production.ProductionID)">
+              <img src="@/assets/upload.png" alt="Upload">
+            </a>
+          </td>
+          <!-- <td>
             <input
               type="file"
-              id="file"
               ref="file"
-              @change="programIDSelect(production.ProductionID), onFileChange"
+              id="file"
+              v-on:change="onFileChange(), programIDSelect(production.ProductionID)"
             >
-            <a
-              class="button is-primary"
+            <div
               v-if="programID === production.ProductionID"
+              class="button is-primary"
               v-on:click="uploadProgram(production.ProductionID)"
-              type="submit"
-            >Submit</a>
-          </td>
+            >Submit</div>
+          </td>-->
         </tr>
       </tbody>
     </table>
@@ -68,7 +76,7 @@ export default {
       productions: [],
       isModalVisible: false,
       file: "",
-      programID: Number
+      programID: 0
     };
   },
   async mounted() {
@@ -80,11 +88,13 @@ export default {
   },
   methods: {
     async deleteProduction(ProductionID) {
-      await axios
-        .delete(
-          "https://api.broadwaybuilder.xyz/production/delete/" + ProductionID
-        )
-        .then(alert("Production Successfully Deleted"));
+      if (confirm("Do you really wish to delete?")) {
+        await axios
+          .delete(
+            "https://api.broadwaybuilder.xyz/production/delete/" + ProductionID
+          )
+          .then(alert("Production Successfully Deleted"));
+      }
     },
     async uploadProgram(ProductionID) {
       let formData = new FormData();
@@ -96,22 +106,21 @@ export default {
             "/uploadProgram",
           formData
         )
-        .then(alert("New Program Added!"));
+        .then(function() {
+          console.log("Success!");
+        })
+        .catch(function() {
+          console.log("Failure!");
+        });
+    },
+    onFileChange() {
+      this.file = this.$refs.file.files[0];
     },
     showModal() {
       this.isModalVisible = true;
     },
     closeModal() {
       this.isModalVisible = false;
-    },
-    onFileChange(e) {
-      var files = e.target.files || e.dataTransfer.files;
-      if (!files.length) return;
-      var reader = new FileReader();
-      reader.onload = e => {
-        this.program = e.target.result;
-      };
-      reader.readAsDataURL(files[0]);
     },
     programIDSelect(id) {
       this.programID = id;
