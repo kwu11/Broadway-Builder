@@ -10,10 +10,22 @@
         VIEW RESUMES is still a work in progress...-->
         <div id="buttons" v-if="hasPermission === true">
           <a class="button is-rounded is-medium" v-on:click="addJobButton">Post A New Job</a>
-          <a class="button is-rounded is-medium">View Resumes</a>
         </div>
         <div id="buttons" v-else>
-          <a class="button is-rounded is-medium">Submit Resume</a>
+          <!-- Upload resume functionality -->
+          <div class="file has-name is-boxed">
+            <label class="file-label">
+              <input class="file-input" type="file" ref="file" v-on:change="onFileChange()">
+              <span class="file-cta">
+                <span class="file-label">Upload your resume</span>
+              </span>
+              <span class="file-name" v-if="file === ''" center>No file uploaded...</span>
+              <span class="file-name" v-else>{{ file.name }}</span>
+            </label>
+          </div>
+          <div id="buttons" v-if="hasPermission === false">
+            <a class="button is-rounded is-medium" v-on:click="uploadResume()">Submit</a>
+          </div>
         </div>
 
         <!-- This is the JOB FILTER checkboxes (Still a work in progress) -->
@@ -35,9 +47,16 @@
           :hasPermission="true"
           :filters="filters"
         />
-        <DisplayJobPostings v-else :jobPostings="jobs" :hasPermission="false" :filters="filters"/>
-
+        <DisplayJobPostings
+          v-else
+          :jobPostings="jobs"
+          :hasPermission="false"
+          :filters="filters"
+          :file="file"
+        />
         <h1 v-if="jobs.length === 0">No job postings available</h1>
+
+        <!-- Pagination for job postings -->
         <nav v-else class="pagination" is-medium role="navigation" aria-label="pagination">
           <a
             class="pagination-previous"
@@ -102,7 +121,11 @@ export default {
       // Boolean value to display new job posting inputs
       addJob: false,
       // Filter applied to a job
-      filters: []
+      filters: [],
+      // Resume file
+      file: "",
+      // Mocked user
+      userId: 1
     };
   },
   methods: {
@@ -140,16 +163,27 @@ export default {
       this.currentPage += 1;
       this.getJobPostings();
     },
+    onFileChange() {
+      this.file = this.$refs.file.files[0];
+    },
+    async getResume() {
+      await axios
+        .get(
+          "https://api.broadwaybuilder.xyz/helpwanted/myresume/" + this.userId
+        )
+        .then(response => (this.file = response.data));
+    },
     async getJobPostings() {
       // Obtain all jobs from the database within a range
       await axios
         .get(
-          "https://api.broadwaybuilder.xyz/helpwanted/" +
-            this.theater.TheaterID,
+          "https://api.broadwaybuilder.xyz/helpwanted/",
+
           {
             params: {
-              // Algorithm to get the starting index to query from
-              startingPoint: this.numberOfItems * (this.currentPage - 1),
+              theaterId: this.theater.TheaterID,
+              // The current page. This will be used to calculate starting point of query
+              currentPage: this.currentPage,
               // The number of items starting at the startingPoint
               numberOfItems: this.numberOfItems
             }
@@ -189,6 +223,7 @@ export default {
     this.getJobPostings();
     // Get the numer of total job postings
     this.getMaxPage();
+    this.getProductions();
   }
 };
 </script>
@@ -201,6 +236,7 @@ export default {
 
 #buttons
   text-align: center
+  margin-top: 1em
 
 h1 
   margin: 1em

@@ -76,7 +76,7 @@
             >Delete</a>
           </footer>
           <footer class="card-footer" v-else-if="!permission && job.show">
-            <a class="card-footer-item">Accept Job</a>
+            <a class="card-footer-item" v-on:click="uploadResume()">Apply</a>
           </footer>
           <div class="modal" v-if="deleteConfirmation">
             <div class="modal-background"></div>
@@ -95,7 +95,7 @@
 import axios from "axios";
 
 export default {
-  props: ["jobPostings", "hasPermission", "filters"],
+  props: ["jobPostings", "hasPermission", "filters", "file"],
   data() {
     return {
       categories: ["Description", "Hours", "Requirements"],
@@ -104,7 +104,8 @@ export default {
       jobs: this.jobPostings,
       jobFilters: this.filters,
       permission: this.hasPermission,
-      deleteConfirmation: false
+      deleteConfirmation: false,
+      userid: 1
     };
   },
   computed: {
@@ -148,7 +149,7 @@ export default {
           Requirements: job.Requirements,
           JobType: job.JobType
         })
-        .then(response => console.log("Job Updated!", response));
+        .then(alert("Job Posting Updated!"));
 
       job.edit = false;
     },
@@ -167,6 +168,28 @@ export default {
     },
     showDetails(job) {
       job.show = true;
+    },
+    async uploadResume() {
+      if (this.fileName === "") {
+        alert("Please enter a resume...");
+      } else {
+        let formData = new FormData();
+        formData.append(this.file.name, this.file);
+        await axios
+          .put(
+            "https://api.broadwaybuilder.xyz/helpwanted/" +
+              this.userid +
+              "/uploadresume",
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data"
+              }
+            }
+          )
+          .then(response => alert(response.data))
+          .catch(error => alert(error));
+      }
     },
     calculateDateDifference(datePosted) {
       var dateCreated = new Date(Date.parse(datePosted));
@@ -205,6 +228,12 @@ nav
   transform: translateY(-5px);
   font-weight: bold
   color: #6F0000
+
+acceptJob:hover
+  font-weight: normal
+  text-decoration: none
+  transition: none
+
 
 a 
   color: #6F0000

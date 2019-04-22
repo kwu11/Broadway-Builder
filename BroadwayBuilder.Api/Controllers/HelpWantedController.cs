@@ -42,14 +42,14 @@ namespace BroadwayBuilder.Api.Controllers
         }
 
         [HttpGet, Route("{theaterid}")]
-        public IHttpActionResult GetTheaterJobs(int theaterid, int startingPoint, int numberOfItems)//needs to be changed to string for encryption purposes
+        public IHttpActionResult GetTheaterJobs(int theaterid, int currentPage, int numberOfItems)//needs to be changed to string for encryption purposes
         {
             using(var dbcontext = new BroadwayBuilderContext())
             {
                 try
                 {
                     TheaterJobService service = new TheaterJobService(dbcontext);
-                    var list = service.GetAllJobsFromTheater(theaterid, startingPoint, numberOfItems);
+                    var list = service.GetAllJobsFromTheater(theaterid, currentPage, numberOfItems);
                     if(list == null)
                     {
                         throw new NullNotFoundException();
@@ -309,20 +309,20 @@ namespace BroadwayBuilder.Api.Controllers
         }
 
         [HttpGet,Route("myresume/{id}")]
-        public IHttpActionResult GetResume(int id)
+        public IHttpActionResult GetResume(int userId)
         {
             try
             {
                 using (var dbcontext = new BroadwayBuilderContext())
                 {
                     var userService = new UserService(dbcontext);
-                    User user = userService.GetUser(id);
+                    User user = userService.GetUser(userId);
                     if (user == null)//check if user exists
                     {
                         throw new Exception("User does not exist");
                     }
                     var resumeService = new ResumeService(dbcontext);
-                    Resume resume = resumeService.GetResumeByUserID(id);
+                    Resume resume = resumeService.GetResumeByUserID(userId);
                     if (resume == null)//check if user has already submitted a resume
                     {
                         throw new Exception("No resume on file");
