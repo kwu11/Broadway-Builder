@@ -114,8 +114,6 @@ export default {
       minPage: 1,
       // The maximum number of pages (this will change)
       maxPage: 1,
-      // Starting point to start getting jobs
-      startingPoint: 0,
       // The amount of jobs to retrive
       numberOfItems: 3,
       // Boolean value to display new job posting inputs
@@ -177,11 +175,10 @@ export default {
       // Obtain all jobs from the database within a range
       await axios
         .get(
-          "https://api.broadwaybuilder.xyz/helpwanted/",
-
+          "https://api.broadwaybuilder.xyz/helpwanted/" +
+            this.theater.TheaterID,
           {
             params: {
-              theaterId: this.theater.TheaterID,
               // The current page. This will be used to calculate starting point of query
               currentPage: this.currentPage,
               // The number of items starting at the startingPoint
@@ -223,7 +220,6 @@ export default {
     this.getJobPostings();
     // Get the numer of total job postings
     this.getMaxPage();
-    this.getProductions();
   }
 };
 </script>
