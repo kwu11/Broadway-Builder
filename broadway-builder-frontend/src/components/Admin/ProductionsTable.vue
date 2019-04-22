@@ -60,6 +60,30 @@
         </tr>
       </tbody>
     </table>
+    <nav class="pagination" is-medium role="navigation" aria-label="pagination">
+      <a class="pagination-previous" v-if="currentPage != minPage" v-on:click="prevPage()">Previous</a>
+      <a class="pagination-previous" disabled v-else>Previous</a>
+      <a class="pagination-next" v-if="currentPage != maxPage" v-on:click="nextPage()">Next page</a>
+      <a class="pagination-next" disabled v-else>Next page</a>
+
+      <ul class="pagination-list">
+        <li v-for="(page, index) in maxPage" :key="index">
+          <a
+            v-if="page === currentPage"
+            class="pagination-link is-current"
+            aria-label="Page 1"
+            aria-current="page"
+          >{{ index + 1 }}</a>
+          <a
+            v-else
+            v-on:click="choosePage(index)"
+            class="pagination-link"
+            aria-label="Page 1"
+            aria-current="page"
+          >{{ index + 1 }}</a>
+        </li>
+      </ul>
+    </nav>
   </div>
 </template>
 
@@ -81,11 +105,12 @@ export default {
       minPage: 1,
       maxPage: 1,
       startPoint: 0,
-      numberOfItems: 5
+      numberOfItems: 10
     };
   },
   async mounted() {
     this.getProductions();
+    this.getMaxPage();
   },
   methods: {
     async deleteProduction(ProductionID) {
@@ -117,10 +142,13 @@ export default {
     async getProductions() {
       await axios
         .get(
-          "https://api.broadwaybuilder.xyz/production/getProductions?prevDate=3%2F23%2F2019&pageNum=" +
-            this.currentPage +
-            "&pagesize=" +
-            this.numberOfItems
+          "https://api.broadwaybuilder.xyz/production/getProductions?currentDate=3%2F23%2F2019",
+          {
+            params: {
+              pageNum: this.currentPage,
+              pagesize: this.numberOfItems
+            }
+          }
         )
         .then(response => (this.productions = response.data));
     },
@@ -147,6 +175,23 @@ export default {
     nextPage() {
       this.currentPage += 1;
       this.getProductions();
+    },
+    async getMaxPage() {
+      await axios
+        .get("https://api.broadwaybuilder.xyz/helpwanted/length", {
+          params: {
+            theaterid: 1
+          }
+        })
+        .then(response => {
+          if (this.numberOfItems === 1) {
+            this.maxPage = response.data;
+          } else if (this.numberOfItems === response.data) {
+            this.maxPage = Math.floor(response.data / this.numberOfItems);
+          } else {
+            this.maxPage = Math.floor(response.data / this.numberOfItems) + 1;
+          }
+        });
     }
   }
 };
