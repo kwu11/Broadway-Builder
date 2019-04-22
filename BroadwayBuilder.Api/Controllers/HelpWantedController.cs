@@ -308,7 +308,7 @@ namespace BroadwayBuilder.Api.Controllers
             }
         }
 
-        [HttpGet,Route("myresume/{id}")]
+        [HttpGet,Route("myresume/{userId}")]
         public IHttpActionResult GetResume(int userId)
         {
             try
@@ -329,7 +329,7 @@ namespace BroadwayBuilder.Api.Controllers
                     }
                     var filepath = @"C:\Resumes\" + resume.ResumeGuid + @"\" + resume.ResumeGuid + ".pdf";
                     string url = "";
-                    if (Directory.Exists(filepath))
+                    if (File.Exists(filepath))
                     {
                         url = "https://api.broadwaybuilder.xyz/Resumes/"+ resume.ResumeGuid + "/" + resume.ResumeGuid + ".pdf";
                         return Content((HttpStatusCode)200, url);
@@ -422,7 +422,7 @@ namespace BroadwayBuilder.Api.Controllers
                     foreach (Guid guid in resumelist)
                     {
                         string path = @"C:\Resumes\" + guid + @"/" + guid + ".pdf";
-                        if (Directory.Exists(path))
+                        if (File.Exists(path))
                         {
                             string url = "https://api.broadwaybuilder.xyz/Resumes/" + guid + "/" + guid + ".pdf";
                             urlList.Add(url);
