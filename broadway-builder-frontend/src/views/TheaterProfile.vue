@@ -61,15 +61,9 @@ export default {
   name: "TheaterProfile",
   data() {
     return {
-      TheaterName: this.$route.params.TheaterName,
-      theater: {},
+      theater: this.$route.params.theater,
       permission: true
     };
-  },
-  async mounted() {
-    await axios
-      .get("https://api.broadwaybuilder.xyz/theater/" + this.TheaterName)
-      .then(response => (this.theater = response.data));
   },
   methods: {
     goToPictures(theater) {
