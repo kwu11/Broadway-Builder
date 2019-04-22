@@ -108,6 +108,44 @@ namespace BroadwayBuilder.Api.Controllers
             }
         }
 
+        [HttpGet, Route("ptheater/all")]
+        public IHttpActionResult GetAllTheatersPagination(int currentPage, int numberOfItems)
+        {
+            using (var dbcontext = new BroadwayBuilderContext())
+            {
+                TheaterService service = new TheaterService(dbcontext);
+                try
+                {
+                    IEnumerable list = service.GetAllTheatersPagination(currentPage,numberOfItems);
+                    return Content((HttpStatusCode)200, list);
+                }
+                catch (Exception e)
+                {
+                    return Content((HttpStatusCode)500, "Oops! Something went wrong on our end");
+                }
+
+
+            }
+        }
+
+        [HttpGet,Route("length")]
+        public IHttpActionResult GetTheaterCount()
+        {
+            using(var dbcontext = new BroadwayBuilderContext())
+            {
+                try
+                {
+                    var theaterService = new TheaterService(dbcontext);
+                    int count = theaterService.GetTheaterCount();
+                    return Content((HttpStatusCode)200, count);
+                }
+                catch (Exception e)
+                {
+                    return Content((HttpStatusCode)500, "Unable to get count of job postings for theater " + e.Message);
+                }
+            }
+        } 
+
         [HttpPut,Route("theater/updateTheater")]
         public IHttpActionResult UpdateTheater([FromBody] Theater theater)
         {
