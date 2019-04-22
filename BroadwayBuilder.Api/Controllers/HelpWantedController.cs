@@ -308,7 +308,7 @@ namespace BroadwayBuilder.Api.Controllers
             }
         }
 
-        [HttpGet,Route("myresume/{id}")]
+        [HttpGet,Route("myresume/{userId}")]
         public IHttpActionResult GetResume(int userId)
         {
             try
@@ -329,7 +329,7 @@ namespace BroadwayBuilder.Api.Controllers
                     }
                     var filepath = @"C:\Resumes\" + resume.ResumeGuid + @"\" + resume.ResumeGuid + ".pdf";
                     string url = "";
-                    if (!Directory.Exists(filepath))
+                    if (File.Exists(filepath))
                     {
                         url = "https://api.broadwaybuilder.xyz/Resumes/"+ resume.ResumeGuid + "/" + resume.ResumeGuid + ".pdf";
                         return Content((HttpStatusCode)200, url);
@@ -366,7 +366,12 @@ namespace BroadwayBuilder.Api.Controllers
                     var resumejobposting = new ResumeTheaterJob(job.HelpWantedID,resume.ResumeID);
                     var resumejobservice = new ResumeTheaterJobService(dbcontext);
                     resumejobservice.CreateResumeTheaterJob(resumejobposting);
-                    return Content((HttpStatusCode)200, "Successfully Applied!");
+                    var result = dbcontext.SaveChanges();
+                    if (result > 0)
+                    {
+                        return Content((HttpStatusCode)200, "Successfully Applied!");
+                    }
+                    return Content((HttpStatusCode)500, "Wasn't able to successfully apply");
                 }
             }
             catch(Exception e)
@@ -418,11 +423,16 @@ namespace BroadwayBuilder.Api.Controllers
                     }
                     var resumetheaterjobservice = new ResumeTheaterJobService(dbcontext);
                     var resumelist = resumetheaterjobservice.GetAllResumeGuidsForTheaterJob(helpwantedid);
-                    List<string> urlList = null;
+                    List<string> urlList = new List<string>();
                     foreach (Guid guid in resumelist)
                     {
-                        string url = "https://api.broadwaybuilder.xyz/Resumes/" + guid + "/" + guid + ".pdf";
-                        urlList.Add(url);
+                        string path = @"C:\Resumes\" + guid + @"/" + guid + ".pdf";
+                        if (File.Exists(path))
+                        {
+                            string url = "https://api.broadwaybuilder.xyz/Resumes/" + guid + "/" + guid + ".pdf";
+                            urlList.Add(url);
+                        }
+                        
                     }
                     return Content((HttpStatusCode)200, urlList);
                 }
