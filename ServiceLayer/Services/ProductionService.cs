@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Hosting;
+using ServiceLayer.Exceptions;
 
 namespace ServiceLayer.Services
 {
@@ -35,11 +36,12 @@ namespace ServiceLayer.Services
 
         // Returns a list of productions by a previous date. 
         // If a theaterid is passed then it will only return past productions by that theater id
-        public List<Production> GetProductionsByPreviousDate(DateTime previousDate, int? theaterID)
+        public List<Production> GetProductionsByPreviousDate(DateTime previousDate, int? theaterID, int pageNum, int pageSize)
         {
             var pastProductionsQuery = _dbContext.Productions
                 .Include(production => production.ProductionDateTime)
-                .Where(production => production.ProductionDateTime.Where(productionDateTime => productionDateTime.Date <= previousDate).Any());
+                .Where(production => production.ProductionDateTime
+                    .Where(productionDateTime => productionDateTime.Date <= previousDate).Any());
 
             if (theaterID != null)
             {
@@ -47,14 +49,35 @@ namespace ServiceLayer.Services
                     .Where(theater => theater.TheaterID == theaterID);
             }
 
-            return pastProductionsQuery.ToList();
+            pastProductionsQuery = pastProductionsQuery
+                .OrderByDescending(production => production.ProductionDateTime
+                    .OrderByDescending(o => o.Date)
+                    .FirstOrDefault());
+
+            return pastProductionsQuery
+                .Skip((pageNum - 1) * pageSize).Take(pageSize)
+                .ToList();
         }
 
-        public List<Production> GetProductionsByCurrentAndFutureDate(DateTime currentDate)
+        public List<Production> GetProductionsByCurrentAndFutureDate(DateTime currentDate, int? theaterID, int pageNum, int pageSize)
         {
-            return _dbContext.Productions
+            var currentAndFutureProductionsQuery = _dbContext.Productions
                 .Include(production => production.ProductionDateTime)
-                .Where(production => production.ProductionDateTime.Where(productionDateTime => productionDateTime.Date >= currentDate).Any())
+                .Where(production => production.ProductionDateTime.Where(productionDateTime => productionDateTime.Date >= currentDate).Any());
+
+            if (theaterID != null)
+            {
+                currentAndFutureProductionsQuery = currentAndFutureProductionsQuery
+                    .Where(theater => theater.TheaterID == theaterID);
+            }
+
+            currentAndFutureProductionsQuery = currentAndFutureProductionsQuery
+                .OrderByDescending(production => production.ProductionDateTime
+                    .OrderByDescending(o => o.Date)
+                    .FirstOrDefault());
+
+            return currentAndFutureProductionsQuery
+                .Skip((pageNum - 1) * pageSize).Take(pageSize)
                 .ToList();
         }
 
@@ -77,7 +100,7 @@ namespace ServiceLayer.Services
                 currentProduction.Zipcode = production.Zipcode;
             } else
             {
-                //throw an exception
+                throw new ProductionNotFoundException($"Production does not exist! with id: {production.ProductionID}");
             }
 
             return currentProduction;

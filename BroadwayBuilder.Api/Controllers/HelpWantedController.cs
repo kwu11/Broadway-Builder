@@ -42,14 +42,14 @@ namespace BroadwayBuilder.Api.Controllers
         }
 
         [HttpGet, Route("{theaterid}")]
-        public IHttpActionResult GetTheaterJobs(int theaterid, int startingPoint, int numberOfItems)//needs to be changed to string for encryption purposes
+        public IHttpActionResult GetTheaterJobs(int theaterid, int currentPage, int numberOfItems)//needs to be changed to string for encryption purposes
         {
             using(var dbcontext = new BroadwayBuilderContext())
             {
                 try
                 {
                     TheaterJobService service = new TheaterJobService(dbcontext);
-                    var list = service.GetAllJobsFromTheater(theaterid, startingPoint, numberOfItems);
+                    var list = service.GetAllJobsFromTheater(theaterid, currentPage, numberOfItems);
                     if(list == null)
                     {
                         throw new NullNotFoundException();
