@@ -76,15 +76,16 @@ export default {
       productions: [],
       isModalVisible: false,
       file: "",
-      programID: 0
+      programID: 0,
+      currentPage: 1,
+      minPage: 1,
+      maxPage: 1,
+      startPoint: 0,
+      numberOfItems: 5
     };
   },
   async mounted() {
-    await axios
-      .get(
-        "https://api.broadwaybuilder.xyz/production/getProductions?currentDate=3%2F23%2F2019"
-      )
-      .then(response => (this.productions = response.data));
+    this.getProductions();
   },
   methods: {
     async deleteProduction(ProductionID) {
@@ -113,6 +114,16 @@ export default {
           console.log("Failure!");
         });
     },
+    async getProductions() {
+      await axios
+        .get(
+          "https://api.broadwaybuilder.xyz/production/getProductions?prevDate=3%2F23%2F2019&pageNum=" +
+            this.currentPage +
+            "&pagesize=" +
+            this.numberOfItems
+        )
+        .then(response => (this.productions = response.data));
+    },
     onFileChange() {
       this.file = this.$refs.file.files[0];
     },
@@ -124,6 +135,18 @@ export default {
     },
     programIDSelect(id) {
       this.programID = id;
+    },
+    choosePage(page) {
+      this.currentPage = page + 1;
+      this.getProductions();
+    },
+    prevPage() {
+      this.currentPage -= 1;
+      this.getProductions();
+    },
+    nextPage() {
+      this.currentPage += 1;
+      this.getProductions();
     }
   }
 };
