@@ -105,15 +105,14 @@ export default {
       programID: 0,
       currentPage: 1,
       minPage: 1,
-      maxPage: 1,
+      maxPage: 2,
       startPoint: 0,
-      numberOfItems: 10,
+      numberOfItems: 5,
       modalProduction: null
     };
   },
   async mounted() {
     this.getProductions();
-    this.getMaxPage();
   },
   methods: {
     async deleteProduction(ProductionID) {

@@ -91,7 +91,7 @@ export default {
   },
   data() {
     return {
-      editProduction: {
+      production_to_update: {
         ProductionID: this.production.ProductionID,
         ProductionName: this.production.ProductionName,
         DirectorFirstName: this.production.DirectorFirstName,
@@ -110,7 +110,7 @@ export default {
       await axios
         .put(
           "https://api.broadwaybuilder.xyz/production/update",
-          this.editProduction
+          this.production_to_update
         )
         .then(response => console.log(response));
     },
