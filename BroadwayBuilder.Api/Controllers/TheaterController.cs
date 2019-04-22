@@ -128,6 +128,24 @@ namespace BroadwayBuilder.Api.Controllers
             }
         }
 
+        [HttpGet,Route("length")]
+        public IHttpActionResult GetTheaterCount()
+        {
+            using(var dbcontext = new BroadwayBuilderContext())
+            {
+                try
+                {
+                    var theaterService = new TheaterService(dbcontext);
+                    int count = theaterService.GetTheaterCount();
+                    return Content((HttpStatusCode)200, count);
+                }
+                catch (Exception e)
+                {
+                    return Content((HttpStatusCode)500, "Unable to get count of job postings for theater " + e.Message);
+                }
+            }
+        } 
+
         [HttpPut,Route("theater/updateTheater")]
         public IHttpActionResult UpdateTheater([FromBody] Theater theater)
         {
