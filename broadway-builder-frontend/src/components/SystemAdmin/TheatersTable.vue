@@ -21,12 +21,12 @@
           <td>{{theater.StreetAddress}} {{theater.City}}, {{theater.State}} {{theater.Country}}</td>
           <td>{{theater.PhoneNumber}}</td>
           <td>
-            <button class="button" v-on:click="showModal" v-bind:passedTheater="theater">EDIT</button>
+            <button class="button" v-on:click="showModal(theater)">EDIT</button>
+            <TheatersTableModal v-if="isModalVisible" v-bind:passedTheater="modalTheater" @close="closeModal"/>
           </td>
           <td>
             <button class="button" v-on:click="deleteTheater(theater)">DELETE</button>
           </td>
-          <TheatersTableModal v-if="isModalVisible" v-bind:passedTheater="theaters[index]" @close="closeModal"/>
         </tr>
       </tbody>
     </table>
@@ -44,6 +44,7 @@ export default {
   data() {
     return {
       theaters: [],
+      modalTheater: null,
       isModalVisible: false
     };
   },
@@ -58,7 +59,8 @@ export default {
         .delete("https://api.broadwaybuilder.xyz/theater/deleteTheater",{data: theater})
         .then(response => alert(response.data));
     },
-    showModal() {
+    showModal(theater) {
+      this.modalTheater = theater;
       this.isModalVisible = true;
     },
     closeModal() {
