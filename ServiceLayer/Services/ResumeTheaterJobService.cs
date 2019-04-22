@@ -22,6 +22,7 @@ namespace ServiceLayer.Services
 
         public void CreateResumeTheaterJob(ResumeTheaterJob resumeTheaterJob)
         {
+            resumeTheaterJob.DateUploaded = DateTime.Now;
             this._dbContext.ResumeTheaterJobs.Add(resumeTheaterJob);
         }
 
