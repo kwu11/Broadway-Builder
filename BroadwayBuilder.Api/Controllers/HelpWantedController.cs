@@ -423,7 +423,7 @@ namespace BroadwayBuilder.Api.Controllers
                     }
                     var resumetheaterjobservice = new ResumeTheaterJobService(dbcontext);
                     var resumelist = resumetheaterjobservice.GetAllResumeGuidsForTheaterJob(helpwantedid);
-                    List<string> urlList = null;
+                    List<string> urlList = new List<string>();
                     foreach (Guid guid in resumelist)
                     {
                         string path = @"C:\Resumes\" + guid + @"/" + guid + ".pdf";
