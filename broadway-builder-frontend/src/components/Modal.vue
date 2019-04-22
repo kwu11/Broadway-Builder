@@ -23,36 +23,42 @@
             <div class="field">
               <label class="label">Production Name</label>
               <div class="control">
-                <input class="input" v-model="production.ProductionID">
+                <input class="input" v-model="production.ProductionName">
               </div>
             </div>
             <div class="field">
-              <label class="label">Director</label>
+              <label class="label">Director First Name</label>
               <div class="control">
-                <input class="input">
+                <input class="input" v-model="production.DirectorFirstName">
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Director Last Name</label>
+              <div class="control">
+                <input class="input" v-model="production.DirectorLastName">
               </div>
             </div>
             <div class="field">
               <label class="label">Street</label>
               <div class="control">
-                <input class="input">
+                <input class="input" v-model="production.Street">
               </div>
             </div>
             <div class="field">
               <label class="label">City</label>
               <div class="control">
-                <input class="input">
+                <input class="input" v-model="production.City">
               </div>
             </div>
             <div class="field">
               <label class="label">State/Province</label>
               <div class="control">
-                <input class="input">
+                <input class="input" v-model="production.StateProvince">
               </div>
               <div class="field">
                 <label class="label">Zip Code</label>
                 <div class="control">
-                  <input class="input">
+                  <input class="input" v-model="production.Zipcode">
                 </div>
               </div>
             </div>
@@ -76,7 +82,9 @@ export default {
       this.$emit("close");
     }
   },
-  props: ["production"]
+  props: {
+    production: Object
+  }
 };
 </script>
 

@@ -27,11 +27,12 @@
           <td>{{production.DirectorFirstName}} {{production.DirectorLastName}}</td>
           <td>{{production.Street}}, {{production.City}}, {{production.StateProvince}} {{production.Zipcode}}</td>
           <td>{{production.DateTimes[0].Date}}</td>
+
           <td>
-            <a v-on:click="showModal">
+            <a v-on:click="showModal(production)">
               <img src="@/assets/edit.png" alt="Edit">
             </a>
-            <modal :production="production" v-show="isModalVisible" @close="closeModal"/>
+            <modal v-show="isModalVisible" v-bind:production="modalProduction" @close="closeModal"/>
           </td>
 
           <td>
@@ -105,7 +106,8 @@ export default {
       minPage: 1,
       maxPage: 1,
       startPoint: 0,
-      numberOfItems: 10
+      numberOfItems: 10,
+      modalProduction: null
     };
   },
   async mounted() {
@@ -155,7 +157,8 @@ export default {
     onFileChange() {
       this.file = this.$refs.file.files[0];
     },
-    showModal() {
+    showModal(production) {
+      this.modalProduction = production;
       this.isModalVisible = true;
     },
     closeModal() {
