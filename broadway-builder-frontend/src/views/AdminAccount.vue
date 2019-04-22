@@ -19,12 +19,6 @@
               <a v-on:click="displayProductions">Display Productions</a>
             </li>
           </ul>
-          <p class="menu-label">Help Wanted</p>
-          <ul class="menu-list">
-            <li>
-              <router-link to="/theater/{theaterid}/helpwanted">Job Postings</router-link>
-            </li>
-          </ul>
         </aside>
       </div>
       <div class="column is-9">
@@ -36,35 +30,9 @@
             </div>
           </div>
         </section>
-        <section class="info-tiles">
-          <div class="tile is-ancestor has-text-centered">
-            <div class="tile is-parent">
-              <article class="tile is-child box">
-                <p class="title">43</p>
-                <p class="subtitle">Theater Members</p>
-              </article>
-            </div>
-            <div class="tile is-parent">
-              <article class="tile is-child box">
-                <p class="title">59</p>
-                <p class="subtitle"># of Reviews</p>
-              </article>
-            </div>
-            <div class="tile is-parent">
-              <article class="tile is-child box">
-                <p class="title">4.7</p>
-                <p class="subtitle">Avg. Show Rating</p>
-              </article>
-            </div>
-            <div class="tile is-parent">
-              <article class="tile is-child box">
-                <p class="title">19</p>
-                <p class="subtitle">Applications</p>
-              </article>
-            </div>
-          </div>
-          <ProductionsTable v-if="viewProductions === true"/>
-        </section>
+
+        <ProductionsTable v-if="viewProductions === true"/>
+
         <div class="columns">
           <EditTheater v-if="editTheater === true" v-bind:theater="theater"/>
           <CreateProduction v-if="createProduction === true" v-bind:theater="theater"/>
@@ -90,7 +58,7 @@ export default {
     return {
       editTheater: false,
       createProduction: false,
-      viewProductions: false,
+      viewProductions: true,
       theater: {
         TheaterName: "Theater",
         CompanyName: "Company",

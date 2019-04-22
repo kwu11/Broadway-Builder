@@ -60,6 +60,14 @@
     <Compile Include="Migrations\201904052252249_AddJobType.Designer.cs">
       <DependentUpon>201904052252249_AddJobType.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904220339576_seed.cs" />
+    <Compile Include="Migrations\201904220339576_seed.Designer.cs">
+      <DependentUpon>201904220339576_seed.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904220521131_seedv2.cs" />
+    <Compile Include="Migrations\201904220521131_seedv2.Designer.cs">
+      <DependentUpon>201904220521131_seedv2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ProductionDateTime.cs" />
     <Compile Include="Models\ResumeTheaterJob.cs" />
@@ -89,6 +97,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904052252249_AddJobType.resx">
       <DependentUpon>201904052252249_AddJobType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904220339576_seed.resx">
+      <DependentUpon>201904220339576_seed.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904220521131_seedv2.resx">
+      <DependentUpon>201904220521131_seedv2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

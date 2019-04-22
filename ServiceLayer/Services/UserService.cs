@@ -50,6 +50,11 @@ namespace ServiceLayer.Services
             return _dbContext.Users.Find(username);
         }
 
+        public User GetUser(int id)
+        {
+            return _dbContext.Users.Find(id);
+        }
+
         public User GetUser(User user)
         {
             return _dbContext.Users.Find(user.UserId);

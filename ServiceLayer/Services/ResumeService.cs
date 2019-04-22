@@ -27,6 +27,11 @@ namespace ServiceLayer.Services
             return _dbContext.Resumes.Find(resumeID);
         }
 
+        public Resume GetResumeByUserID(int userid)
+        {
+            return _dbContext.Resumes.Where(resume => resume.UserId == userid).FirstOrDefault();
+        }
+
         public void DeleteResume(Resume resume)
         {
             Resume Findresume = _dbContext.Resumes.Find(resume.ResumeID);
@@ -45,6 +50,11 @@ namespace ServiceLayer.Services
             }
 
             return Findresume;
+        }
+
+        public Guid GetGuid(int resumeid)
+        {
+            return _dbContext.Resumes.Where(resume => resume.ResumeID == resumeid).Select(resume => resume.ResumeGuid).FirstOrDefault<Guid>();
         }
 
     }

@@ -29,7 +29,7 @@ namespace BroadwayBuilder.Api.Tests
             var response = actionResult as NegotiatedContentResult<TheaterJobPosting>;
             var content = response.Content;
 
-            var jobservice = new TheaterJobService(dbcontext);
+            var jobservice = new HelpWantedService(dbcontext);
             jobservice.DeleteTheaterJob(content);
             theaterService.DeleteTheater(theater);
             dbcontext.SaveChanges();
@@ -46,7 +46,7 @@ namespace BroadwayBuilder.Api.Tests
         public void PutShouldUpdateTheaterJob() {
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
-            var theaterJobService = new TheaterJobService(dbcontext);
+            var theaterJobService = new HelpWantedService(dbcontext);
             //var expected = true;
             //var actual = false;
 
@@ -79,7 +79,7 @@ namespace BroadwayBuilder.Api.Tests
         {
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
-            var theaterJobService = new TheaterJobService(dbcontext);
+            var theaterJobService = new HelpWantedService(dbcontext);
             //var expected = true;
             //var actual = false;
 
@@ -113,7 +113,7 @@ namespace BroadwayBuilder.Api.Tests
         {
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
-            var theaterJobService = new TheaterJobService(dbcontext);
+            var theaterJobService = new HelpWantedService(dbcontext);
             //var expected = true;
             //var actual = false;
 
@@ -125,8 +125,10 @@ namespace BroadwayBuilder.Api.Tests
             dbcontext.SaveChanges();
             //Arrange
             var controller = new HelpWantedController();
+            var currentPage = 1;
+            var numberOfItems = 100;
             //Act
-            var actionResult = controller.GetTheaterJobs(theater.TheaterID);
+            var actionResult = controller.GetTheaterJobs(theater.TheaterID, currentPage, numberOfItems);
             var response = actionResult as NegotiatedContentResult<IEnumerable>;
             var content = response.Content;
             //IEnumerable test;

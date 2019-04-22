@@ -35,10 +35,19 @@
             <span class="button is-danger is-rounded is-medium">Information / Contact Us</span>
           </div>
           <div class="control">
-            <span class="button is-danger is-rounded is-medium">
-              <router-link to="/theater/{theaterid}/helpwanted/apply">Help Wanted</router-link>
-            </span>
+            <span
+              class="button is-danger is-rounded is-medium"
+              v-on:click="goToHelpWanted(theater, permission)"
+            >Help Wanted</span>
           </div>
+          <!-- Mocking permissions -->
+          <input type="radio" name="permission" id="one" :value="true" v-model="permission">
+          <label for="permission">Admin</label>
+          <br>
+          <input type="radio" name="permission" id="two" :value="false" v-model="permission">
+          <label for="permission">User</label>
+          <br>
+          <span>Picked: {{ permission }}</span>
         </div>
       </div>
     </div>
@@ -52,14 +61,9 @@ export default {
   name: "TheaterProfile",
   data() {
     return {
-      TheaterName: this.$route.params.TheaterName,
-      theater: {}
+      theater: this.$route.params.theater,
+      permission: true
     };
-  },
-  async mounted() {
-    await axios
-      .get("https://api.broadwaybuilder.xyz/theater/" + this.TheaterName)
-      .then(response => (this.theater = response.data));
   },
   methods: {
     goToPictures(theater) {
@@ -67,6 +71,15 @@ export default {
         name: "userproductioninfo",
         params: {
           TheaterID: theater.TheaterID
+        }
+      });
+    },
+    goToHelpWanted(theater, permission) {
+      this.$router.push({
+        name: "helpwanted",
+        params: {
+          theater: theater,
+          hasPermission: permission
         }
       });
     }

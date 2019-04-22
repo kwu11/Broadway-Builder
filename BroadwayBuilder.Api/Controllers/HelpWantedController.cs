@@ -1,13 +1,18 @@
 ﻿using DataAccessLayer;
+using DataAccessLayer.Models;
 using ServiceLayer.Exceptions;
 using ServiceLayer.Services;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
+using System.Web.Hosting;
 using System.Web.Http;
 
 //get all job posting, edit job posting, delete job posting, create job posting
@@ -18,15 +23,33 @@ namespace BroadwayBuilder.Api.Controllers
     public class HelpWantedController : ApiController
     {
         public HelpWantedController() { }
-        [HttpGet,Route("{theaterid}")]
-        public IHttpActionResult GetTheaterJobs(int theaterid, int startingPoint, int numberOfItems)//needs to be changed to string for encryption purposes
+
+        [HttpGet, Route("length")]
+        public IHttpActionResult GetThaterJobsCount(int theaterid)
+        {
+            using (var dbcontext = new BroadwayBuilderContext())
+            {
+                try
+                {
+                    HelpWantedService service = new HelpWantedService(dbcontext);
+                    return Content((HttpStatusCode)200, service.GetTheaterJobsCount(theaterid));
+                }
+                catch
+                {
+                    return Content((HttpStatusCode)404, "Unable to get count of job postings for theater " + theaterid);
+                }
+            }
+        }
+
+        [HttpGet, Route("{theaterid}")]
+        public IHttpActionResult GetTheaterJobs(int theaterid, int currentPage, int numberOfItems)//needs to be changed to string for encryption purposes
         {
             using(var dbcontext = new BroadwayBuilderContext())
             {
                 try
                 {
-                    TheaterJobService service = new TheaterJobService(dbcontext);
-                    var list = service.GetAllJobsFromTheater(theaterid, startingPoint, numberOfItems);
+                    HelpWantedService service = new HelpWantedService(dbcontext);
+                    var list = service.GetAllJobsFromTheater(theaterid, currentPage, numberOfItems);
                     if(list == null)
                     {
                         throw new NullNotFoundException();
@@ -51,7 +74,7 @@ namespace BroadwayBuilder.Api.Controllers
             {
                 try
                 {
-                    TheaterJobService service = new TheaterJobService(dbcontext);
+                    HelpWantedService service = new HelpWantedService(dbcontext);
                     //TheaterJobPosting job = service.GetTheaterJob(helpwantedid);
                     if (job != null)
                     {
@@ -90,7 +113,7 @@ namespace BroadwayBuilder.Api.Controllers
         {
             using (var dbcontext = new BroadwayBuilderContext())
             {
-                TheaterJobService service = new TheaterJobService(dbcontext);
+                HelpWantedService service = new HelpWantedService(dbcontext);
                 TheaterJobPosting job = service.GetTheaterJob(helpWantedId);
                 try
                 {
@@ -121,8 +144,6 @@ namespace BroadwayBuilder.Api.Controllers
                 {
                     return Content((HttpStatusCode)400, e.Message);
                 }
-                
-
             }
         }
 
@@ -131,7 +152,7 @@ namespace BroadwayBuilder.Api.Controllers
         {
             using(var dbcontext = new BroadwayBuilderContext())
             {
-                TheaterJobService jobService = new TheaterJobService(dbcontext);
+                HelpWantedService jobService = new HelpWantedService(dbcontext);
                 try
                 {
                     if (theaterJob == null)
@@ -197,6 +218,228 @@ namespace BroadwayBuilder.Api.Controllers
                 {
                     return Content((HttpStatusCode)400, e.Message);
                 }
+            }
+        }
+
+        [HttpPut,Route("{userid}/uploadresume")]
+        public IHttpActionResult uploadResume(int userid)
+        {
+            //A list in case we want to accept more than one file type
+            IList<string> AllowedFileExtension = new List<string> { ".pdf" };
+            
+            // Max file size is 1MB
+            const int MaxContentLength = 1024 * 1024 * 1;
+
+            try
+            {
+                //get the content, headers, etc the full request of the current http request
+                var httpRequest = HttpContext.Current.Request;
+                if(httpRequest.Files.Count > 1)
+                {
+                    return Content((HttpStatusCode)401, "Only one file is allowed to be submitted");
+                }
+                // Grab current file of the request
+                var postedFile = httpRequest.Files[0];
+                if (postedFile != null && postedFile.ContentLength > 0)
+                {
+                    string extension = Path.GetExtension(postedFile.FileName).ToLower();//get extension of the file
+                    if (!AllowedFileExtension.Contains(extension))
+                    {
+                        throw new Exception(extension);
+                    }
+                    else if(postedFile.ContentLength > MaxContentLength)
+                    {
+                        throw new Exception("File Exceeds file limit");
+                    }
+                    else
+                    {
+                        using (var dbcontext = new BroadwayBuilderContext())
+                        {
+                            var userService = new UserService(dbcontext);
+                            User user = userService.GetUser(userid);
+                            if (user == null)//check if user exists
+                            {
+                                throw new Exception("User does not exist");
+                            }
+                            var resumeService = new ResumeService(dbcontext);
+                            Resume resume = resumeService.GetResumeByUserID(userid);
+                            if (resume == null)//check if user has already submitted a resume
+                            {
+                                Resume userResume = new Resume(userid, Guid.NewGuid());
+                                resumeService.CreateResume(userResume);
+                                var result = dbcontext.SaveChanges();
+                                if(result <= 0)
+                                {
+                                    throw new Exception("failed to add a resume");
+                                }
+                                resume = userResume;
+                            }
+                            var subdir = @"C:\Resumes\"+resume.ResumeGuid;
+                            var filePath = subdir+@"\"+resume.ResumeGuid+".pdf";
+
+                            if (!Directory.Exists(subdir))
+                            {
+                                Directory.CreateDirectory(subdir);
+                            }
+
+                            postedFile.SaveAs(filePath);
+                            return Content((HttpStatusCode)200, "File Uploaded");
+                        }
+                        
+                    }
+                }
+                throw new Exception("something went wrong");
+            }
+            catch(HttpException e)//HttpPostedFile.SaveAs exception
+            {
+                return Content((HttpStatusCode)500, e.Message);
+            }
+            catch(IOException e)//Exception thrown when creating directory
+            {
+                return Content((HttpStatusCode)500, e.Message);
+            }
+            catch(DbUpdateException e)//exception thrown while saving the database
+            {
+                return Content((HttpStatusCode)500, e.Message);
+            }
+            catch(Exception e)
+            {
+                return Content((HttpStatusCode)400, e.Message);
+            }
+        }
+
+        [HttpGet,Route("myresume/{userId}")]
+        public IHttpActionResult GetResume(int userId)
+        {
+            try
+            {
+                using (var dbcontext = new BroadwayBuilderContext())
+                {
+                    var userService = new UserService(dbcontext);
+                    User user = userService.GetUser(userId);
+                    if (user == null)//check if user exists
+                    {
+                        throw new Exception("User does not exist");
+                    }
+                    var resumeService = new ResumeService(dbcontext);
+                    Resume resume = resumeService.GetResumeByUserID(userId);
+                    if (resume == null)//check if user has already submitted a resume
+                    {
+                        throw new Exception("No resume on file");
+                    }
+                    var filepath = @"C:\Resumes\" + resume.ResumeGuid + @"\" + resume.ResumeGuid + ".pdf";
+                    string url = "";
+                    if (File.Exists(filepath))
+                    {
+                        url = "https://api.broadwaybuilder.xyz/Resumes/"+ resume.ResumeGuid + "/" + resume.ResumeGuid + ".pdf";
+                        return Content((HttpStatusCode)200, url);
+                    }
+                    throw new Exception("No resume on file");
+                }
+            }
+            catch(Exception e)
+            {
+                return Content((HttpStatusCode)500, e.Message);
+            }
+        }
+
+        [HttpPost,Route("apply/{id}/{helpwantedid}")] //apply to a theater job
+        public IHttpActionResult ApplyToJob(int id,int helpwantedid)
+        {
+            try
+            {
+                using (var dbcontext = new BroadwayBuilderContext())
+                {
+                    var resumeService = new ResumeService(dbcontext);
+                    Resume resume = resumeService.GetResumeByUserID(id);
+                    if (resume == null)//check if user has already submitted a resume
+                    {
+                        throw new Exception("No resume on file");
+                    }
+                    var theaterjobservice = new HelpWantedService(dbcontext);
+                    TheaterJobPosting job = theaterjobservice.GetTheaterJob(helpwantedid);
+                    if (job == null)//check if job exists
+                    {
+                        throw new Exception("No job on file");
+                    }
+
+                    var resumejobposting = new ResumeTheaterJob(job.HelpWantedID,resume.ResumeID);
+                    var resumejobservice = new ResumeTheaterJobService(dbcontext);
+                    resumejobservice.CreateResumeTheaterJob(resumejobposting);
+                    var result = dbcontext.SaveChanges();
+                    if (result > 0)
+                    {
+                        return Content((HttpStatusCode)200, "Successfully Applied!");
+                    }
+                    return Content((HttpStatusCode)500, "Wasn't able to successfully apply");
+                }
+            }
+            catch(Exception e)
+            {
+                return Content((HttpStatusCode)400, e.Message);
+            }
+        }
+
+        [HttpGet,Route("getResume/{theaterid}")] // all resumes submitted to the theater -- dont recommend this
+        public IHttpActionResult GetResumesForAllTheaterJobs(int theaterid)
+        {
+            try
+            {
+                using (var dbcontext = new BroadwayBuilderContext())
+                {
+                    var theaterService = new TheaterService(dbcontext);
+                    if (theaterService.GetTheaterByID(theaterid) == null)
+                    {
+                        throw new Exception("theater does not exist");
+                    }
+                    var resumetheaterjobservice = new ResumeTheaterJobService(dbcontext);
+                    var resumelist = resumetheaterjobservice.GetAllResumeGuidsTheater(theaterid);
+                    List<string> urlList = null;
+                    foreach(Guid guid in resumelist)
+                    {
+                        string url = "https://api.broadwaybuilder.xyz/Resumes/" + guid + "/" + guid + ".pdf";
+                        urlList.Add(url);
+                    }
+                    return Content((HttpStatusCode)200, urlList);
+                }
+            }
+            catch(Exception e)
+            {
+                return Content((HttpStatusCode)500, e.Message);
+            }
+        }
+
+        [HttpGet,Route("getResumesForJob/{helpwantedid}")] //get all resumes for a single job posting
+        public IHttpActionResult GetResumesforTheaterJob(int helpwantedid)
+        {
+            try
+            {
+                using (var dbcontext = new BroadwayBuilderContext())
+                {
+                    var theaterjobService = new HelpWantedService(dbcontext);
+                    if (theaterjobService.GetTheaterJob(helpwantedid) == null)
+                    {
+                        throw new Exception("theater job does not exist");
+                    }
+                    var resumetheaterjobservice = new ResumeTheaterJobService(dbcontext);
+                    var resumelist = resumetheaterjobservice.GetAllResumeGuidsForTheaterJob(helpwantedid);
+                    List<string> urlList = new List<string>();
+                    foreach (Guid guid in resumelist)
+                    {
+                        string path = @"C:\Resumes\" + guid + @"/" + guid + ".pdf";
+                        if (File.Exists(path))
+                        {
+                            string url = "https://api.broadwaybuilder.xyz/Resumes/" + guid + "/" + guid + ".pdf";
+                            urlList.Add(url);
+                        }
+                        
+                    }
+                    return Content((HttpStatusCode)200, urlList);
+                }
+            }
+            catch (Exception e)
+            {
+                return Content((HttpStatusCode)500, e.Message);
             }
         }
 

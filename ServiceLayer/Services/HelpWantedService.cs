@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace ServiceLayer.Services
 {
-    public class TheaterJobService
+    public class HelpWantedService
     {
         private readonly BroadwayBuilderContext _dbContext;
 
-        public TheaterJobService(BroadwayBuilderContext dbContext)
+        public HelpWantedService(BroadwayBuilderContext dbContext)
         {
             this._dbContext = dbContext;
         }
@@ -34,10 +34,28 @@ namespace ServiceLayer.Services
             return _dbContext.TheaterJobPostings.Find(helpwantedid);
         }
 
-
-        public IEnumerable GetAllJobsFromTheater(int theaterid, int startingPoint, int numberOfItems)
+        public int GetTheaterJobsCount(int theaterid)
         {
-            return _dbContext.TheaterJobPostings.OrderByDescending(job => job.DateCreated).Skip(startingPoint).Take(numberOfItems).Select(job => new
+            return _dbContext.TheaterJobPostings.Where(job => job.TheaterID == theaterid).Count();
+            
+        }
+
+        public IEnumerable GetAllJobsFromTheater(int theaterid, int currentPage, int numberOfItems)
+        {
+            // Starting point of query to get data from the theater job posting table
+            var startingPoint = numberOfItems * (currentPage - 1);
+
+            return _dbContext.TheaterJobPostings
+                // Order by newest data first
+                .OrderByDescending(job => job.DateCreated)
+                // Gets jobs for just a specific theater
+                .Where(job => job.TheaterID == theaterid)
+                // Skip this many ahead
+                .Skip(startingPoint)
+                // Take all the items that was skipped
+                .Take(numberOfItems)
+                // Select specific data for the response
+                .Select(job => new
             {
                 Title = job.Title,
                 Position = job.Position,
