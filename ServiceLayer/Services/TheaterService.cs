@@ -45,7 +45,33 @@ namespace ServiceLayer.Services
                 State = theater.State,
                 Country = theater.Country,
                 PhoneNumber = theater.PhoneNumber,
-                Production = theater.Production
+                //Production = theater.Production
+            }).ToList();
+        }
+
+        public int GetTheaterCount()
+        {
+            return _dbContext.Theaters.Count();
+        }
+
+        public IEnumerable GetAllTheatersPagination(int currentPage,int numItems)
+        {
+            var startingPoint = numItems * (currentPage - 1);
+            return _dbContext.Theaters.OrderByDescending(theater => theater.DateCreated)
+                .Skip(startingPoint)
+                // Take all the items that was skipped
+                .Take(numItems)
+                .Select(theater => new
+            {
+                TheaterID = theater.TheaterID,
+                TheaterName = theater.TheaterName,
+                CompanyName = theater.CompanyName,
+                StreetAddress = theater.StreetAddress,
+                City = theater.City,
+                State = theater.State,
+                Country = theater.Country,
+                PhoneNumber = theater.PhoneNumber,
+                //Production = theater.Production
             }).ToList();
         }
 
