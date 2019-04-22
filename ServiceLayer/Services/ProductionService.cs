@@ -52,7 +52,7 @@ namespace ServiceLayer.Services
             pastProductionsQuery = pastProductionsQuery
                 .OrderByDescending(production => production.ProductionDateTime
                     .OrderByDescending(o => o.Date)
-                    .FirstOrDefault());
+                    .FirstOrDefault().Date);
 
             return pastProductionsQuery
                 .Skip((pageNum - 1) * pageSize).Take(pageSize)
@@ -74,7 +74,7 @@ namespace ServiceLayer.Services
             currentAndFutureProductionsQuery = currentAndFutureProductionsQuery
                 .OrderByDescending(production => production.ProductionDateTime
                     .OrderByDescending(o => o.Date)
-                    .FirstOrDefault());
+                    .FirstOrDefault().Date);
 
             return currentAndFutureProductionsQuery
                 .Skip((pageNum - 1) * pageSize).Take(pageSize)
