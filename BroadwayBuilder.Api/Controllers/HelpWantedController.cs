@@ -366,7 +366,12 @@ namespace BroadwayBuilder.Api.Controllers
                     var resumejobposting = new ResumeTheaterJob(job.HelpWantedID,resume.ResumeID);
                     var resumejobservice = new ResumeTheaterJobService(dbcontext);
                     resumejobservice.CreateResumeTheaterJob(resumejobposting);
-                    return Content((HttpStatusCode)200, "Successfully Applied!");
+                    var result = dbcontext.SaveChanges();
+                    if (result > 0)
+                    {
+                        return Content((HttpStatusCode)200, "Successfully Applied!");
+                    }
+                    return Content((HttpStatusCode)500, "Wasn't able to successfully apply");
                 }
             }
             catch(Exception e)
