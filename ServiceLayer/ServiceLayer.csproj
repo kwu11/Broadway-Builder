@@ -45,8 +45,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptions\Exceptions.cs" />
+    <Compile Include="Exceptions\ProductionNotFoundException.cs" />
     <Compile Include="Services\AuthorizationService.cs" />
     <Compile Include="Services\EncryptionService.cs" />
+    <Compile Include="Services\HelpWantedService.cs" />
     <Compile Include="Services\IAuthorizationService.cs" />
     <Compile Include="Services\PasswordValidatorService.cs" />
     <Compile Include="Services\PermissionService.cs" />
@@ -56,7 +58,6 @@
     <Compile Include="Services\ResumeTheaterJobService.cs" />
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\SecurityService.cs" />
-    <Compile Include="Services\TheaterJobService.cs" />
     <Compile Include="Services\TheaterService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
