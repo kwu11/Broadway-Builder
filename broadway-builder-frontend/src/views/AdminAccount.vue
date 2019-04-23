@@ -33,7 +33,7 @@
 
         <ProductionsTable v-if="viewProductions === true"/>
 
-        <div class="columns">
+        <div class="columns is-9">
           <EditTheater v-if="editTheater === true" v-bind:theater="theater"/>
           <CreateProduction v-if="createProduction === true" v-bind:theater="theater"/>
         </div>
@@ -57,8 +57,8 @@ export default {
   data() {
     return {
       editTheater: false,
-      createProduction: false,
-      viewProductions: true,
+      createProduction: true,
+      viewProductions: false,
       theater: {
         TheaterName: "Theater",
         CompanyName: "Company",
@@ -73,19 +73,19 @@ export default {
   mounted() {},
   methods: {
     editTheaterComp() {
-      this.editTheater = !this.editTheater;
       this.viewProductions = false;
       this.createProduction = false;
+      this.editTheater = !this.editTheater;
     },
     createProductionForTheater() {
-      this.createProduction = !this.createProduction;
       this.viewProductions = false;
       this.editTheaterComp = false;
+      this.createProduction = !this.createProduction;
     },
     displayProductions() {
-      this.viewProductions = !this.viewProductions;
       this.editTheaterComp = false;
       this.createProduction = false;
+      this.viewProductions = !this.viewProductions;
     }
   }
 };
@@ -107,4 +107,7 @@ export default {
 
 a:hover
   font-weight: bold
+
+CreateProduction
+  padding-top: 1em
 </style>
