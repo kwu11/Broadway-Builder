@@ -7,7 +7,7 @@
           <header class="card-header">
             <p class="card-header-title">
               <input class="input" type="text" v-model="job.Title" v-if="job.edit">
-              <strong id="Title" v-else>{{ job.Title }}, {{ job.HelpWantedId }}</strong>
+              <strong id="Title" v-else>{{ job.Title }}</strong>
             </p>
             <a
               v-on:click="job.show = false; job.edit = false"
@@ -175,11 +175,8 @@ export default {
             helpWantedId
         )
         .then(
-          response => (
-            this.jobPostings.splice(index, 1),
-            this.$emit("removed", this.jobPostings),
-            (job.show = false)
-          )
+          this.jobPostings.splice(index, 1),
+          this.$emit("removed", this.jobPostings)
         );
     },
     showDetails(job) {
