@@ -7,7 +7,7 @@
           <header class="card-header">
             <p class="card-header-title">
               <input class="input" type="text" v-model="job.Title" v-if="job.edit">
-              <strong id="Title" v-else>{{ job.Title }}</strong>
+              <strong id="Title" v-else>{{ job.Title }}, {{ job.HelpWantedId }}</strong>
             </p>
             <a
               v-on:click="job.show = false; job.edit = false"
@@ -60,7 +60,12 @@
           </div>
           <!-- Card options for interacting with a job -->
           <footer class="card-footer" v-if="!job.show">
-            <a class="card-footer-item" v-on:click="job.show = true">View</a>
+            <a class="card-footer-item" v-on:click="job.show = true">View More Info</a>
+            <a
+              class="card-footer-item"
+              v-if="permission"
+              v-on:click="viewResumes = true; helpWantedId = job.HelpWantedId"
+            >View Applicants</a>
           </footer>
           <footer class="card-footer" v-if="permission && job.show">
             <a class="card-footer-item" v-if="!job.edit" v-on:click="editJobPosting(job)">Edit</a>
@@ -72,30 +77,36 @@
             <a
               class="card-footer-item"
               v-if="!job.edit"
-              v-on:click="deleteConfirmation = true"
+              v-on:click="deleteConfirmation = true; helpWantedId = job.HelpWantedId; jobIndex = index"
             >Delete</a>
           </footer>
           <footer class="card-footer" v-else-if="!permission && job.show">
             <a class="card-footer-item" v-on:click="uploadResume()">Apply</a>
           </footer>
-          <div class="modal" v-if="deleteConfirmation">
-            <div class="modal-background"></div>
-            <div class="modal-content">
-              <!-- Any other Bulma elements you want -->
-            </div>
-            <button class="modal-close is-large" aria-label="close"></button>
-          </div>
         </div>
       </div>
+
+      <ResumeModal v-if="viewResumes" :helpWantedId="helpWantedId" @cancel="viewResumes = false"/>
+      <DeleteJobModal
+        v-if="deleteConfirmation"
+        @cancel="deleteConfirmation = false"
+        @confirmation="removeJobPosting(helpWantedId, jobIndex); deleteConfirmation = false"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import ResumeModal from "@/views/HelpWanted/ResumeModal";
+import DeleteJobModal from "@/views/HelpWanted/DeleteConfirmationModal";
 
 export default {
   props: ["jobPostings", "hasPermission", "filters", "file"],
+  components: {
+    ResumeModal,
+    DeleteJobModal
+  },
   data() {
     return {
       categories: ["Description", "Hours", "Requirements"],
@@ -105,6 +116,9 @@ export default {
       jobFilters: this.filters,
       permission: this.hasPermission,
       deleteConfirmation: false,
+      viewResumes: false,
+      helpWantedId: 0,
+      jobIndex: 0,
       userid: 1
     };
   },
@@ -153,17 +167,19 @@ export default {
 
       job.edit = false;
     },
-    async removeJobPosting(job, index) {
+    async removeJobPosting(helpWantedId, index) {
       // Removes a job posting from the database
       await axios
         .delete(
           "https://api.broadwaybuilder.xyz/helpwanted/deletetheaterjob/" +
-            job.HelpWantedId
+            helpWantedId
         )
         .then(
-          this.jobPostings.splice(index, 1),
-          this.$emit("removed", this.jobPostings),
-          (job.show = false)
+          response => (
+            this.jobPostings.splice(index, 1),
+            this.$emit("removed", this.jobPostings),
+            (job.show = false)
+          )
         );
     },
     showDetails(job) {
