@@ -27,11 +27,11 @@
           <td>{{production.DirectorFirstName}} {{production.DirectorLastName}}</td>
           <td>{{production.Street}}, {{production.City}}, {{production.StateProvince}} {{production.Zipcode}}</td>
           <td>{{production.DateTimes[0].Date}}</td>
+
           <td>
-            <a v-on:click="showModal">
+            <a v-on:click="showModal(production)">
               <img src="@/assets/edit.png" alt="Edit">
             </a>
-            <modal :production="production" v-show="isModalVisible" @close="closeModal"/>
           </td>
 
           <td>
@@ -60,6 +60,32 @@
         </tr>
       </tbody>
     </table>
+    <modal v-show="isModalVisible" v-bind:production="modalProduction" @close="closeModal"/>
+
+    <nav class="pagination" is-medium role="navigation" aria-label="pagination">
+      <a class="pagination-previous" v-if="currentPage != minPage" v-on:click="prevPage()">Previous</a>
+      <a class="pagination-previous" disabled v-else>Previous</a>
+      <a class="pagination-next" v-if="currentPage != maxPage" v-on:click="nextPage()">Next page</a>
+      <a class="pagination-next" disabled v-else>Next page</a>
+
+      <ul class="pagination-list">
+        <li v-for="(page, index) in maxPage" :key="index">
+          <a
+            v-if="page === currentPage"
+            class="pagination-link is-current"
+            aria-label="Page 1"
+            aria-current="page"
+          >{{ index + 1 }}</a>
+          <a
+            v-else
+            v-on:click="choosePage(index)"
+            class="pagination-link"
+            aria-label="Page 1"
+            aria-current="page"
+          >{{ index + 1 }}</a>
+        </li>
+      </ul>
+    </nav>
   </div>
 </template>
 
@@ -76,15 +102,17 @@ export default {
       productions: [],
       isModalVisible: false,
       file: "",
-      programID: 0
+      programID: 0,
+      currentPage: 1,
+      minPage: 1,
+      maxPage: 2,
+      startPoint: 0,
+      numberOfItems: 5,
+      modalProduction: null
     };
   },
   async mounted() {
-    await axios
-      .get(
-        "https://api.broadwaybuilder.xyz/production/getProductions?currentDate=3%2F23%2F2019"
-      )
-      .then(response => (this.productions = response.data));
+    this.getProductions();
   },
   methods: {
     async deleteProduction(ProductionID) {
@@ -113,10 +141,24 @@ export default {
           console.log("Failure!");
         });
     },
+    async getProductions() {
+      await axios
+        .get(
+          "https://api.broadwaybuilder.xyz/production/getProductions?currentDate=3%2F23%2F2019",
+          {
+            params: {
+              pageNum: this.currentPage,
+              pagesize: this.numberOfItems
+            }
+          }
+        )
+        .then(response => (this.productions = response.data));
+    },
     onFileChange() {
       this.file = this.$refs.file.files[0];
     },
-    showModal() {
+    showModal(production) {
+      this.modalProduction = production;
       this.isModalVisible = true;
     },
     closeModal() {
@@ -124,6 +166,35 @@ export default {
     },
     programIDSelect(id) {
       this.programID = id;
+    },
+    choosePage(page) {
+      this.currentPage = page + 1;
+      this.getProductions();
+    },
+    prevPage() {
+      this.currentPage -= 1;
+      this.getProductions();
+    },
+    nextPage() {
+      this.currentPage += 1;
+      this.getProductions();
+    },
+    async getMaxPage() {
+      await axios
+        .get("https://api.broadwaybuilder.xyz/helpwanted/length", {
+          params: {
+            theaterid: 1
+          }
+        })
+        .then(response => {
+          if (this.numberOfItems === 1) {
+            this.maxPage = response.data;
+          } else if (this.numberOfItems === response.data) {
+            this.maxPage = Math.floor(response.data / this.numberOfItems);
+          } else {
+            this.maxPage = Math.floor(response.data / this.numberOfItems) + 1;
+          }
+        });
     }
   }
 };

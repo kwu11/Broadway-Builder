@@ -74,12 +74,18 @@ export default {
   methods: {
     editTheaterComp() {
       this.editTheater = !this.editTheater;
+      this.viewProductions = false;
+      this.createProduction = false;
     },
     createProductionForTheater() {
       this.createProduction = !this.createProduction;
+      this.viewProductions = false;
+      this.editTheaterComp = false;
     },
     displayProductions() {
       this.viewProductions = !this.viewProductions;
+      this.editTheaterComp = false;
+      this.createProduction = false;
     }
   }
 };
