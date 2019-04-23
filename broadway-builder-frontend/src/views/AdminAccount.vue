@@ -57,8 +57,8 @@ export default {
   data() {
     return {
       editTheater: false,
-      createProduction: true,
-      viewProductions: false,
+      createProduction: false,
+      viewProductions: true,
       theater: {
         TheaterName: "Theater",
         CompanyName: "Company",

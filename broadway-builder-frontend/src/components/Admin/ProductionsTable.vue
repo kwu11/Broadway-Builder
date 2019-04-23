@@ -105,14 +105,16 @@ export default {
       programID: 0,
       currentPage: 1,
       minPage: 1,
-      maxPage: 2,
-      startPoint: 0,
-      numberOfItems: 5,
-      modalProduction: null
+      maxPage: 1,
+      numberOfItems: 3,
+      modalProduction: null,
+      prod: [],
+      numberOfObjects: Number
     };
   },
   async mounted() {
     this.getProductions();
+    this.getProductionsLength();
   },
   methods: {
     async deleteProduction(ProductionID) {
@@ -154,6 +156,24 @@ export default {
         )
         .then(response => (this.productions = response.data));
     },
+    async getProductionsLength() {
+      await axios
+        .get(
+          "https://api.broadwaybuilder.xyz/production/getProductions?currentDate=3%2F23%2F2019"
+        )
+        .then(response => {
+          if (this.numberOfItems === 1) {
+            this.maxPage = response.data.length;
+          } else if (this.numberOfItems === response.data.length) {
+            this.maxPage = Math.floor(
+              response.data.length / this.numberOfItems
+            );
+          } else {
+            this.maxPage =
+              Math.floor(response.data.length / this.numberOfItems) + 1;
+          }
+        });
+    },
     onFileChange() {
       this.file = this.$refs.file.files[0];
     },
@@ -178,23 +198,6 @@ export default {
     nextPage() {
       this.currentPage += 1;
       this.getProductions();
-    },
-    async getMaxPage() {
-      await axios
-        .get("https://api.broadwaybuilder.xyz/helpwanted/length", {
-          params: {
-            theaterid: 1
-          }
-        })
-        .then(response => {
-          if (this.numberOfItems === 1) {
-            this.maxPage = response.data;
-          } else if (this.numberOfItems === response.data) {
-            this.maxPage = Math.floor(response.data / this.numberOfItems);
-          } else {
-            this.maxPage = Math.floor(response.data / this.numberOfItems) + 1;
-          }
-        });
     }
   }
 };
