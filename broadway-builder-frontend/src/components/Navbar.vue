@@ -17,9 +17,7 @@
 <script>
 export default {
   data: function() {
-    return {
-      isOpen: false
-    };
+    return {};
   }
 };
 </script>
