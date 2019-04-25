@@ -136,7 +136,6 @@ export default {
         )
         .then(response => (this.productions = response.data));
     },
-
     onFileChange() {
       this.file = this.$refs.file.files[0];
     },
