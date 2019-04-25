@@ -12,6 +12,7 @@ using ServiceLayer;
 using DataAccessLayer;
 using ServiceLayer.Services;
 using BroadwayBuilder.Api.Models;
+using System.Text;
 
 namespace BroadwayBuilder.Api.Controllers
 {
@@ -25,70 +26,46 @@ namespace BroadwayBuilder.Api.Controllers
             var dbcontext = new BroadwayBuilderContext();
             var productionService = new ProductionService(dbcontext);
 
-            //try to upload pdf and save to server filesystem
+            // Try to upload pdf and save to server filesystem
             try
             {
-                //get the content, headers, etc the full request of the current http request
+                // Get the full request of the current http request
                 var httpRequest = HttpContext.Current.Request;
 
-                //A list in case we want to accept more than one file type
-                IList<string> AllowedFileExtension = new List<string> { ".pdf" };
+                var fileCollection = httpRequest.Files;
 
-                // Todo: Check if length of httpRequest.Files == 1 to ensure only 1 file is uploaded
-
-                // Max file size is 1MB
+                var fileValidator = new FileValidator();
                 int MaxContentLength = 1024 * 1024 * 1;
+                int maxFileCount = 1;
+                var extensions = new List<string>() { ".pdf" };
 
-                foreach (string filename in httpRequest.Files)
+                // Validate files for valid extension, and size
+                var validationResult = fileValidator.ValidateFiles(fileCollection, extensions, MaxContentLength, maxFileCount);
+
+                if (!validationResult.ValidationSuccessful)
                 {
-                    // Grab current file of the request
-                    var putFile = httpRequest.Files[filename];
-
-                    // Continue if the file has content
-                    if (putFile != null && putFile.ContentLength > 0)
-                    {
-                        // Checks the current extension of the current file
-                        var ext = putFile.FileName.Substring(putFile.FileName.LastIndexOf('.'));
-                        var extension = ext.ToLower();
-
-                        // File extension is not valid
-                        if (!AllowedFileExtension.Contains(extension))
-                        {
-                            //var message = string.Format("Please Upload image of type .pdf only");
-                            // Todo: Log the error that occurs
-                            return BadRequest("File needs to be of type pdf");
-                        }
-                        // File size is too big
-                        else if (putFile.ContentLength > MaxContentLength)
-                        {
-                            //var message = string.Format("Please Upload a file upto 1 mb.");
-                            // Todo: log the error that occurs
-                            return BadRequest("File exceeds max limit of 1 MB");
-                        }
-                        // Send to production service where functinality to save the file is
-                        else
-                        {
-                            // check if id is null or not then proceed
-                            productionService.UploadProgram(productionId, extension, putFile);
-
-                        }
-                    }
-
-                    // Todo: Create an ErrorMessage model
-                    //var message1 = string.Format("Image Updated Successfully.");
-                    //return Created(insert path);
-                    //return Created("C:\\Users\\ProductionPrograms");
-                    return Ok("Pdf Uploaded");
+                    var errorMessage = string.Join("\n", validationResult.Reasons);
+                    return BadRequest(errorMessage);
                 }
-                // Todo: Create an ErrorMessage model
-                //var res = string.Format("Please Upload an image.");
-                // Todo: log the error that occurs
-                return BadRequest("Please upload an image");
+
+                // Send file to up uploaded to server
+                foreach (string filename in fileCollection)
+                {
+                    var putFile = fileCollection[filename];
+
+                 // Todo: check if id is null or not then proceed
+                 productionService.UploadProgram(productionId, putFile);
+                }
+
+                //return Created(insert path);
+                //return Created("C:\\Users\\ProductionPrograms");
+                return Ok("Pdf Uploaded");
+
             }
-            catch (Exception ex) {
+            catch (Exception e) {
                 // Todo: add proper error handling
                 // Todo: log error
-                return BadRequest("Was not able to upload the image");
+                return BadRequest(e.Message);
 
             }
         }
@@ -120,7 +97,6 @@ namespace BroadwayBuilder.Api.Controllers
             }
 
         }
-
 
         [Route("{productionId}")]
         [HttpGet]
@@ -298,56 +274,36 @@ namespace BroadwayBuilder.Api.Controllers
             {
                 //get the content, headers, etc the full request of the current http request
                 var httpRequest = HttpContext.Current.Request;
-               
+
+                var fileCollection = httpRequest.Files;
 
                 // Todo: Check if length of httpRequest.Files <= 10 to ensure only 10 photos is uploaded
 
-                // A list in case we want to accept more than one file type
-                IList<string> AllowedFileExtension = new List<string> { ".jpg" };
+                var fileValidator = new FileValidator();
 
-                // Max file size is 1MB
                 int MaxContentLength = 1 * 1024 * 1024 * 5; //Size = 5 MB
+                var validExtensions = new List<string>() {".jpg"};
+                int maxFileCount = 5;
+
+                var validationResult = fileValidator.ValidateFiles(fileCollection, validExtensions, MaxContentLength, maxFileCount);
+
+                if (!validationResult.ValidationSuccessful)
+                {
+                    var errorMessage = string.Join("\n", validationResult.Reasons);
+                    return BadRequest(errorMessage);
+                }
 
                 var count = 0;
 
+                // Used for loop since foreach did not handle cycling through multiple files well
                 for (int i= 0; i < httpRequest.Files.Count; i++)
                 {
                     // Grab current file of the request
-                    //var putFile = httpRequest.Files[filename];
                     var putFile = httpRequest.Files[i];
-
-                    // Continue if the file has content
-                    if (putFile != null && putFile.ContentLength > 0)
-                    {
-
-                        // Checks the current extension of the current file
-                        var ext = putFile.FileName.Substring(putFile.FileName.LastIndexOf('.'));
-                        var extension = ext.ToLower();
-
-                        // File extension is not valid
-                        if (!AllowedFileExtension.Contains(extension))
-                        {
-
-                            //var message = string.Format("Please Upload image of type .jpg only");
-                            // Todo: Log the error that occurs
-                            return BadRequest("Please upload image of type .jpg only");
-                        }
-                        // File size is too big
-                        else if (putFile.ContentLength > MaxContentLength)
-                        {
-
-                            //var message = string.Format("Please Upload a file upto 1 mb.");
-
-                            // Todo: log the error that occurs
-                            return BadRequest("Please upload a file upto 1mb");
-                        }
-                        // Send to production service where functinality to save the file is
-                        else
-                        {
-                            productionService.UploadPhoto(productionId, count, extension, putFile);
-                        }
-                    }
-
+                    
+                   // Send to production service where functinality to save the file is                        
+                   productionService.UploadPhoto(productionId, count, putFile);
+                    
                     count++;
                 }
 
@@ -358,7 +314,7 @@ namespace BroadwayBuilder.Api.Controllers
             {
                 // Todo: add proper error handling
                 // Todo: log error
-                return BadRequest("Photo could not be uploaded...dont know why.find out and add detailed message here!");
+                return BadRequest(ex.Message);
 
             }
         }

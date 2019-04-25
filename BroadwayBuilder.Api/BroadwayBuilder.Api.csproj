@@ -103,11 +103,13 @@
     <Compile Include="Controllers\HelpWantedController.cs" />
     <Compile Include="Controllers\TheaterController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="FileValidator.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductionResponseModel.cs" />
     <Compile Include="Models\ProductionDateTimeResponseModel.cs" />
+    <Compile Include="Models\ValidationResultModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
