@@ -74,7 +74,7 @@ export default {
       // The maximum number of pages (this will change)
       totalPages: 1,
       // The amount of jobs to retrive
-      numberOfItems: 5,
+      numberOfItems: 3,
       // Boolean value to display new job posting inputs
       addJob: false,
       // Filter applied to a job

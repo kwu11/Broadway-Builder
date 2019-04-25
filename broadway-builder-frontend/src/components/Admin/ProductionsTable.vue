@@ -1,12 +1,11 @@
 <template>
   <div class="ProductionsTable">
-    Productions
     <v-app id="inspire">
       <v-data-table :headers="headers" :items="productions" class="elevation-1">
         <template v-slot:items="props">
+          <td>{{props.item.ProductionID}}</td>
           <td>{{props.item.ProductionName}}</td>
           <td>{{props.item.TheaterID}}</td>
-          <td>{{props.item.ProductionID}}</td>
           <td>{{props.item.DirectorFirstName}} {{props.item.DirectorLastName}}</td>
           <td>{{props.item.Street}}, {{props.item.City}}, {{props.item.StateProvince}} {{props.item.Zipcode}}</td>
           <td>
@@ -31,7 +30,7 @@
         </template>
       </v-data-table>
     </v-app>
-    <modal v-show="isModalVisible" v-bind:production="modalProduction" @close="closeModal"/>
+    <modal v-show="isModalVisible" v-bind:production="modalProduction" @close="closeModal" />
   </div>
 </template>
 
@@ -57,6 +56,11 @@ export default {
       prod: [],
       headers: [
         {
+          text: "Production ID",
+          align: "right",
+          value: "ProductionID"
+        },
+        {
           text: "Production Name",
           align: "left",
           sortable: false,
@@ -66,11 +70,6 @@ export default {
           text: "Theater ID",
           align: "right",
           value: "TheaterID"
-        },
-        {
-          text: "Production ID",
-          align: "right",
-          value: "ProductionID"
         },
         {
           text: "Director",

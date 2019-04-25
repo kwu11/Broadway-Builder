@@ -87,9 +87,8 @@ export default {
         JobType: "",
         TheaterID: this.theaterId
       },
-      jobTypes: ["None", "Full Time", "Part Time", "Seasonal"],
+      jobTypes: ["Full Time", "Part Time", "Seasonal"],
       jobPositions: [
-        "None",
         "Actors",
         "Stagehands",
         "Backstage",
