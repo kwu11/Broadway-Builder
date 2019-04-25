@@ -25,7 +25,7 @@
       </v-layout>
     </v-container>
 
-    <a v-if="viewPix === true" v-on:click="viewPix=false">Back</a>
+    <div class="button is-primary" v-if="viewPix === true" v-on:click="viewPix=false">Back</div>
     <v-gallery v-if="viewPix === true" type="carousel" :images="pics"></v-gallery>
   </div>
 </template>

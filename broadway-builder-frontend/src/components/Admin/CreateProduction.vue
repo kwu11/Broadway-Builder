@@ -1,66 +1,90 @@
 <template>
   <div>
     <h1>Create A Production</h1>
-    <div class="field">
-      <label class="label">Theater ID</label>
-      <div class="control">
-        <input class="input" v-model="production.theaterid">
+    <div class="field is-horizontal">
+      <div class="field-label">
+        <label class="label">Theater ID</label>
+      </div>
+      <div class="field-body">
+        <div class="field">
+          <p class="control is-expanded">
+            <input class="input" v-model="production.theaterId">
+          </p>
+        </div>
       </div>
     </div>
 
-    <div class="field">
-      <label class="label">Production Name</label>
-      <div class="control">
-        <input class="input" v-model="production.productionname">
+    <div class="field is-horizontal">
+      <div class="field-label">
+        <label class="label">Production Name</label>
+      </div>
+      <div class="field-body">
+        <div class="field">
+          <p class="control is-expanded">
+            <input class="input" v-model="production.productionName">
+          </p>
+        </div>
       </div>
     </div>
 
-    <div class="field">
-      <label class="label">Director First Name</label>
-      <div class="control">
-        <input class="input" v-model="production.directorFirstName">
+    <div class="field is-horizontal">
+      <div class="field-label">
+        <label class="label">Director</label>
+      </div>
+      <div class="field-body">
+        <div class="field">
+          <p class="control is-expanded">
+            <input class="input" placeholder="First Name" v-model="production.directorFirstName">
+          </p>
+        </div>
+        <div class="field">
+          <p class="control is-expanded">
+            <input class="input" placeholder="Last Name" v-model="production.directorLastName">
+          </p>
+        </div>
       </div>
     </div>
 
-    <div class="field">
-      <label class="label">Director Last Name</label>
-      <div class="control">
-        <input class="input" v-model="production.directorLastName">
+    <div class="field is-horizontal">
+      <div class="field-label">
+        <label class="label">Address</label>
+      </div>
+      <div class="field-body">
+        <div class="field">
+          <p class="control is-expanded">
+            <input class="input" placeholder="Street" v-model="production.street">
+          </p>
+        </div>
       </div>
     </div>
 
-    <div class="field">
-      <label class="label">Street</label>
-      <div class="control">
-        <input class="input" v-model="production.street">
+    <div class="field is-horizontal">
+      <div class="field-body">
+        <div class="field">
+          <p class="control is-expanded">
+            <input class="input" placeholder="City" v-model="production.city">
+          </p>
+        </div>
+        <div class="field">
+          <p class="control is-expanded">
+            <input class="input" placeholder="State/Province" v-model="production.stateProvince">
+          </p>
+        </div>
       </div>
     </div>
 
-    <div class="field">
-      <label class="label">City</label>
-      <div class="control">
-        <input class="input" v-model="production.city">
-      </div>
-    </div>
-
-    <div class="field">
-      <label class="label">State / Province</label>
-      <div class="control">
-        <input class="input" v-model="production.stateProvince">
-      </div>
-    </div>
-
-    <div class="field">
-      <label class="label">Country</label>
-      <div class="control">
-        <input class="input" v-model="production.country">
-      </div>
-    </div>
-
-    <div class="field">
-      <label class="label">Zip Code</label>
-      <div class="control">
-        <input class="input" v-model="production.zipcode">
+    <div class="field is-horizontal">
+      <div class="field-body">
+        <div class="field">
+          <p class="control is-expanded">
+            <input class="input" placeholder="Zipcode" v-model="production.zipcode">
+          </p>
+        </div>
+        <div class="field">
+          <p class="control is-expanded">
+            <input class="input" placeholder="Country" v-model="production.country">
+          </p>
+        </div>
       </div>
     </div>
 
