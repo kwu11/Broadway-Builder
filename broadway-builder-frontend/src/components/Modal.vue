@@ -67,10 +67,9 @@
         <footer class="modal-footer">
           <slot name="footer">
             <button
-              v-on:click="editProductionInfo"
+              v-on:click="editProductionInfo(); close()"
               type="button"
               class="btn-green"
-              @click="close"
               aria-label="Close modal"
             >Submit</button>
           </slot>
