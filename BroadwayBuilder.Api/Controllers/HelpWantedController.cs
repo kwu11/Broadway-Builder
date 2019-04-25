@@ -25,13 +25,13 @@ namespace BroadwayBuilder.Api.Controllers
         public HelpWantedController() { }
 
         [HttpGet, Route("length")]
-        public IHttpActionResult GetThaterJobsCount(int theaterid)
+        public IHttpActionResult GetTheaterJobsCount(int theaterid)
         {
-            using (var dbcontext = new BroadwayBuilderContext())
+            using (var dbContext = new BroadwayBuilderContext())
             {
                 try
                 {
-                    HelpWantedService service = new HelpWantedService(dbcontext);
+                    HelpWantedService service = new HelpWantedService(dbContext);
                     return Content((HttpStatusCode)200, service.GetTheaterJobsCount(theaterid));
                 }
                 catch
@@ -41,15 +41,15 @@ namespace BroadwayBuilder.Api.Controllers
             }
         }
 
-        [HttpGet, Route("{theaterid}")]
-        public IHttpActionResult GetTheaterJobs(int theaterid, int currentPage, int numberOfItems)//needs to be changed to string for encryption purposes
+        [HttpGet, Route("gettheaterjobs")]
+        public IHttpActionResult GetTheaterJobs(int theaterId, int currentPage, int numberOfItems)//needs to be changed to string for encryption purposes
         {
             using(var dbcontext = new BroadwayBuilderContext())
             {
                 try
                 {
                     HelpWantedService service = new HelpWantedService(dbcontext);
-                    var list = service.GetAllJobsFromTheater(theaterid, currentPage, numberOfItems);
+                    var list = service.GetAllJobsFromTheater(theaterId, currentPage, numberOfItems);
                     if(list == null)
                     {
                         throw new NullNotFoundException();
@@ -68,18 +68,18 @@ namespace BroadwayBuilder.Api.Controllers
         }
 
         [HttpPut,Route("edittheaterjob")]
-        public IHttpActionResult EditTheaterJob(TheaterJobPosting job) 
+        public IHttpActionResult EditTheaterJob([FromBody]TheaterJobPosting job) 
         {
-            using(var dbcontext = new BroadwayBuilderContext())
+            using(var dbContext = new BroadwayBuilderContext())
             {
                 try
                 {
-                    HelpWantedService service = new HelpWantedService(dbcontext);
+                    HelpWantedService service = new HelpWantedService(dbContext);
                     //TheaterJobPosting job = service.GetTheaterJob(helpwantedid);
                     if (job != null)
                     {
                         service.UpdateTheaterJob(job);
-                        var results = dbcontext.SaveChanges();
+                        var results = dbContext.SaveChanges();
                         if (results > 0)
                         {
                             return Content((HttpStatusCode)202, "Updated Job Posting");//not sure to return object or just string response
@@ -108,12 +108,12 @@ namespace BroadwayBuilder.Api.Controllers
             }
         }
 
-        [HttpDelete, Route("deletetheaterjob/{helpWantedId}")]
+        [HttpDelete, Route("deletetheaterjob")]
         public IHttpActionResult DeleteTheaterJob(int helpWantedId)
         {
-            using (var dbcontext = new BroadwayBuilderContext())
+            using (var dbContext = new BroadwayBuilderContext())
             {
-                HelpWantedService service = new HelpWantedService(dbcontext);
+                HelpWantedService service = new HelpWantedService(dbContext);
                 TheaterJobPosting job = service.GetTheaterJob(helpWantedId);
                 try
                 {
@@ -122,7 +122,7 @@ namespace BroadwayBuilder.Api.Controllers
                     {
                         return Content((HttpStatusCode)404, "That Job Listing does not exist");
                     }
-                    var results = dbcontext.SaveChanges();
+                    var results = dbContext.SaveChanges();
                     if (results > 0)
                     {
                         return Content((HttpStatusCode)202, "Successfully Deleted Job Posting");
@@ -150,9 +150,9 @@ namespace BroadwayBuilder.Api.Controllers
         [HttpPost,Route("createtheaterjob")]
         public IHttpActionResult CreateTheaterJob([FromBody]TheaterJobPosting theaterJob)
         {
-            using(var dbcontext = new BroadwayBuilderContext())
+            using(var dbContext = new BroadwayBuilderContext())
             {
-                HelpWantedService jobService = new HelpWantedService(dbcontext);
+                HelpWantedService jobService = new HelpWantedService(dbContext);
                 try
                 {
                     if (theaterJob == null)
@@ -160,7 +160,7 @@ namespace BroadwayBuilder.Api.Controllers
                         return Content((HttpStatusCode)400, "That job posting does not exist");
                     }
                     jobService.CreateTheaterJob(theaterJob);
-                    var results = dbcontext.SaveChanges();
+                    var results = dbContext.SaveChanges();
                     if (results <= 0)
                     {
                         throw new ZeroAffectedRowsException();
@@ -186,9 +186,9 @@ namespace BroadwayBuilder.Api.Controllers
         [HttpPost, Route("createproductionjob")]
         public IHttpActionResult CreateProductionJob([FromBody]ProductionJobPosting productionJob)
         {
-            using (var dbcontext = new BroadwayBuilderContext())
+            using (var dbContext = new BroadwayBuilderContext())
             {
-                ProductionJobService jobService = new ProductionJobService(dbcontext);
+                ProductionJobService jobService = new ProductionJobService(dbContext);
                 try
                 {
                     if (productionJob == null)
@@ -196,7 +196,7 @@ namespace BroadwayBuilder.Api.Controllers
                         return Content((HttpStatusCode)404,"The job posting does not exist");
                     }
                     jobService.CreateProductionJob(productionJob);
-                    var results = dbcontext.SaveChanges();
+                    var results = dbContext.SaveChanges();
                     if (results > 0)
                     {
                         return Content((HttpStatusCode)201, "Production Job Posting Created");
@@ -221,14 +221,14 @@ namespace BroadwayBuilder.Api.Controllers
             }
         }
 
-        [HttpPut,Route("{userid}/uploadresume")]
-        public IHttpActionResult uploadResume(int userid)
+        [HttpPut,Route("uploadresume")]
+        public IHttpActionResult UploadResume(int userId)
         {
             //A list in case we want to accept more than one file type
-            IList<string> AllowedFileExtension = new List<string> { ".pdf" };
+            IList<string> allowedFileExtension = new List<string> { ".pdf" };
             
             // Max file size is 1MB
-            const int MaxContentLength = 1024 * 1024 * 1;
+            const int maxContentLength = 1024 * 1024 * 1;
 
             try
             {
@@ -243,31 +243,31 @@ namespace BroadwayBuilder.Api.Controllers
                 if (postedFile != null && postedFile.ContentLength > 0)
                 {
                     string extension = Path.GetExtension(postedFile.FileName).ToLower();//get extension of the file
-                    if (!AllowedFileExtension.Contains(extension))
+                    if (!allowedFileExtension.Contains(extension))
                     {
                         throw new Exception(extension);
                     }
-                    else if(postedFile.ContentLength > MaxContentLength)
+                    else if(postedFile.ContentLength > maxContentLength)
                     {
                         throw new Exception("File Exceeds file limit");
                     }
                     else
                     {
-                        using (var dbcontext = new BroadwayBuilderContext())
+                        using (var dbContext = new BroadwayBuilderContext())
                         {
-                            var userService = new UserService(dbcontext);
-                            User user = userService.GetUser(userid);
+                            var userService = new UserService(dbContext);
+                            User user = userService.GetUser(userId);
                             if (user == null)//check if user exists
                             {
                                 throw new Exception("User does not exist");
                             }
-                            var resumeService = new ResumeService(dbcontext);
-                            Resume resume = resumeService.GetResumeByUserID(userid);
+                            var resumeService = new ResumeService(dbContext);
+                            Resume resume = resumeService.GetResumeByUserID(userId);
                             if (resume == null)//check if user has already submitted a resume
                             {
-                                Resume userResume = new Resume(userid, Guid.NewGuid());
+                                Resume userResume = new Resume(userId, Guid.NewGuid());
                                 resumeService.CreateResume(userResume);
-                                var result = dbcontext.SaveChanges();
+                                var result = dbContext.SaveChanges();
                                 if(result <= 0)
                                 {
                                     throw new Exception("failed to add a resume");
@@ -308,20 +308,20 @@ namespace BroadwayBuilder.Api.Controllers
             }
         }
 
-        [HttpGet,Route("myresume/{userId}")]
+        [HttpGet,Route("myresume")]
         public IHttpActionResult GetResume(int userId)
         {
             try
             {
-                using (var dbcontext = new BroadwayBuilderContext())
+                using (var dbContext = new BroadwayBuilderContext())
                 {
-                    var userService = new UserService(dbcontext);
+                    var userService = new UserService(dbContext);
                     User user = userService.GetUser(userId);
                     if (user == null)//check if user exists
                     {
                         throw new Exception("User does not exist");
                     }
-                    var resumeService = new ResumeService(dbcontext);
+                    var resumeService = new ResumeService(dbContext);
                     Resume resume = resumeService.GetResumeByUserID(userId);
                     if (resume == null)//check if user has already submitted a resume
                     {
@@ -343,30 +343,30 @@ namespace BroadwayBuilder.Api.Controllers
             }
         }
 
-        [HttpPost,Route("apply/{id}/{helpwantedid}")] //apply to a theater job
+        [HttpPost,Route("apply")] //apply to a theater job
         public IHttpActionResult ApplyToJob(int id,int helpwantedid)
         {
             try
             {
-                using (var dbcontext = new BroadwayBuilderContext())
+                using (var dbContext = new BroadwayBuilderContext())
                 {
-                    var resumeService = new ResumeService(dbcontext);
+                    var resumeService = new ResumeService(dbContext);
                     Resume resume = resumeService.GetResumeByUserID(id);
                     if (resume == null)//check if user has already submitted a resume
                     {
                         throw new Exception("No resume on file");
                     }
-                    var theaterjobservice = new HelpWantedService(dbcontext);
-                    TheaterJobPosting job = theaterjobservice.GetTheaterJob(helpwantedid);
+                    var theaterJobService = new HelpWantedService(dbContext);
+                    TheaterJobPosting job = theaterJobService.GetTheaterJob(helpwantedid);
                     if (job == null)//check if job exists
                     {
                         throw new Exception("No job on file");
                     }
 
-                    var resumejobposting = new ResumeTheaterJob(job.HelpWantedID,resume.ResumeID);
-                    var resumejobservice = new ResumeTheaterJobService(dbcontext);
-                    resumejobservice.CreateResumeTheaterJob(resumejobposting);
-                    var result = dbcontext.SaveChanges();
+                    var resumeJobPosting = new ResumeTheaterJob(job.HelpWantedID,resume.ResumeID);
+                    var resumeJobService = new ResumeTheaterJobService(dbContext);
+                    resumeJobService.CreateResumeTheaterJob(resumeJobPosting);
+                    var result = dbContext.SaveChanges();
                     if (result > 0)
                     {
                         return Content((HttpStatusCode)200, "Successfully Applied!");
@@ -380,7 +380,7 @@ namespace BroadwayBuilder.Api.Controllers
             }
         }
 
-        [HttpGet,Route("getResume/{theaterid}")] // all resumes submitted to the theater -- dont recommend this
+        [HttpGet,Route("getResume")] // all resumes submitted to the theater -- dont recommend this
         public IHttpActionResult GetResumesForAllTheaterJobs(int theaterid)
         {
             try
@@ -409,22 +409,22 @@ namespace BroadwayBuilder.Api.Controllers
             }
         }
 
-        [HttpGet,Route("getResumesForJob/{helpwantedid}")] //get all resumes for a single job posting
-        public IHttpActionResult GetResumesforTheaterJob(int helpwantedid)
+        [HttpGet,Route("getresumesforjob")] //get all resumes for a single job posting
+        public IHttpActionResult GetResumesforTheaterJob(int helpwantedId)
         {
             try
             {
-                using (var dbcontext = new BroadwayBuilderContext())
+                using (var dbContext = new BroadwayBuilderContext())
                 {
-                    var theaterjobService = new HelpWantedService(dbcontext);
-                    if (theaterjobService.GetTheaterJob(helpwantedid) == null)
+                    var theaterJobService = new HelpWantedService(dbContext);
+                    if (theaterJobService.GetTheaterJob(helpwantedId) == null)
                     {
-                        throw new Exception("theater job does not exist");
+                        throw new Exception("Theater job does not exist");
                     }
-                    var resumetheaterjobservice = new ResumeTheaterJobService(dbcontext);
-                    var resumelist = resumetheaterjobservice.GetAllResumeGuidsForTheaterJob(helpwantedid);
+                    var resumeTheaterJobService = new ResumeTheaterJobService(dbContext);
+                    var resumeList = resumeTheaterJobService.GetAllResumeGuidsForTheaterJob(helpwantedId);
                     List<string> urlList = new List<string>();
-                    foreach (Guid guid in resumelist)
+                    foreach (Guid guid in resumeList)
                     {
                         string path = @"C:\Resumes\" + guid + @"/" + guid + ".pdf";
                         if (File.Exists(path))
