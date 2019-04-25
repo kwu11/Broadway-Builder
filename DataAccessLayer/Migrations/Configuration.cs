@@ -281,7 +281,7 @@ namespace DataAccessLayer.Migrations
                 new ProductionDateTime { ProductionDateTimeId = 84, ProductionID = 50, Date = new DateTime(2019, 05, 27), Time = new TimeSpan(5, 30, 00) }
 
                 );
-            //base.Seed(context);
+            base.Seed(context);
             
             
 
