@@ -2,7 +2,7 @@
   <div class="HelpWanted">
 
     <h1>
-      <strong>Job Opportunities</strong> | {{ theater.TheaterName }}, {{theater.TheaterID}}
+      <strong>Job Opportunities</strong> | {{ theater.TheaterName }}
     </h1>
 
     <div class="columns">
@@ -37,6 +37,7 @@
         <DisplayJobPostings v-if="hasPermission" :jobPostings="jobs" :hasPermission="true" :filters="filters" />
         <DisplayJobPostings v-else :jobPostings="jobs" :hasPermission="false" :filters="filters" :file="file" />
         <h1 v-if="jobs.length === 0">No job postings available</h1>
+        <v-divider></v-divider>
 
         <!-- Pagination for job postings -->
         <div class="text-sm-center">
@@ -188,7 +189,7 @@ export default {
 @import '../../../node_modules/bulma/bulma.sass'
 
 .HelpWanted
-  margin: 3em
+  padding-bottom: 3.5em
 
 #buttons
   text-align: center
