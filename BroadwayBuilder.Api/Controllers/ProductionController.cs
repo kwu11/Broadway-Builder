@@ -409,52 +409,52 @@ namespace BroadwayBuilder.Api.Controllers
         ///// <param name="productionId">The unique production ID.</param>
         ///// <param name="productionDateTime">The production Date Time object that will be attached to the production matching the ID.</param>
         ///// <returns>The production Date time object that was succesfully created.</returns>
-        //[SwaggerResponse(HttpStatusCode.OK, "The production date time created and its url.", typeof(ProductionDateTime))]
-        //[Route("{productionId}/create")]
-        //[HttpPost]
-        //public IHttpActionResult createProductionDateTime(int productionId, [FromBody] ProductionDateTime productionDateTime )
-        //{
-        //    try
-        //    {
-        //        using(var dbcontext = new BroadwayBuilderContext())
-        //        {
-        //            var productionService = new ProductionService(dbcontext);
+        [SwaggerResponse(HttpStatusCode.OK, "The production date time created and its url.", typeof(ProductionDateTime))]
+        [Route("{productionId}/create")]
+        [HttpPost]
+        public IHttpActionResult createProductionDateTime(int productionId, [FromBody] ProductionDateTime productionDateTime)
+        {
+            try
+            {
+                using (var dbcontext = new BroadwayBuilderContext())
+                {
+                    var productionService = new ProductionService(dbcontext);
 
-        //            try
-        //            {
-        //                if (productionDateTime == null)
-        //                {
-        //                    return BadRequest("no production date time object provided");
-        //                }
+                    try
+                    {
+                        if (productionDateTime == null)
+                        {
+                            return BadRequest("no production date time object provided");
+                        }
 
-        //                productionDateTime.ProductionID = productionId;
-        //                productionService.CreateProductionDateTime(productionDateTime);
-        //                dbcontext.SaveChanges();
+                        productionDateTime.ProductionID = productionId;
+                        productionService.CreateProductionDateTime(productionDateTime);
+                        dbcontext.SaveChanges();
 
-        //                var productionDateTimeCreatedUrl = Url.Link("GetProductionDateTimeByID", new {productionDateTimeID = productionDateTime.ProductionDateTimeId});
+                        var productionDateTimeCreatedUrl = Url.Link("GetProductionDateTimeByID", new { productionDateTimeID = productionDateTime.ProductionDateTimeId });
 
-        //                // Todo: Change this to a 201 Created(insert url of resource) once get productiondate time route is created
-        //                return Created(productionDateTimeCreatedUrl, productionDateTime);
-        //            }
-        //            catch (Exception e)
-        //            {
-        //                return BadRequest();
-        //            }
-        //        }
-        //    }
-        //    catch (Exception e )
-        //    {
-        //        return BadRequest("Something went wrong!");
-        //    }
+                        // Todo: Change this to a 201 Created(insert url of resource) once get productiondate time route is created
+                        return Created(productionDateTimeCreatedUrl, productionDateTime);
+                    }
+                    catch (Exception e)
+                    {
+                        return BadRequest();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest("Something went wrong!");
+            }
 
-        //}
+        }
 
         /// <summary>
         /// Updates either the date or time of a Production Date Time object that matches the production date time ID.
         /// </summary>
         /// <param name="productionDateTimeId">The unique production date time ID.</param>
         /// <param name="productionDateTime">The date and time attribute of the object.</param>
-        /// <returns>The updated production date time object.</returns>
+        [SwaggerResponse(HttpStatusCode.OK, "The updated production date time", typeof(ProductionDateTime))]
         [Route("{productionDateTimeID}")]
         [HttpPut]
         public IHttpActionResult updateProductionDateTime(int productionDateTimeId, [FromBody] ProductionDateTime productionDateTime)
@@ -498,7 +498,7 @@ namespace BroadwayBuilder.Api.Controllers
         /// </summary>
         /// <param name="productionDateTimeid">The unique production date time ID.</param>
         /// <param name="productionDateTimeToDelete">The production date time object to delete.</param>
-        /// <returns></returns>
+        [SwaggerResponse(HttpStatusCode.OK, "A string status")]
         [Route("{productionDateTimeId}")]
         [HttpDelete]
         public IHttpActionResult deleteProductiondateTime(int productionDateTimeid, ProductionDateTime productionDateTimeToDelete)
