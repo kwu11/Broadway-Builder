@@ -1,39 +1,41 @@
 <template>
-  <div class="ViewAllTheaters">
-    <SearchBar/>
-    <v-card>
-      <h1 id="applicationPortal">Theaters</h1>
+  <div id="view-theaters">
+    <h1 class="text-lg-center font-weight-bold display-3">List of Theaters</h1>
+    <v-layout row wrap>
+      <v-flex xs12 sm6 md6 lg4 v-for="(theater, index) in theaters" :key="index">
+        <v-flex xs12>
 
-      <v-container fluid grid-list-md>
-        <v-layout row wrap>
-          <v-flex xs12 sm6 md4 lg3 v-for="(theater, index) in theaters" :key="index">
-            <v-card hover v-on:click="goToProfile(theater)">
-              <v-card-title primary-title>
-                <img src="@/assets/download.png">
+          <!-- Clicking on the image goes to that theater -->
+          <v-card>
+            <v-img src="https://picsum.photos/510/300?random" height="200px" @click="goToProfile(theater)"></v-img>
+            <v-card-title primary-title>
+              <div @click="goToProfile(theater)">
+                <div class="headline">{{ theater.TheaterName }}</div>
+                <span class="grey--text">{{ theater.CompanyName }}</span>
+              </div>
+              <v-spacer></v-spacer>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn icon @click="show = !show">
+                  <v-icon>{{ show ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </v-card-title>
 
-                <div id="content">
-                  <h3 class="headline mb-0">
-                    <strong>{{ theater.TheaterName }}</strong>
-                  </h3>
-                </div>
-                <!-- Allows expansion or shrinkage of app description -->
-                <read-more
-                  more-str="read more"
-                  :text="theater.StreetAddress"
-                  less-str="read less"
-                  :max-chars="150"
-                ></read-more>
-              </v-card-title>
-            </v-card>
-          </v-flex>
-        </v-layout>
-      </v-container>
-    </v-card>
+            <!-- Open description -->
+            <v-slide-y-transition>
+              <v-card-text v-show="show">
+                I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed making you'll be doing. Then we'll go with that data file! Hey, you add a one and two zeros to that or we walk! You're going to do his laundry? I've got to find a way to escape.
+              </v-card-text>
+            </v-slide-y-transition>
+          </v-card>
+        </v-flex>
+      </v-flex>
+    </v-layout>
   </div>
 </template>
 
 <script>
-//import TheaterProfile from "@/views/TheaterProfile.vue";
 import axios from "axios";
 import Vue from "vue";
 import ReadMore from "vue-read-more";
@@ -47,6 +49,7 @@ export default {
   },
   data() {
     return {
+      show: false,
       theaters: []
     };
   },
@@ -69,6 +72,10 @@ export default {
 </script>
 
 <style scoped>
+#view-theaters {
+  margin: 2em 9em;
+}
+
 .v-card {
   margin: 1em;
 }

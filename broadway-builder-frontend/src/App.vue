@@ -1,9 +1,9 @@
 <template>
-  <div id="app">
+  <v-app id="app">
     <Navbar />
     <router-view />
     <Footer />
-  </div>
+  </v-app>
 </template>
 
 <script>
@@ -23,5 +23,5 @@ export default {
 
 #app
   font-family: Roboto;
-
+  
 </style>

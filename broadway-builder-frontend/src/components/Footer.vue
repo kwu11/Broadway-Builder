@@ -1,11 +1,11 @@
 <template>
-  <v-footer height="auto" color="primary" lighten-1 style="color: white; background: linear-gradient(to right, #6F0000, #200122);">
-    <v-layout justify-center row wrap>
+  <v-footer height="auto" lighten-1>
+    <v-layout class="footer" justify-center row wrap>
       <v-btn v-for="link in links" :key="link" color="white" flat>
         {{ link }}
       </v-btn>
-      <v-flex primary lighten-2 py-3 text-xs-center white--text xs12>
-        &copy;2018 — <strong whhite--text>Broadway Builder</strong>
+      <v-flex class="footer" lighten-2 py-3 text-xs-center white--text xs12>
+        &copy;2019 — <strong white--text>Broadway Builder</strong>
       </v-flex>
     </v-layout>
   </v-footer>
@@ -14,11 +14,16 @@
 <script>
 export default {
   data: () => ({
-    links: ["Home", "About Us", "Team", "Services", "Blog", "Contact Us"]
+    links: ["Team", "Privacy", "Terms of Service", "Contact Us"]
   })
 };
 </script>
 
-<style lang="sass" scoped>
-@import url('https://fonts.googleapis.com/css?family=Roboto');
+<style lang="css" scoped>
+@import url("https://fonts.googleapis.com/css?family=Roboto");
+
+.footer {
+  color: white;
+  background: linear-gradient(to right, #6f0000, #000);
+}
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="admin-account">
     <v-container text-xs-center fluid>
       <v-layout row wrap>
         <v-flex xs3>
@@ -64,6 +64,8 @@ export default {
 </script>
 
 <style lang="sass">
+#admin-account
+  margin-bottom: 20em
 
 a:hover
   font-weight: bold
