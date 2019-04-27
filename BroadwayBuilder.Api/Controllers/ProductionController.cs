@@ -270,7 +270,7 @@ namespace BroadwayBuilder.Api.Controllers
                 {
                     return BadRequest(e.Message);
 
-                    // Add logging
+                    // Todo: Log error
                 }
             }
 
@@ -297,10 +297,11 @@ namespace BroadwayBuilder.Api.Controllers
                     return Ok("Production deleted succesfully");
 
                 }
-                // Todo: Need to add proper exception handling
                 catch (Exception e)
                 {
-                    return BadRequest();
+                    return BadRequest(e.Message);
+
+                    // Todo: Log error
                 }
             }
         }
