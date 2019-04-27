@@ -107,10 +107,10 @@ namespace ServiceLayer.Services
         }
 
 
-        public void DeleteProduction(int productionid)
+        public void DeleteProduction(int productionID)
         {
             Production productionToDelete = _dbContext.Productions
-                .Where(o => o.ProductionID == productionid)
+                .Where(o => o.ProductionID == productionID)
                 .FirstOrDefault(); //gives you first production that satisfies the where
                 //if item doesn't exist it returns null Todo: throw a specific exception
 
@@ -121,7 +121,7 @@ namespace ServiceLayer.Services
             }
             else
             {
-                //throw an exception
+                throw new ProductionNotFoundException($"Production does not exist! with ID: {productionID}");
             }
         }
 
@@ -179,7 +179,7 @@ namespace ServiceLayer.Services
                 currentProductionDateTime.Time = productionDateTime.Time;
             } else
             {
-                //throw an exception
+                throw new ProductionDateTimeNotFoundException($"Production Date Time does not exist! with ID: {productionDateTime.ProductionDateTimeId}");
             }
 
             return currentProductionDateTime;

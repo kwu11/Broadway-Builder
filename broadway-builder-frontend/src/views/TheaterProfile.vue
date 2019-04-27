@@ -1,5 +1,5 @@
 <template>
-  <div class="theaterprofile">
+  <!-- <div class="theaterprofile">
     <div class="hero-body">
       <h1>{{theater.TheaterName}} |</h1>
       {{theater.CompanyName}}
@@ -20,38 +20,58 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
-    <div class="hero-foot">
-      <div class="columns is-mobile is-centered">
-        <div class="field is-grouped is-grouped-multiline">
-          <div class="control">
-            <span
-              v-on:click="goToPictures(theater)"
-              class="button is-danger is-rounded is-medium"
-            >Past Productions</span>
-          </div>
-          <div class="control">
-            <span class="button is-danger is-rounded is-medium">Information / Contact Us</span>
-          </div>
-          <div class="control">
-            <span
-              class="button is-danger is-rounded is-medium"
-              v-on:click="goToHelpWanted(theater, permission)"
-            >Help Wanted</span>
-          </div>
-          <!-- Mocking permissions -->
-          <input type="radio" name="permission" id="one" :value="true" v-model="permission">
-          <label for="permission">Admin</label>
-          <br>
-          <input type="radio" name="permission" id="two" :value="false" v-model="permission">
-          <label for="permission">User</label>
-          <br>
-          <span>Picked: {{ permission }}</span>
+  <!-- <div class="hero-foot">
+    <div class="columns is-mobile is-centered">
+      <div class="field is-grouped is-grouped-multiline">
+        <div class="control">
+          <span v-on:click="goToPictures(theater)" class="button is-danger is-rounded is-medium">Past Productions</span>
         </div>
+        <div class="control">
+          <span class="button is-danger is-rounded is-medium">Information / Contact Us</span>
+        </div>
+        <div class="control">
+          <span class="button is-danger is-rounded is-medium" v-on:click="goToHelpWanted(theater, permission)">Help Wanted</span>
+        </div>
+        
+        <input type="radio" name="permission" id="one" :value="true" v-model="permission">
+        <label for="permission">Admin</label>
+        <br>
+        <input type="radio" name="permission" id="two" :value="false" v-model="permission">
+        <label for="permission">User</label>
+        <br>
+        <span>Picked: {{ permission }}</span>
       </div>
     </div>
   </div>
+  </div> -->
+  <v-app id="theater-profile">
+    <v-container fluid grid-list-md>
+      <v-layout row wrap>
+        <v-flex d-flex xs12 sm3 md5>
+          <v-card>
+            <v-container>
+              <v-img src="https://picsum.photos/510/300?random"></v-img>
+            </v-container>
+          </v-card>
+        </v-flex>
+        <v-flex d-flex xs12 sm9 md7 class="theater-info">
+          <v-container class="theater-info">
+            <h1 class="font-weight-medium">{{ theater.TheaterName }}</h1>
+            <h2 class="font-weight-light">{{ lorem }}</h2>
+            <v-divider></v-divider>
+            <div id="theater-actions">
+              <v-btn @click="goToPictures(theater)" depressed large>Past Productions</v-btn>
+              <v-btn @click="goToHelpWanted(theater, true)" depressed large>Job Opportunities</v-btn>
+            </div>
+
+          </v-container>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-app>
+
 </template>
 
 <script>
@@ -61,6 +81,8 @@ export default {
   name: "TheaterProfile",
   data() {
     return {
+      lorem: `Lorem ipsum dolor sit amet, mel at clita quando. Te sit oratio vituperatoribus, nam ad ipsum posidonium mediocritatem, explicari dissentiunt cu mea. Repudiare disputationi vim in, mollis iriure nec cu, alienum argumentum ius ad. Pri eu justo aeque torquatos.`,
+      show: false,
       theater: this.$route.params.theater,
       permission: true
     };
@@ -88,7 +110,21 @@ export default {
 </script>
 
 
-<style scoped>
+<style lang="css" scoped>
+#theater-profile {
+  margin: 2em 8em;
+  padding-bottom: 0;
+  max-height: 575px;
+}
+
+#theater-actions {
+  margin-top: 1em;
+}
+
+.theater-info {
+  height: 100px;
+}
+
 .button {
   background-image: linear-gradient(to right, #6f0000, #200122);
   font-family: "Roboto";
@@ -122,7 +158,6 @@ h1 {
 .button {
   box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease 0s;
-  align: center;
 }
 
 .button:hover {

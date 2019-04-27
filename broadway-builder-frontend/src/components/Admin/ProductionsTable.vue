@@ -1,91 +1,36 @@
 <template>
   <div class="ProductionsTable">
-    Productions
-    <div v-if="programID > 0">
-      <input type="file" ref="file" id="file" v-on:change="onFileChange()">
-      <div class="button is-primary" v-on:click="uploadProgram(programID)">Submit</div>
-    </div>
-    <table class="table is-hoverable">
-      <thead>
-        <tr>
-          <th>Theater ID</th>
-          <th>Production ID</th>
-          <th>Production Name</th>
-          <th>Director</th>
-          <th>Address</th>
-          <th>Created</th>
-          <th>Edit</th>
-          <th>Delete</th>
-          <th>Upload New Program</th>
-        </tr>
-      </thead>
-      <tbody v-for="(production, index) in productions" :key="index">
-        <tr>
-          <td>{{production.TheaterID}}</td>
-          <td>{{production.ProductionID}}</td>
-          <td>{{production.ProductionName}}</td>
-          <td>{{production.DirectorFirstName}} {{production.DirectorLastName}}</td>
-          <td>{{production.Street}}, {{production.City}}, {{production.StateProvince}} {{production.Zipcode}}</td>
-          <td>{{production.DateTimes[0].Date}}</td>
-
+    <v-app id="inspire">
+      <v-data-table :headers="headers" :items="productions" class="elevation-1">
+        <template v-slot:items="props">
+          <td>{{props.item.ProductionID}}</td>
+          <td>{{props.item.ProductionName}}</td>
+          <td>{{props.item.TheaterID}}</td>
+          <td>{{props.item.DirectorFirstName}} {{props.item.DirectorLastName}}</td>
+          <td>{{props.item.Street}}, {{props.item.City}}, {{props.item.StateProvince}} {{props.item.Zipcode}}</td>
           <td>
-            <a v-on:click="showModal(production)">
+            <a v-on:click="showModal(props.item)">
               <img src="@/assets/edit.png" alt="Edit">
             </a>
           </td>
-
           <td>
-            <a v-on:click="deleteProduction(production.ProductionID)">
+            <a v-on:click="deleteProduction(props.item.ProductionID)">
               <img src="@/assets/tester.png" alt="Delete">
             </a>
           </td>
           <td>
-            <a v-on:click="programIDSelect(production.ProductionID)">
+            <a v-on:click="programIDSelect(props.item.ProductionID)">
               <img src="@/assets/upload.png" alt="Upload">
             </a>
+            <div v-if="programID === props.item.ProductionID">
+              <input type="file" ref="file" id="file" v-on:change="onFileChange()">
+              <div class="button is-primary" v-on:click="uploadProgram(programID)">Submit</div>
+            </div>
           </td>
-          <!-- <td>
-            <input
-              type="file"
-              ref="file"
-              id="file"
-              v-on:change="onFileChange(), programIDSelect(production.ProductionID)"
-            >
-            <div
-              v-if="programID === production.ProductionID"
-              class="button is-primary"
-              v-on:click="uploadProgram(production.ProductionID)"
-            >Submit</div>
-          </td>-->
-        </tr>
-      </tbody>
-    </table>
-    <modal v-show="isModalVisible" v-bind:production="modalProduction" @close="closeModal"/>
-
-    <nav class="pagination" is-medium role="navigation" aria-label="pagination">
-      <a class="pagination-previous" v-if="currentPage != minPage" v-on:click="prevPage()">Previous</a>
-      <a class="pagination-previous" disabled v-else>Previous</a>
-      <a class="pagination-next" v-if="currentPage != maxPage" v-on:click="nextPage()">Next page</a>
-      <a class="pagination-next" disabled v-else>Next page</a>
-
-      <ul class="pagination-list">
-        <li v-for="(page, index) in maxPage" :key="index">
-          <a
-            v-if="page === currentPage"
-            class="pagination-link is-current"
-            aria-label="Page 1"
-            aria-current="page"
-          >{{ index + 1 }}</a>
-          <a
-            v-else
-            v-on:click="choosePage(index)"
-            class="pagination-link"
-            aria-label="Page 1"
-            aria-current="page"
-          >{{ index + 1 }}</a>
-        </li>
-      </ul>
-    </nav>
+        </template>
+      </v-data-table>
+    </v-app>
+    <modal v-show="isModalVisible" v-bind:production="modalProduction" @close="closeModal" />
   </div>
 </template>
 
@@ -106,15 +51,56 @@ export default {
       currentPage: 1,
       minPage: 1,
       maxPage: 1,
-      numberOfItems: 3,
+      numberOfItems: 5,
       modalProduction: null,
       prod: [],
-      numberOfObjects: Number
+      headers: [
+        {
+          text: "Production ID",
+          align: "right",
+          value: "ProductionID"
+        },
+        {
+          text: "Production Name",
+          align: "left",
+          sortable: false,
+          value: "ProductionName"
+        },
+        {
+          text: "Theater ID",
+          align: "right",
+          value: "TheaterID"
+        },
+        {
+          text: "Director",
+          align: "right",
+          sortable: false
+        },
+        {
+          text: "Address",
+          align: "right",
+          sortable: false
+        },
+        {
+          text: "Edit",
+          align: "right",
+          sortable: false
+        },
+        {
+          text: "Delete",
+          align: "right",
+          sortable: false
+        },
+        {
+          text: "Upload",
+          align: "right",
+          sortable: false
+        }
+      ]
     };
   },
   async mounted() {
     this.getProductions();
-    this.getProductionsLength();
   },
   methods: {
     async deleteProduction(ProductionID) {
@@ -146,33 +132,9 @@ export default {
     async getProductions() {
       await axios
         .get(
-          "https://api.broadwaybuilder.xyz/production/getProductions?currentDate=3%2F23%2F2019",
-          {
-            params: {
-              pageNum: this.currentPage,
-              pagesize: this.numberOfItems
-            }
-          }
-        )
-        .then(response => (this.productions = response.data));
-    },
-    async getProductionsLength() {
-      await axios
-        .get(
           "https://api.broadwaybuilder.xyz/production/getProductions?currentDate=3%2F23%2F2019"
         )
-        .then(response => {
-          if (this.numberOfItems === 1) {
-            this.maxPage = response.data.length;
-          } else if (this.numberOfItems === response.data.length) {
-            this.maxPage = Math.floor(
-              response.data.length / this.numberOfItems
-            );
-          } else {
-            this.maxPage =
-              Math.floor(response.data.length / this.numberOfItems) + 1;
-          }
-        });
+        .then(response => (this.productions = response.data));
     },
     onFileChange() {
       this.file = this.$refs.file.files[0];
@@ -186,31 +148,17 @@ export default {
     },
     programIDSelect(id) {
       this.programID = id;
-    },
-    choosePage(page) {
-      this.currentPage = page + 1;
-      this.getProductions();
-    },
-    prevPage() {
-      this.currentPage -= 1;
-      this.getProductions();
-    },
-    nextPage() {
-      this.currentPage += 1;
-      this.getProductions();
     }
   }
 };
 </script>
 
 <style lang="sass" scoped>
-a
- color: black
+
 img
  width: 2em
  height: 2em
-.button 
-  color:black
+
 
 </style>
 

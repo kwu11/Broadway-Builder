@@ -1,192 +1,55 @@
 <template>
-  <transition name="modal-fade">
-    <div class="modal-backdrop">
-      <div
-        class="modal"
-        role="dialog"
-        aria-labelledby="modalTitle"
-        aria-describedby="modalDescription"
-      >
-        <header class="modal-header" id="modalTitle">
-          <slot name="header">
-            Edit Production
-            <button
-              type="button"
-              class="btn-close"
-              @click="close"
-              aria-label="Close modal"
-            >x</button>
-          </slot>
-        </header>
-        <section class="modal-body" id="modalDescription">
-          <slot name="body">
-            <div class="field">
-              <label class="label">Production Name</label>
-              <div class="control">
-                <input class="input" v-model="production.ProductionName">
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Director First Name</label>
-              <div class="control">
-                <input class="input" v-model="production.DirectorFirstName">
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Director Last Name</label>
-              <div class="control">
-                <input class="input" v-model="production.DirectorLastName">
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Street</label>
-              <div class="control">
-                <input class="input" v-model="production.Street">
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">City</label>
-              <div class="control">
-                <input class="input" v-model="production.City">
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">State/Province</label>
-              <div class="control">
-                <input class="input" v-model="production.StateProvince">
-              </div>
-              <div class="field">
-                <label class="label">Zip Code</label>
-                <div class="control">
-                  <input class="input" v-model="production.Zipcode">
-                </div>
-              </div>
-            </div>
-          </slot>
-        </section>
-        <footer class="modal-footer">
-          <slot name="footer">
-            <button
-              v-on:click="editProductionInfo"
-              type="button"
-              class="btn-green"
-              @click="close"
-              aria-label="Close modal"
-            >Submit</button>
-          </slot>
-        </footer>
-      </div>
-    </div>
-  </transition>
+  <v-layout row justify-center>
+    <v-dialog v-model="dialog" persistent max-width="600px">
+      <template v-slot:activator="{ on }">
+        <v-btn color="primary" dark v-on="on">Open Dialog</v-btn>
+      </template>
+      <v-card>
+        <v-card-title>
+          <span class="headline">Edit Production</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12 sm6 md4>
+                <v-text-field label="Legal first name*" required></v-text-field>
+              </v-flex>
+              <v-flex xs12 sm6 md4>
+                <v-text-field label="Legal middle name" hint="example of helper text only on focus"></v-text-field>
+              </v-flex>
+              <v-flex xs12 sm6 md4>
+                <v-text-field label="Legal last name*" hint="example of persistent helper text" persistent-hint required></v-text-field>
+              </v-flex>
+              <v-flex xs12>
+                <v-text-field label="Email*" required></v-text-field>
+              </v-flex>
+              <v-flex xs12>
+                <v-text-field label="Password*" type="password" required></v-text-field>
+              </v-flex>
+              <v-flex xs12 sm6>
+                <v-select :items="['0-17', '18-29', '30-54', '54+']" label="Age*" required></v-select>
+              </v-flex>
+              <v-flex xs12 sm6>
+                <v-autocomplete :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']" label="Interests" multiple></v-autocomplete>
+              </v-flex>
+            </v-layout>
+          </v-container>
+          <small>*indicates required field</small>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" flat @click="dialog = false">Close</v-btn>
+          <v-btn color="blue darken-1" flat @click="dialog = false">Save</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-layout>
 </template>
 
 <script>
-import axios from "axios";
-
 export default {
-  name: "modal",
-
-  props: {
-    production: Object
-  },
-  data() {
-    return {
-      production_to_update: {
-        ProductionID: this.production.ProductionID,
-        ProductionName: this.production.ProductionName,
-        DirectorFirstName: this.production.DirectorFirstName,
-        DirectorLastName: this.production.DirectorLastName,
-        Street: this.production.Street,
-        City: this.production.City,
-        StateProvince: this.production.StateProvince,
-        Country: this.production.Country,
-        Zipcode: this.production.Zipcode,
-        TheaterID: this.production.TheaterID
-      }
-    };
-  },
-  methods: {
-    async editProductionInfo() {
-      await axios
-        .put(
-          "https://api.broadwaybuilder.xyz/production/update",
-          this.production_to_update
-        )
-        .then(response => console.log(response));
-    },
-    close() {
-      this.$emit("close");
-    }
-  }
+  data: () => ({
+    dialog: false
+  })
 };
 </script>
-
-<style scoped>
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: rgba(0, 0, 0, 0.3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal {
-  background: #ffffff;
-  box-shadow: 2px 2px 20px 1px;
-  overflow-x: auto;
-  display: flex;
-  flex-direction: column;
-}
-
-.modal-header,
-.modal-footer {
-  padding: 15px;
-  display: flex;
-}
-
-.modal-header {
-  border-bottom: 1px solid #eeeeee;
-  color: #4aae9b;
-  justify-content: space-between;
-}
-
-.modal-footer {
-  border-top: 1px solid #eeeeee;
-  justify-content: flex-end;
-}
-
-.modal-body {
-  position: relative;
-  padding: 20px 10px;
-}
-
-.btn-close {
-  border: none;
-  font-size: 20px;
-  padding: 20px;
-  cursor: pointer;
-  font-weight: bold;
-  color: #4aae9b;
-  background: transparent;
-}
-
-.btn-green {
-  color: white;
-  background: #4aae9b;
-  border: 1px solid #4aae9b;
-  border-radius: 2px;
-}
-.modal-fade-enter,
-.modal-fade-leave-active {
-  opacity: 0;
-}
-
-.modal-fade-enter-active,
-.modal-fade-leave-active {
-  transition: opacity 0.5s ease;
-}
-</style>
