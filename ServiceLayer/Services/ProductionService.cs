@@ -125,12 +125,11 @@ namespace ServiceLayer.Services
             }
         }
 
-        public void UploadProgram(int productionId, HttpPostedFile postedFile)
+        public void UploadProgram(int productionId, HttpPostedFileBase postedFile)
         {
             var extension = Path.GetExtension(postedFile.FileName);
 
             var filePath = HostingEnvironment.MapPath("~/Programs/Production" + productionId + "/" + productionId + extension);
-            //var filePath = HostingEnvironment.MapPath("~/ProductionPrograms/" + productionId + extension);
 
             //check if prodid exists in database because we dont store data for things that don't exist by getting it and check if that variable is null. if it is null then it doesnt exist
 
@@ -144,7 +143,7 @@ namespace ServiceLayer.Services
             postedFile.SaveAs(filePath);
         }
 
-        public void UploadPhoto(int productionId, int count, HttpPostedFile postedFile)
+        public void UploadPhoto(int productionId, int count, HttpPostedFileBase postedFile)
         {
             var extension = Path.GetExtension(postedFile.FileName);
 
