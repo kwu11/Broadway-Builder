@@ -4,6 +4,11 @@ using DataAccessLayer;
 using ServiceLayer.Services;
 using System.Collections.Generic;
 using ServiceLayer.Exceptions;
+using System.IO;
+using System.Configuration;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ServiceLayer.Test
 {
@@ -80,7 +85,17 @@ namespace ServiceLayer.Test
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
 
-            var theater = new Theater("The Language", "Pantene", "123 Sesame St", "San Diego", "California", "U.S", "8587175730");
+            var theater = new Theater()
+            {
+                TheaterName = "The Language",
+                StreetAddress = "Pantene",
+                State = "CA",
+                City = "LA",
+                CompanyName = "123 Sesame St",
+                Country = "US",
+                PhoneNumber = "123456789"
+            };
+
             theaterService.CreateTheater(theater);
             dbcontext.SaveChanges();
 
@@ -129,7 +144,17 @@ namespace ServiceLayer.Test
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
 
-            var theater = new Theater("The Magicians", "Regal", "theater st", "LA", "CA", "US", "323323");
+            var theater = new Theater()
+            {
+                TheaterName = "The Language",
+                StreetAddress = "Pantene",
+                State = "CA",
+                City = "LA",
+                CompanyName = "123 Sesame St",
+                Country = "US",
+                PhoneNumber = "123456789"
+            };
+
             theaterService.CreateTheater(theater);
             dbcontext.SaveChanges();
 
@@ -221,7 +246,17 @@ namespace ServiceLayer.Test
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
 
-            var theater = new Theater("The Magicians 12", "Regal", "theater st", "LA", "CA", "US", "323323");
+            var theater = new Theater()
+            {
+                TheaterName = "The Language",
+                StreetAddress = "Pantene",
+                State = "CA",
+                City = "LA",
+                CompanyName = "123 Sesame St",
+                Country = "US",
+                PhoneNumber = "123456789"
+            };
+
             theaterService.CreateTheater(theater);
             dbcontext.SaveChanges();
 
@@ -311,22 +346,37 @@ namespace ServiceLayer.Test
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
 
-            var theater = new Theater("The Magicians", "Regal", "theater st", "LA", "CA", "US", "323323");
+            var theater = new Theater()
+            {
+                TheaterName = "The Magicians",
+                StreetAddress = "Pantene",
+                State = "CA",
+                City = "LA",
+                CompanyName = "123 Sesame St",
+                Country = "US",
+                PhoneNumber = "123456789"
+            };
+
             theaterService.CreateTheater(theater);
             dbcontext.SaveChanges();
 
+
             var productionService = new ProductionService(dbcontext);
 
-            var productionName = "The Lion King";
-            var directorFirstName = "Joan";
-            var directorLastName = "Doe";
-            var street = "123 Anahiem St";
-            var city = "Long Beach";
-            var stateProvince = "California";
-            var country = "United States";
-            var zipcode = "919293";
+            var production = new Production()
+            {
+                ProductionName = "The Lion King",
+                DirectorFirstName = "Jane",
+                DirectorLastName = "Doe",
+                Street = "Anahiem",
+                City = "Long Beach",
+                StateProvince = "California",
+                Country = "United States",
+                Zipcode = "919293",
+                TheaterID = theater.TheaterID
+            };
 
-            var production = new Production(theater.TheaterID, productionName, directorFirstName, directorLastName, street, city, stateProvince, country, zipcode);
+
             productionService.CreateProduction(production);
             dbcontext.SaveChanges();
 
@@ -365,7 +415,17 @@ namespace ServiceLayer.Test
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
 
-            var theater = new Theater("The Lions", "Opi", "123 Sesame St", "San Diego", "California", "U.S", "8587175730");
+            var theater = new Theater()
+            {
+                TheaterName = "The Magicians",
+                StreetAddress = "Pantene",
+                State = "CA",
+                City = "LA",
+                CompanyName = "123 Sesame St",
+                Country = "US",
+                PhoneNumber = "123456789"
+            };
+
 
             theaterService.CreateTheater(theater);
             dbcontext.SaveChanges();
@@ -413,7 +473,17 @@ namespace ServiceLayer.Test
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
 
-            var theater = new Theater("The Lions", "Opi", "123 Sesame St", "San Diego", "California", "U.S", "8587175730");
+            var theater = new Theater()
+            {
+                TheaterName = "The Magicians",
+                StreetAddress = "Pantene",
+                State = "CA",
+                City = "LA",
+                CompanyName = "123 Sesame St",
+                Country = "US",
+                PhoneNumber = "123456789"
+            };
+
 
             theaterService.CreateTheater(theater);
             dbcontext.SaveChanges();
@@ -465,22 +535,35 @@ namespace ServiceLayer.Test
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
 
-            var theater = new Theater("The Magicians", "Regal", "theater st", "LA", "CA", "US", "323323");
+            var theater = new Theater()
+            {
+                TheaterName = "The Magicians",
+                StreetAddress = "Pantene",
+                State = "CA",
+                City = "LA",
+                CompanyName = "123 Sesame St",
+                Country = "US",
+                PhoneNumber = "123456789"
+            };
+
             theaterService.CreateTheater(theater);
             dbcontext.SaveChanges();
 
             var productionService = new ProductionService(dbcontext);
 
-            var productionName = "The Lion King";
-            var directorFirstName = "Joan";
-            var directorLastName = "Doe";
-            var street = "123 Anahiem St";
-            var city = "Long Beach";
-            var stateProvince = "California";
-            var country = "United States";
-            var zipcode = "919293";
+            var production = new Production
+            {
+                ProductionName = "The Pajama Game 1",
+                DirectorFirstName = "Doris",
+                DirectorLastName = "Day",
+                City = "San Diego",
+                StateProvince = "California",
+                Country = "U.S",
+                TheaterID = theater.TheaterID,
+                Street = "1234 Sesame St",
+                Zipcode = "91911"
+            };
 
-            var production = new Production(theater.TheaterID, productionName, directorFirstName, directorLastName, street, city, stateProvince, country, zipcode);
             productionService.CreateProduction(production);
             dbcontext.SaveChanges();
 
@@ -517,22 +600,35 @@ namespace ServiceLayer.Test
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
 
-            var theater = new Theater("The Magicians 3 ", "Regal", "theater st", "LA", "CA", "US", "323323");
+            var theater = new Theater()
+            {
+                TheaterName = "The Magicians",
+                StreetAddress = "Pantene",
+                State = "CA",
+                City = "LA",
+                CompanyName = "123 Sesame St",
+                Country = "US",
+                PhoneNumber = "123456789"
+            };
+
             theaterService.CreateTheater(theater);
             dbcontext.SaveChanges();
 
             var productionService = new ProductionService(dbcontext);
 
-            var productionName = "The Lion King 6";
-            var directorFirstName = "Joan";
-            var directorLastName = "Doe";
-            var street = "123 Anahiem St";
-            var city = "Long Beach";
-            var stateProvince = "California";
-            var country = "United States";
-            var zipcode = "919293";
+            var production = new Production
+            {
+                ProductionName = "The Pajama Game 1",
+                DirectorFirstName = "Doris",
+                DirectorLastName = "Day",
+                City = "San Diego",
+                StateProvince = "California",
+                Country = "U.S",
+                TheaterID = theater.TheaterID,
+                Street = "1234 Sesame St",
+                Zipcode = "91911"
+            };
 
-            var production = new Production(theater.TheaterID, productionName, directorFirstName, directorLastName, street, city, stateProvince, country, zipcode);
             productionService.CreateProduction(production);
             dbcontext.SaveChanges();
 
@@ -574,22 +670,35 @@ namespace ServiceLayer.Test
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
 
-            var theater = new Theater("The Magicians 4 ", "Regal", "theater st", "LA", "CA", "US", "323323");
+            var theater = new Theater()
+            {
+                TheaterName = "The Magicians",
+                StreetAddress = "Pantene",
+                State = "CA",
+                City = "LA",
+                CompanyName = "123 Sesame St",
+                Country = "US",
+                PhoneNumber = "123456789"
+            };
+
             theaterService.CreateTheater(theater);
             dbcontext.SaveChanges();
 
             var productionService = new ProductionService(dbcontext);
 
-            var productionName = "The Lion King 7";
-            var directorFirstName = "Joan";
-            var directorLastName = "Doe";
-            var street = "123 Anahiem St";
-            var city = "Long Beach";
-            var stateProvince = "California";
-            var country = "United States";
-            var zipcode = "919293";
+            var production = new Production
+            {
+                ProductionName = "The Pajama Game 1",
+                DirectorFirstName = "Doris",
+                DirectorLastName = "Day",
+                City = "San Diego",
+                StateProvince = "California",
+                Country = "U.S",
+                TheaterID = theater.TheaterID,
+                Street = "1234 Sesame St",
+                Zipcode = "91911"
+            };
 
-            var production = new Production(theater.TheaterID, productionName, directorFirstName, directorLastName, street, city, stateProvince, country, zipcode);
             productionService.CreateProduction(production);
             dbcontext.SaveChanges();
 
@@ -622,7 +731,7 @@ namespace ServiceLayer.Test
         }
 
         /*
-        Not sure if these get tested here.. But moste likely since it is an integration test with the controller.
+        Unit Test: Testing if Mocked Posted File successfuly saves to the filesystem.
         */
         [TestMethod]
         public void ProductionService_UploadProgram_Pass()
@@ -662,13 +771,36 @@ namespace ServiceLayer.Test
             productionService.CreateProduction(production);
             dbcontext.SaveChanges();
 
+            var mockedPostedPdfFile = new MockPostedFile("pdf", 5000000, "productionProgramTestFile.pdf");
+
+            var extension = Path.GetExtension(mockedPostedPdfFile.FileName);
+
+            var currentDirectory = ConfigurationManager.AppSettings["FileDir"];
+
+            var dir = Path.Combine(currentDirectory, "Programs/");
+            var subdir = Path.Combine(dir, $"Production{production.ProductionID}/");
+            var filePath = Path.Combine(subdir, $"{production.ProductionID}{extension}");
+ 
+
             var expected = true;
             var actual = false;
 
             // Act
-            //productionService.UploadProgram()
+            productionService.SaveProgram(production.ProductionID, mockedPostedPdfFile);
+
+            if (File.Exists(filePath))
+            {
+                actual = true;
+            }
 
             // Assert
+            productionService.DeleteProduction(production.ProductionID);
+            dbcontext.SaveChanges();
+            theaterService.DeleteTheater(theater);
+            dbcontext.SaveChanges();
+            File.Delete(filePath);
+            Directory.Delete(subdir);
+            Assert.AreEqual(expected, actual);
 
         }
 
@@ -676,11 +808,71 @@ namespace ServiceLayer.Test
         public void ProductionService_UploadPhotos_Pass()
         {
             // Arrange
+            var dbcontext = new BroadwayBuilderContext();
+            var theaterService = new TheaterService(dbcontext);
+
+            var theater = new Theater()
+            {
+                TheaterName = "Some Theater 1",
+                StreetAddress = "Theater St",
+                State = "CA",
+                City = "LA",
+                CompanyName = "Regal",
+                Country = "US",
+                PhoneNumber = "123456789"
+            };
+
+            theaterService.CreateTheater(theater);
+            dbcontext.SaveChanges();
+
+            var production = new Production()
+            {
+                ProductionName = "The Lion King 2",
+                DirectorFirstName = "Jane",
+                DirectorLastName = "Doe",
+                Street = "Anahiem",
+                City = "Long Beach",
+                StateProvince = "California",
+                Country = "United States",
+                Zipcode = "919293",
+                TheaterID = theater.TheaterID
+            };
+
+            var productionService = new ProductionService(dbcontext);
+            productionService.CreateProduction(production);
+            dbcontext.SaveChanges();
+
+            var mockedPostedPdfFile = new MockPostedFile("jpg", 5000000, "productionPhotoTestFile.jpg");
+
+            var count = 1;
+
+            var extension = Path.GetExtension(mockedPostedPdfFile.FileName);
+
+            var currentDirectory = ConfigurationManager.AppSettings["FileDir"];
+
+            var dir = Path.Combine(currentDirectory, "Photos/");
+            var subdir = Path.Combine(dir, $"Production{production.ProductionID}/");
+            var filePath = Path.Combine(subdir, $"{production.ProductionID}-{count}{extension}");
+
+
+            var expected = true;
+            var actual = false;
 
             // Act
+            productionService.SavePhoto(production.ProductionID, count, mockedPostedPdfFile);
 
+            if (File.Exists(filePath))
+            {
+                actual = true;
+            }
             // Assert
-
+            productionService.DeleteProduction(production.ProductionID);
+            dbcontext.SaveChanges();
+            theaterService.DeleteTheater(theater);
+            dbcontext.SaveChanges();
+            File.Delete(filePath);
+            Directory.Delete(subdir);
+            Assert.AreEqual(expected, actual);
         }
     }
 }

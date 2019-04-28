@@ -66,7 +66,7 @@ namespace BroadwayBuilder.Api.Controllers
 
 
                  // Todo: check if id is null or not then proceed
-                 productionService.UploadProgram(productionId, putFile);
+                 productionService.SaveProgram(productionId, putFile);
                 }
 
                 return Ok("Pdf Uploaded");
@@ -352,7 +352,7 @@ namespace BroadwayBuilder.Api.Controllers
                     HttpPostedFileBase putFile = new HttpPostedFileWrapper(httpRequest.Files[i]);
                     
                    // Send to production service where functinality to save the file is                        
-                   productionService.UploadPhoto(productionId, count, putFile);
+                   productionService.SavePhoto(productionId, count, putFile);
                     
                     count++;
                 }
