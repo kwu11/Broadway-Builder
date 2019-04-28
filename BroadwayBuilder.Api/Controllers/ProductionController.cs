@@ -62,10 +62,11 @@ namespace BroadwayBuilder.Api.Controllers
                 // Send file to up uploaded to server
                 foreach (string filename in fileCollection)
                 {
-                    var putFile = fileCollection[filename];
+                    HttpPostedFileBase putFile = new HttpPostedFileWrapper(fileCollection[filename]);
+
 
                  // Todo: check if id is null or not then proceed
-                 productionService.UploadProgram(productionId, putFile);
+                 productionService.SaveProgram(productionId, putFile);
                 }
 
                 return Ok("Pdf Uploaded");
@@ -88,7 +89,6 @@ namespace BroadwayBuilder.Api.Controllers
         [SwaggerResponse(HttpStatusCode.OK, "The production created and its url.", typeof(Production))]
         public IHttpActionResult CreateProduction([FromBody] Production production)
         {
-
             using (var dbcontext = new BroadwayBuilderContext())
             {
                 var productionService = new ProductionService(dbcontext);
@@ -169,7 +169,7 @@ namespace BroadwayBuilder.Api.Controllers
                     {
                         if (previousDate != null) {
 
-                            var productionResponses = productionService.GetProductionsByPreviousDate((DateTime)previousDate, theaterID, pageNum, pageSize)
+                            var productionResponses = productionService.GetProductionsByPreviousDate((DateTime)previousDate, theaterID,  pageNum, pageSize)
                                 .Select(production => new ProductionResponseModel()
                                 {
                                     DirectorFirstName = production.DirectorFirstName,
@@ -349,10 +349,10 @@ namespace BroadwayBuilder.Api.Controllers
                 for (int i= 0; i < httpRequest.Files.Count; i++)
                 {
                     // Grab current file of the request
-                    var putFile = httpRequest.Files[i];
+                    HttpPostedFileBase putFile = new HttpPostedFileWrapper(httpRequest.Files[i]);
                     
                    // Send to production service where functinality to save the file is                        
-                   productionService.UploadPhoto(productionId, count, putFile);
+                   productionService.SavePhoto(productionId, count, putFile);
                     
                     count++;
                 }
