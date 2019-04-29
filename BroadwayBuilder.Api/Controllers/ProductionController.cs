@@ -99,8 +99,8 @@ namespace BroadwayBuilder.Api.Controllers
                     dbcontext.SaveChanges();
 
                     var productionUrl = Url.Link("GetProductionById", new { productionId = production.ProductionID });
+                    //var productionUrl = Url.Content("~/");
 
-                    // Todo: Turn this into Created(201) once the get endpoint is done so we can return the url to get the item that was just created
                     return Created(productionUrl, production);
                 }
                 // Todo: add proper error handling
