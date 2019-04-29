@@ -72,7 +72,6 @@
   <ItemGroup>
     <Compile Include="AuthorizationTests.cs" />
     <Compile Include="HelpWantedTest.cs" />
-    <Compile Include="MockPostedFile.cs" />
     <Compile Include="PermissionServiceTest.cs" />
     <Compile Include="ProductionJobTest.cs" />
     <Compile Include="ProductionServiceTest.cs" />
@@ -97,6 +96,10 @@
     <ProjectReference Include="..\ServiceLayer\ServiceLayer.csproj">
       <Project>{606cac9c-7ea8-472e-a26d-719b64e48f5a}</Project>
       <Name>ServiceLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TestUtilities\TestUtilities.csproj">
+      <Project>{C3DF1811-FE34-4FA7-A955-5276B09700E5}</Project>
+      <Name>TestUtilities</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
