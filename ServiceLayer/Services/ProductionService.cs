@@ -159,7 +159,7 @@ namespace ServiceLayer.Services
             postedFile.SaveAs(filePath);
         }
 
-        public void SavePhoto(int productionId, int count, HttpPostedFileBase postedFile)
+        public void SavePhoto(int productionId, HttpPostedFileBase postedFile)
         {
            
            /*
@@ -175,12 +175,18 @@ namespace ServiceLayer.Services
 
             var dir = Path.Combine(currentDirectory, "Photos/");
             var subdir = Path.Combine(dir, $"Production{productionId}/");
-            var filePath = Path.Combine(subdir, $"{productionId}-{count}{extension}");
 
             if (!Directory.Exists(subdir))
             {
                 Directory.CreateDirectory(subdir);
             }
+
+            var fileCount = Directory.GetFiles(subdir).Count();
+
+            var filePath = Path.Combine(subdir, $"{productionId}-{fileCount}{extension}");
+
+ 
+
             postedFile.SaveAs(filePath);
         }
 

@@ -15,6 +15,7 @@ using BroadwayBuilder.Api.Models;
 using System.Text;
 using System.ComponentModel;
 using Swashbuckle.Swagger.Annotations;
+using System.Configuration;
 
 namespace BroadwayBuilder.Api.Controllers
 {
@@ -59,7 +60,7 @@ namespace BroadwayBuilder.Api.Controllers
                     return BadRequest(errorMessage);
                 }
 
-                // Send file to up uploaded to server
+                // Send file to be saved to server
                 foreach (string filename in fileCollection)
                 {
                     HttpPostedFileBase putFile = new HttpPostedFileWrapper(fileCollection[filename]);
@@ -99,9 +100,19 @@ namespace BroadwayBuilder.Api.Controllers
                     dbcontext.SaveChanges();
 
                     var productionUrl = Url.Link("GetProductionById", new { productionId = production.ProductionID });
-                    //var productionUrl = Url.Content("~/");
 
-                    return Created(productionUrl, production);
+                    return Created(productionUrl, new ProductionResponseModel()
+                    {
+                        ProductionID = production.ProductionID,
+                        DirectorFirstName = production.DirectorFirstName,
+                        DirectorLastName = production.DirectorLastName,
+                        ProductionName = production.ProductionName,
+                        Street = production.Street,
+                        City = production.City,
+                        StateProvince = production.StateProvince,
+                        Country = production.Country,
+                        TheaterID = production.TheaterID
+                    });
                 }
                 // Todo: add proper error handling
                 catch (Exception e)
@@ -343,8 +354,6 @@ namespace BroadwayBuilder.Api.Controllers
                     return BadRequest(errorMessage);
                 }
 
-                var count = 0;
-
                 // Used for loop since foreach did not handle cycling through multiple files well.
                 for (int i= 0; i < httpRequest.Files.Count; i++)
                 {
@@ -352,9 +361,8 @@ namespace BroadwayBuilder.Api.Controllers
                     HttpPostedFileBase putFile = new HttpPostedFileWrapper(httpRequest.Files[i]);
                     
                    // Send to production service where functinality to save the file is                        
-                   productionService.SavePhoto(productionId, count, putFile);
-                    
-                    count++;
+                   productionService.SavePhoto(productionId, putFile);
+                   
                 }
 
                 return Ok("Photo Uploaded");
@@ -378,14 +386,16 @@ namespace BroadwayBuilder.Api.Controllers
         [HttpGet]
         public IHttpActionResult getPhotos(int productionId)
         {
-            
-            // Virtual Directory path
-            var filepath = HostingEnvironment.MapPath("~/Photos/Production" + productionId);
 
-            // Grabbing information about the directory at this path. Todo: Look into changing to using Directory rather than DirectoryInfo
-            DirectoryInfo dir = new DirectoryInfo(filepath);
+            var currentDirectory = ConfigurationManager.AppSettings["FileDir"];
 
-            FileInfo[] filepaths = dir.GetFiles();
+            var dir = Path.Combine(currentDirectory, "Photos/");
+            var subdir = Path.Combine(dir, $"Production{productionId}/");
+
+            // Grabbing information about the directory at this path.
+            DirectoryInfo direc = new DirectoryInfo(subdir);
+
+            FileInfo[] filepaths = direc.GetFiles();
 
             var filenames = new List<string>();
             // Grab each files name and put it into a list 
@@ -432,10 +442,7 @@ namespace BroadwayBuilder.Api.Controllers
                         productionService.CreateProductionDateTime(productionDateTime);
                         dbcontext.SaveChanges();
 
-                        var productionDateTimeCreatedUrl = Url.Link("GetProductionDateTimeByID", new { productionDateTimeID = productionDateTime.ProductionDateTimeId });
-
-                        // Todo: Change this to a 201 Created(insert url of resource) once get productiondate time route is created
-                        return Created(productionDateTimeCreatedUrl, productionDateTime);
+                        return Ok("Production Date and time have been added!");
                     }
                     catch (Exception e)
                     {

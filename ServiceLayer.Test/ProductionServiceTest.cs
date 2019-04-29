@@ -9,6 +9,7 @@ using System.Configuration;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using TestUtilites;
 
 namespace ServiceLayer.Test
 {
@@ -805,7 +806,7 @@ namespace ServiceLayer.Test
         }
 
         [TestMethod]
-        public void ProductionService_UploadPhotos_Pass()
+        public void ProductionService_SavePhotos_Pass()
         {
             // Arrange
             var dbcontext = new BroadwayBuilderContext();
@@ -844,22 +845,20 @@ namespace ServiceLayer.Test
 
             var mockedPostedPdfFile = new MockPostedFile("jpg", 5000000, "productionPhotoTestFile.jpg");
 
-            var count = 1;
-
             var extension = Path.GetExtension(mockedPostedPdfFile.FileName);
 
             var currentDirectory = ConfigurationManager.AppSettings["FileDir"];
 
             var dir = Path.Combine(currentDirectory, "Photos/");
             var subdir = Path.Combine(dir, $"Production{production.ProductionID}/");
-            var filePath = Path.Combine(subdir, $"{production.ProductionID}-{count}{extension}");
+            var filePath = Path.Combine(subdir, $"{production.ProductionID}-0{extension}");
 
 
             var expected = true;
             var actual = false;
 
             // Act
-            productionService.SavePhoto(production.ProductionID, count, mockedPostedPdfFile);
+            productionService.SavePhoto(production.ProductionID, mockedPostedPdfFile);
 
             if (File.Exists(filePath))
             {

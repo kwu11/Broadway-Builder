@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BroadwayBuilder.Api", "Broa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BroadwayBuilder.Api.Tests", "BroadwayBuilder.Api.Tests\BroadwayBuilder.Api.Tests.csproj", "{2447FEC2-8D5F-4A04-95BE-7EB1313EA7D6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestUtilities", "TestUtilities\TestUtilities.csproj", "{C3DF1811-FE34-4FA7-A955-5276B09700E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{2447FEC2-8D5F-4A04-95BE-7EB1313EA7D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2447FEC2-8D5F-4A04-95BE-7EB1313EA7D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2447FEC2-8D5F-4A04-95BE-7EB1313EA7D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3DF1811-FE34-4FA7-A955-5276B09700E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3DF1811-FE34-4FA7-A955-5276B09700E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3DF1811-FE34-4FA7-A955-5276B09700E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3DF1811-FE34-4FA7-A955-5276B09700E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
