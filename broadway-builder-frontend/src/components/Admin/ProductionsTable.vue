@@ -1,65 +1,36 @@
 <template>
   <div class="ProductionsTable">
-    Productions
-    <div v-if="programID > 0">
-      <input type="file" ref="file" id="file" v-on:change="onFileChange()">
-      <div class="button is-primary" v-on:click="uploadProgram(programID)">Submit</div>
-    </div>
-    <table class="table is-hoverable">
-      <thead>
-        <tr>
-          <th>Theater ID</th>
-          <th>Production ID</th>
-          <th>Production Name</th>
-          <th>Director</th>
-          <th>Address</th>
-          <th>Created</th>
-          <th>Edit</th>
-          <th>Delete</th>
-          <th>Upload New Program</th>
-        </tr>
-      </thead>
-      <tbody v-for="(production, index) in productions" :key="index">
-        <tr>
-          <td>{{production.TheaterID}}</td>
-          <td>{{production.ProductionID}}</td>
-          <td>{{production.ProductionName}}</td>
-          <td>{{production.DirectorFirstName}} {{production.DirectorLastName}}</td>
-          <td>{{production.Street}}, {{production.City}}, {{production.StateProvince}} {{production.Zipcode}}</td>
-          <td>{{production.DateTimes[0].Date}}</td>
+    <v-app id="inspire">
+      <v-data-table :headers="headers" :items="productions" class="elevation-1">
+        <template v-slot:items="props">
+          <td>{{props.item.ProductionID}}</td>
+          <td>{{props.item.ProductionName}}</td>
+          <td>{{props.item.TheaterID}}</td>
+          <td>{{props.item.DirectorFirstName}} {{props.item.DirectorLastName}}</td>
+          <td>{{props.item.Street}}, {{props.item.City}}, {{props.item.StateProvince}} {{props.item.Zipcode}}</td>
           <td>
-            <a v-on:click="showModal">
+            <a v-on:click="showModal(props.item)">
               <img src="@/assets/edit.png" alt="Edit">
             </a>
-            <modal :production="production" v-show="isModalVisible" @close="closeModal"/>
           </td>
-
           <td>
-            <a v-on:click="deleteProduction(production.ProductionID)">
+            <a v-on:click="deleteProduction(props.item.ProductionID)">
               <img src="@/assets/tester.png" alt="Delete">
             </a>
           </td>
           <td>
-            <a v-on:click="programIDSelect(production.ProductionID)">
+            <a v-on:click="programIDSelect(props.item.ProductionID)">
               <img src="@/assets/upload.png" alt="Upload">
             </a>
+            <div v-if="programID === props.item.ProductionID">
+              <input type="file" ref="file" id="file" v-on:change="onFileChange()">
+              <div class="button is-primary" v-on:click="uploadProgram(programID)">Submit</div>
+            </div>
           </td>
-          <!-- <td>
-            <input
-              type="file"
-              ref="file"
-              id="file"
-              v-on:change="onFileChange(), programIDSelect(production.ProductionID)"
-            >
-            <div
-              v-if="programID === production.ProductionID"
-              class="button is-primary"
-              v-on:click="uploadProgram(production.ProductionID)"
-            >Submit</div>
-          </td>-->
-        </tr>
-      </tbody>
-    </table>
+        </template>
+      </v-data-table>
+    </v-app>
+    <modal v-show="isModalVisible" v-bind:production="modalProduction" @close="closeModal" />
   </div>
 </template>
 
@@ -76,15 +47,60 @@ export default {
       productions: [],
       isModalVisible: false,
       file: "",
-      programID: 0
+      programID: 0,
+      currentPage: 1,
+      minPage: 1,
+      maxPage: 1,
+      numberOfItems: 5,
+      modalProduction: null,
+      prod: [],
+      headers: [
+        {
+          text: "Production ID",
+          align: "right",
+          value: "ProductionID"
+        },
+        {
+          text: "Production Name",
+          align: "left",
+          sortable: false,
+          value: "ProductionName"
+        },
+        {
+          text: "Theater ID",
+          align: "right",
+          value: "TheaterID"
+        },
+        {
+          text: "Director",
+          align: "right",
+          sortable: false
+        },
+        {
+          text: "Address",
+          align: "right",
+          sortable: false
+        },
+        {
+          text: "Edit",
+          align: "right",
+          sortable: false
+        },
+        {
+          text: "Delete",
+          align: "right",
+          sortable: false
+        },
+        {
+          text: "Upload",
+          align: "right",
+          sortable: false
+        }
+      ]
     };
   },
   async mounted() {
-    await axios
-      .get(
-        "https://api.broadwaybuilder.xyz/production/getProductions?currentDate=3%2F23%2F2019"
-      )
-      .then(response => (this.productions = response.data));
+    this.getProductions();
   },
   methods: {
     async deleteProduction(ProductionID) {
@@ -113,10 +129,18 @@ export default {
           console.log("Failure!");
         });
     },
+    async getProductions() {
+      await axios
+        .get(
+          "https://api.broadwaybuilder.xyz/production/getProductions?currentDate=3%2F23%2F2019"
+        )
+        .then(response => (this.productions = response.data));
+    },
     onFileChange() {
       this.file = this.$refs.file.files[0];
     },
-    showModal() {
+    showModal(production) {
+      this.modalProduction = production;
       this.isModalVisible = true;
     },
     closeModal() {
@@ -130,13 +154,11 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-a
- color: black
+
 img
  width: 2em
  height: 2em
-.button 
-  color:black
+
 
 </style>
 

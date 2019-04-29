@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Hosting;
 using ServiceLayer.Exceptions;
+using System.Configuration;
 
 namespace ServiceLayer.Services
 {
@@ -107,10 +108,10 @@ namespace ServiceLayer.Services
         }
 
 
-        public void DeleteProduction(int productionid)
+        public void DeleteProduction(int productionID)
         {
             Production productionToDelete = _dbContext.Productions
-                .Where(o => o.ProductionID == productionid)
+                .Where(o => o.ProductionID == productionID)
                 .FirstOrDefault(); //gives you first production that satisfies the where
                 //if item doesn't exist it returns null Todo: throw a specific exception
 
@@ -121,33 +122,60 @@ namespace ServiceLayer.Services
             }
             else
             {
-                //throw an exception
+                throw new ProductionNotFoundException($"Production does not exist! with ID: {productionID}");
             }
         }
 
-        public void UploadProgram(int productionId, string extension, HttpPostedFile postedFile)
+        public void SaveProgram(int productionId, HttpPostedFileBase postedFile)
         {
-            var filePath = HostingEnvironment.MapPath("~/Programs/Production" + productionId + "/" + productionId + extension);
+
+            /*
+             * When using a Virtual Directory
+             */
+            //var filePath = HostingEnvironment.MapPath("~/Programs/Production" + productionId + "/" + productionId + extension);
+            //var subdir = HostingEnvironment.MapPath("~/Programs/Production" + productionId);
+            //var dir = HostingEnvironment.MapPath("~/Programs/");
+
+            var extension = Path.GetExtension(postedFile.FileName);
+
+            var currentDirectory = ConfigurationManager.AppSettings["FileDir"];
+
+            var dir = Path.Combine(currentDirectory, "Programs/");
+            var subdir = Path.Combine(dir, $"Production{productionId}/");
+            var filePath = Path.Combine(subdir, $"{productionId}{extension}");
+
             //check if prodid exists in database because we dont store data for things that don't exist by getting it and check if that variable is null. if it is null then it doesnt exist
-            //
-            var subdir = HostingEnvironment.MapPath("~/Programs/Production" + productionId);
+
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
 
             if (!Directory.Exists(subdir))
             {
                 Directory.CreateDirectory(subdir);
             }
-          
+
             postedFile.SaveAs(filePath);
         }
 
-        public void UploadPhoto(int productionId, int count, string extension, HttpPostedFile postedFile)
+        public void SavePhoto(int productionId, int count, HttpPostedFileBase postedFile)
         {
-            var filePath = HostingEnvironment.MapPath("~/Photos/Production" + productionId + "/" + count + extension);
+           
+           /*
+            * When using a Virtual Directory
+            */
+            //var filePath = HostingEnvironment.MapPath("~/Photos/Production" + productionId + "/" + count + extension);
+            //var currentDirectory = Directory.GetCurrentDirectory();
+            //var subdir = HostingEnvironment.MapPath("~/Photos/Production" + productionId);
 
-            //var filePath = HostingEnvironment.MapPath("~/ProductionPhotos/" + productionId + "-" + count + extension);
-            //postedFile.SaveAs(filePath);
+            var extension = Path.GetExtension(postedFile.FileName);
 
-            var subdir = HostingEnvironment.MapPath("~/Photos/Production" + productionId);
+            var currentDirectory = ConfigurationManager.AppSettings["FileDir"];
+
+            var dir = Path.Combine(currentDirectory, "Photos/");
+            var subdir = Path.Combine(dir, $"Production{productionId}/");
+            var filePath = Path.Combine(subdir, $"{productionId}-{count}{extension}");
 
             if (!Directory.Exists(subdir))
             {
@@ -173,7 +201,7 @@ namespace ServiceLayer.Services
                 currentProductionDateTime.Time = productionDateTime.Time;
             } else
             {
-                //throw an exception
+                throw new ProductionDateTimeNotFoundException($"Production Date Time does not exist! with ID: {productionDateTime.ProductionDateTimeId}");
             }
 
             return currentProductionDateTime;

@@ -1,106 +1,66 @@
 <template>
-  <div class="AdminHelpWanted">
+  <div class="HelpWanted">
+
     <h1>
-      <strong>Job Opportunities</strong>
-      | {{ theater.TheaterName }}
+      <strong>Job Opportunities</strong> | {{ theater.TheaterName }}
     </h1>
+
     <div class="columns">
       <div class="column is-2 is-narrow">
-        <!-- These are the buttons to ADD A JOB and to VIEW RESUMES
-        VIEW RESUMES is still a work in progress...-->
+
         <div id="buttons" v-if="hasPermission === true">
-          <a class="button is-rounded is-medium" v-on:click="addJobButton">Post A New Job</a>
+          <a class="button is-medium" @click="addJob = true">Post A New Job</a>
         </div>
         <div id="buttons" v-else>
           <!-- Upload resume functionality -->
           <div class="file has-name is-boxed">
             <label class="file-label">
-              <input class="file-input" type="file" ref="file" v-on:change="onFileChange()">
+              <input class="file-input" type="file" ref="file" @change="onFileChange()">
               <span class="file-cta">
-                <span class="file-label">Upload your resume</span>
+                <span class="file-label"><strong>Upload Your Resume</strong></span>
               </span>
-              <span class="file-name" v-if="file === ''" center>No file uploaded...</span>
+              <span class="file-name" v-if="file === ''">No file uploaded...</span>
               <span class="file-name" v-else>{{ file.name }}</span>
             </label>
           </div>
           <div id="buttons" v-if="hasPermission === false">
-            <a class="button is-rounded is-medium" v-on:click="uploadResume()">Submit</a>
+            <a class="button is-medium" @click="uploadResume()">Submit Resume</a>
           </div>
         </div>
 
         <!-- This is the JOB FILTER checkboxes (Still a work in progress) -->
-        <JobFilter :jobPostings="jobs" @filtered="filterJobPostings"/>
+        <JobFilter :jobPostings="jobs" @filtered="filterJobPostings" />
       </div>
       <div class="column is-10">
-        <!-- This is the card that allows an admin to enter information for a new job -->
-        <AddJobPostings
-          v-if="addJob === true"
-          :hasPermission="true"
-          @add="newJobPostingSuccess"
-          @cancel="cancelNewJobPosting"
-        />
 
         <!-- This displays all jobs stored in the database as cards on the page -->
-        <DisplayJobPostings
-          v-if="hasPermission"
-          :jobPostings="jobs"
-          :hasPermission="true"
-          :filters="filters"
-        />
-        <DisplayJobPostings
-          v-else
-          :jobPostings="jobs"
-          :hasPermission="false"
-          :filters="filters"
-          :file="file"
-        />
+        <DisplayJobPostings v-if="hasPermission" :jobPostings="jobs" :hasPermission="true" :filters="filters" />
+        <DisplayJobPostings v-else :jobPostings="jobs" :hasPermission="false" :filters="filters" :file="file" />
         <h1 v-if="jobs.length === 0">No job postings available</h1>
+        <v-divider></v-divider>
 
         <!-- Pagination for job postings -->
-        <nav v-else class="pagination" is-medium role="navigation" aria-label="pagination">
-          <a
-            class="pagination-previous"
-            v-if="currentPage != minPage"
-            v-on:click="prevPage()"
-          >Previous</a>
-          <a class="pagination-previous" disabled v-else>Previous</a>
-          <a class="pagination-next" v-if="currentPage != maxPage" v-on:click="nextPage()">Next page</a>
-          <a class="pagination-next" disabled v-else>Next page</a>
-
-          <ul class="pagination-list">
-            <li v-for="(page, index) in maxPage" :key="index">
-              <a
-                v-if="page === currentPage"
-                class="pagination-link is-current"
-                aria-label="Page 1"
-                aria-current="page"
-              >{{ index + 1 }}</a>
-              <a
-                v-else
-                v-on:click="choosePage(index)"
-                class="pagination-link"
-                aria-label="Page 1"
-                aria-current="page"
-              >{{ index + 1 }}</a>
-            </li>
-          </ul>
-        </nav>
+        <div class="text-sm-center">
+          <v-pagination v-model="currentPage" @input="choosePage(currentPage)" color="#6F0000" :length="totalPages" :total-visible="10"></v-pagination>
+        </div>
       </div>
     </div>
+    <AddJobModal v-if="addJob" :theaterId="theater.TheaterID" @cancel="addJob = false" />
+
   </div>
 </template>
 
 <script>
-import AddJobPostings from "@/components/HelpWanted/AddJobPostings.vue";
+import AddJobModal from "@/components/HelpWanted/AddJobModal.vue";
 import DisplayJobPostings from "@/components/HelpWanted/DisplayJobPostings.vue";
 import JobFilter from "@/components/HelpWanted/JobFilter.vue";
 import axios from "axios";
 
 export default {
-  name: "AdminHelpWanted",
+  name: "Help Wanted",
   props: ["theater", "hasPermission"],
   components: {
-    AddJobPostings,
+    AddJobModal,
     DisplayJobPostings,
     JobFilter
   },
@@ -113,7 +73,7 @@ export default {
       // The minimum number of pages
       minPage: 1,
       // The maximum number of pages (this will change)
-      maxPage: 1,
+      totalPages: 1,
       // The amount of jobs to retrive
       numberOfItems: 3,
       // Boolean value to display new job posting inputs
@@ -127,31 +87,12 @@ export default {
     };
   },
   methods: {
-    // Function to display the new job posting inputs
-    addJobButton() {
-      this.addJob = true;
-    },
-    // When a new job is created, updates the current jobs list
-    newJobPostingSuccess(newJob) {
-      // TODO: Update the method to refresh contents
-      this.addJob = false;
-      this.jobs.unshift(newJob);
-      this.getAllJobPostings();
-    },
-    // Cancels the creation of a new job
-    cancelNewJobPosting(canceled) {
-      this.addJob = canceled;
-    },
-    // Removes a job from the jobs list
-    removeJobPosting(updatedJobPostings) {
-      this.jobs = updatedJobPostings;
-    },
     filterJobPostings(jobFilters) {
       this.filters = jobFilters;
     },
-    choosePage(page) {
-      this.currentPage = page + 1;
-      this.getJobPostings();
+    async choosePage(page) {
+      this.currentPage = page;
+      await this.getJobPostings();
     },
     prevPage() {
       this.currentPage -= 1;
@@ -164,6 +105,28 @@ export default {
     onFileChange() {
       this.file = this.$refs.file.files[0];
     },
+    async uploadResume() {
+      if (this.fileName === "") {
+        alert("Please enter a resume...");
+      } else {
+        let formData = new FormData();
+        formData.append(this.file.name, this.file);
+        await axios
+          .put(
+            "https://api.broadwaybuilder.xyz/helpwanted/" +
+              this.userid +
+              "/uploadresume",
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data"
+              }
+            }
+          )
+          .then(response => alert(response.data))
+          .catch(error => alert(error));
+      }
+    },
     async getResume() {
       await axios
         .get(
@@ -174,18 +137,15 @@ export default {
     async getJobPostings() {
       // Obtain all jobs from the database within a range
       await axios
-        .get(
-          "https://api.broadwaybuilder.xyz/helpwanted/" +
-            this.theater.TheaterID,
-          {
-            params: {
-              // The current page. This will be used to calculate starting point of query
-              currentPage: this.currentPage,
-              // The number of items starting at the startingPoint
-              numberOfItems: this.numberOfItems
-            }
+        .get("https://api.broadwaybuilder.xyz/helpwanted/gettheaterjobs", {
+          params: {
+            theaterId: this.theater.TheaterID,
+            // The current page. This will be used to calculate starting point of query
+            currentPage: this.currentPage,
+            // The number of items starting at the startingPoint
+            numberOfItems: this.numberOfItems
           }
-        )
+        })
         // Set the jobs to the queryed job posting selection
         .then(response => (this.jobs = response.data));
 
@@ -197,7 +157,7 @@ export default {
       }
     },
     // Gets the max pages to set the pagination to
-    async getMaxPage() {
+    async getTotalPages() {
       await axios
         .get("https://api.broadwaybuilder.xyz/helpwanted/length", {
           params: {
@@ -206,20 +166,21 @@ export default {
         })
         .then(response => {
           if (this.numberOfItems === 1) {
-            this.maxPage = response.data;
+            this.totalPages = response.data;
           } else if (this.numberOfItems === response.data) {
-            this.maxPage = Math.floor(response.data / this.numberOfItems);
+            this.totalPages = Math.floor(response.data / this.numberOfItems);
           } else {
-            this.maxPage = Math.floor(response.data / this.numberOfItems) + 1;
+            this.totalPages =
+              Math.floor(response.data / this.numberOfItems) + 1;
           }
         });
     }
   },
-  mounted() {
+  created() {
     // On initial load, get initial jobs
     this.getJobPostings();
     // Get the numer of total job postings
-    this.getMaxPage();
+    this.getTotalPages();
   }
 };
 </script>
@@ -227,8 +188,8 @@ export default {
 <style lang="sass" scoped>
 @import '../../../node_modules/bulma/bulma.sass'
 
-.AdminHelpWanted
-  margin: 2em 2em
+.HelpWanted
+  padding-bottom: 3.5em
 
 #buttons
   text-align: center
@@ -259,4 +220,5 @@ a
   color: #fff;
   transform: translateY(-7px);
   font-weight: bold
+
 </style>
