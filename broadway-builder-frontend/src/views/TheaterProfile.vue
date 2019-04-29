@@ -63,7 +63,8 @@
             <v-divider></v-divider>
             <div id="theater-actions">
               <v-btn @click="goToPictures(theater)" depressed large>Past Productions</v-btn>
-              <v-btn @click="goToHelpWanted(theater, true)" depressed large>Job Opportunities</v-btn>
+              <v-btn @click="goToHelpWanted(theater, true)" depressed large>Job Opportunities Admin</v-btn>
+              <v-btn @click="goToHelpWanted(theater, false)" depressed large>Job Opportunities User</v-btn>
             </div>
 
           </v-container>
@@ -75,8 +76,6 @@
 </template>
 
 <script>
-import axios from "axios";
-
 export default {
   name: "TheaterProfile",
   data() {
