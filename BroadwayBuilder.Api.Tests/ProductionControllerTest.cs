@@ -14,19 +14,19 @@ namespace BroadwayBuilder.Api.Tests
     [TestClass]
     public class ProductionControllerTest
     {
-        [TestMethod]
-        public void ProductionController_UploadProgram_Pass()
-        {
-            // Arrange
-            var dbcontext = new BroadwayBuilderContext();
-            var productionService = new ProductionService(dbcontext);
+        //[TestMethod]
+        //public void ProductionController_UploadProgram_Pass()
+        //{
+        //    // Arrange
+        //    var dbcontext = new BroadwayBuilderContext();
+        //    var productionService = new ProductionService(dbcontext);
 
 
 
-            // Act
+        //    // Act
 
-            // Assert
-        }
+        //    // Assert
+        //}
 
         //[TestMethod]
         //public void ProductionController_CreateProduction_Pass()
@@ -365,7 +365,7 @@ namespace BroadwayBuilder.Api.Tests
             var response = actionResult as OkNegotiatedContentResult<string>;
 
             var dbcontext_ = new BroadwayBuilderContext();
-            var theaterService_ = new TheaterService(dbcontext);
+            var theaterService_ = new TheaterService(dbcontext_);
             var theater_ = theaterService.GetTheaterByID(theater.TheaterID);
             theaterService_.DeleteTheater(theater_);
             dbcontext_.SaveChanges();
@@ -375,9 +375,150 @@ namespace BroadwayBuilder.Api.Tests
             Assert.AreEqual("Production deleted succesfully", response.Content);
 
         }
+
+
+        [TestMethod]
+        public void ProductionController_UpdateProductionDateTime_Pass()
+        {
+            // Arrange
+            var dbcontext = new BroadwayBuilderContext();
+            var theaterService = new TheaterService(dbcontext);
+
+            var theater = new Theater()
+            {
+                TheaterName = "The Magicians",
+                StreetAddress = "Pantene",
+                State = "CA",
+                City = "LA",
+                CompanyName = "123 Sesame St",
+                Country = "US",
+                PhoneNumber = "123456789"
+            };
+
+            theaterService.CreateTheater(theater);
+            dbcontext.SaveChanges();
+
+            var productionService = new ProductionService(dbcontext);
+
+            var production = new Production
+            {
+                ProductionName = "The Pajama Game 1",
+                DirectorFirstName = "Doris",
+                DirectorLastName = "Day",
+                City = "San Diego",
+                StateProvince = "California",
+                Country = "U.S",
+                TheaterID = theater.TheaterID,
+                Street = "1234 Sesame St",
+                Zipcode = "91911"
+            };
+
+            productionService.CreateProduction(production);
+            dbcontext.SaveChanges();
+
+            var date = DateTime.Parse("3/28/2019 3:22:29 PM");
+            var time = TimeSpan.Parse("11:30:00");
+
+            var productionDateTime = new ProductionDateTime(production.ProductionID, date, time);
+            productionService.CreateProductionDateTime(productionDateTime);
+            dbcontext.SaveChanges();
+
+            productionDateTime.Date = DateTime.Parse("3/27/2019 3:22:29 PM");
+            productionDateTime.Time = TimeSpan.Parse("9:30:00");
+
+            var productionController = new ProductionController();
+
+            // Act
+            var actionResult = productionController.updateProductionDateTime(productionDateTime.ProductionDateTimeId, productionDateTime);
+
+            var response = actionResult as OkNegotiatedContentResult<ProductionDateTime>;
+            var updatedProductionDateTime = response.Content;
+
+            var expected = new
+            {
+                DateTime = DateTime.Parse("3/27/2019 3:22:29 PM"),
+                TimeSpan = TimeSpan.Parse("9:30:00")
+            };
+
+            var actual = updatedProductionDateTime;
+
+            productionService.DeleteProductionDateTime(productionDateTime);
+            dbcontext.SaveChanges();
+            productionService.DeleteProduction(response.Content.ProductionID);
+            dbcontext.SaveChanges();
+            theaterService.DeleteTheater(theater);
+            dbcontext.SaveChanges();
+
+            // Assert
+            Assert.IsNotNull(response);
+            Assert.AreEqual(productionDateTime.ProductionDateTimeId, updatedProductionDateTime.ProductionDateTimeId);
+            Assert.AreEqual(expected.DateTime, actual.Date);
+            Assert.AreEqual(expected.TimeSpan, actual.Time);
+        }
+
+        [TestMethod]
+        public void ProductionController_DeleteProductionDateTime_Pass()
+        {
+            // Arrange
+            var dbcontext = new BroadwayBuilderContext();
+            var theaterService = new TheaterService(dbcontext);
+
+            var theater = new Theater()
+            {
+                TheaterName = "The Magicians",
+                StreetAddress = "Pantene",
+                State = "CA",
+                City = "LA",
+                CompanyName = "123 Sesame St",
+                Country = "US",
+                PhoneNumber = "123456789"
+            };
+
+            theaterService.CreateTheater(theater);
+            dbcontext.SaveChanges();
+
+            var productionService = new ProductionService(dbcontext);
+
+            var production = new Production
+            {
+                ProductionName = "The Pajama Game 1",
+                DirectorFirstName = "Doris",
+                DirectorLastName = "Day",
+                City = "San Diego",
+                StateProvince = "California",
+                Country = "U.S",
+                TheaterID = theater.TheaterID,
+                Street = "1234 Sesame St",
+                Zipcode = "91911"
+            };
+
+            productionService.CreateProduction(production);
+            dbcontext.SaveChanges();
+
+            var date = DateTime.Parse("3/28/2019 3:22:29 PM");
+            var time = TimeSpan.Parse("11:30:00");
+
+            var productionDateTime = new ProductionDateTime(production.ProductionID, date, time);
+
+            productionService.CreateProductionDateTime(productionDateTime);
+            dbcontext.SaveChanges();
+
+            var productionController = new ProductionController();
+
+            // Act
+            var actionResult = productionController.deleteProductiondateTime(productionDateTime.ProductionDateTimeId, productionDateTime);
+            var response = actionResult as OkNegotiatedContentResult<string>;
+
+            var dbcontext_ = new BroadwayBuilderContext();
+            var theaterService_ = new TheaterService(dbcontext_);
+            var theater_ = theaterService.GetTheaterByID(theater.TheaterID);
+            theaterService_.DeleteTheater(theater_);
+            dbcontext_.SaveChanges();
+
+            // Assert
+            Assert.IsNotNull(response);
+            Assert.AreEqual("Production date time deleted succesfully!", response.Content);
+        }
     }
-
-
-
 
 }
