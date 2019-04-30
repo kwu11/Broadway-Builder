@@ -63,14 +63,13 @@
             <a class="card-footer-item" v-if="!job.edit" @click="deleteConfirmation = true; helpWantedId = job.HelpWantedId; jobIndex = index">Delete</a>
           </footer>
           <footer class="card-footer" v-else-if="!permission && job.show">
-            <a class="card-footer-item" @click="applyToJob()">Apply</a>
+            <a class="card-footer-item" :helpWantedId="helpWantedId" @click="helpWantedId = job.HelpWantedId; applyToJob()">Apply</a>
           </footer>
         </div>
       </div>
 
       <ResumeModal v-if="viewResumes" :helpWantedId="helpWantedId" @cancel="viewResumes = false" />
-      <DeleteJobModal v-if="deleteConfirmation" @cancel="deleteConfirmation = false" />
-
+      <DeleteJobModal v-if="deleteConfirmation" :helpWantedId="helpWantedId" @cancel="deleteConfirmation = false; $emit('deleteFinished');" />
     </div>
   </div>
 </template>
@@ -147,7 +146,17 @@ export default {
 
       job.edit = false;
     },
-    applyToJob() {},
+    async applyToJob() {
+      await axios
+        .post("https://api.broadwaybuilder.xyz/helpwanted/apply", {
+          params: {
+            id: this.userid,
+            helpwantedid: this.helpWantedId
+          }
+        })
+        .then(response => alert(response.data))
+        .catch(error => alert(error));
+    },
     calculateDateDifference(datePosted) {
       var dateCreated = new Date(Date.parse(datePosted));
       var dateToday = new Date();
@@ -190,8 +199,7 @@ acceptJob:hover
   font-weight: normal
   text-decoration: none
   transition: none
-
-
+  
 a 
   color: #6F0000
 
