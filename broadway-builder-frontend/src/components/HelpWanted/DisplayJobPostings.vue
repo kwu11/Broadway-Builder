@@ -129,8 +129,8 @@ export default {
     editJobPosting(job) {
       job.edit = true;
     },
-    finishEditing(job) {
-      axios
+    async finishEditing(job) {
+      await axios
         .put("https://api.broadwaybuilder.xyz/helpwanted/edittheaterjob", {
           HelpWantedId: job.HelpWantedId,
           TheaterId: job.TheaterId,
@@ -199,7 +199,7 @@ acceptJob:hover
   font-weight: normal
   text-decoration: none
   transition: none
-  
+
 a 
   color: #6F0000
 

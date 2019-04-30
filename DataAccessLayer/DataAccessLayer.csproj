@@ -89,6 +89,10 @@
     <Compile Include="Migrations\201904220521131_seedv2.Designer.cs">
       <DependentUpon>201904220521131_seedv2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904300548151_updatedUserModel.cs" />
+    <Compile Include="Migrations\201904300548151_updatedUserModel.Designer.cs">
+      <DependentUpon>201904300548151_updatedUserModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ProductionDateTime.cs" />
     <Compile Include="Models\ResumeTheaterJob.cs" />
@@ -125,6 +129,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904220521131_seedv2.resx">
       <DependentUpon>201904220521131_seedv2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904300548151_updatedUserModel.resx">
+      <DependentUpon>201904300548151_updatedUserModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

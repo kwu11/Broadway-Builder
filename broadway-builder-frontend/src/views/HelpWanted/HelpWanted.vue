@@ -150,7 +150,12 @@ export default {
           }
         })
         // Set the jobs to the queryed job posting selection
-        .then(response => (this.jobs = response.data));
+        .then(
+          response => (
+            (this.jobs = response.data.JobPosting),
+            (this.totalPages = response.data.Count)
+          )
+        );
 
       for (var i = 0; i < this.jobs.length; i++) {
         // Appends a "show" attribute to display more details about the job
@@ -158,33 +163,11 @@ export default {
         // Appends a "edit" attribute to check if a job is being editted
         this.$set(this.jobs[i], "edit", false);
       }
-    },
-    // Gets the max pages to set the pagination to
-    async getTotalPages() {
-      await axios
-        .get("https://api.broadwaybuilder.xyz/helpwanted/length", {
-          params: {
-            theaterid: this.theater.TheaterID
-          }
-        })
-        .then(response => {
-          if (this.numberOfItems === 1) {
-            this.totalPages = response.data;
-          } else if (this.numberOfItems < response.data) {
-            this.totalPages = Math.floor(response.data / this.numberOfItems);
-          }
-          if (response.data % this.numberOfItems != 0) {
-            this.totalPages =
-              Math.floor(response.data / this.numberOfItems) + 1;
-          }
-        });
     }
   },
   created() {
     // On initial load, get initial jobs
     this.getJobPostings();
-    // Get the numer of total job postings
-    this.getTotalPages();
     // Get resume for the user (if it exists)
     this.getResume();
   }
