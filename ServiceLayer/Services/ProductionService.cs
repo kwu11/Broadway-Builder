@@ -29,10 +29,18 @@ namespace ServiceLayer.Services
 
         public Production GetProduction(int productionId)
         {
-            return _dbContext.Productions
+           var productionByIdQuery = _dbContext.Productions
                 .Where(o => o.ProductionID == productionId)
                 //.Include(o => o.ProductionDateTime) //  Only Needed if lazy loading is off and you need to get the production date times
-                .FirstOrDefault(); //if item doesn't exist it returns null Todo: throw a specific exception
+                .FirstOrDefault();
+
+            if (productionByIdQuery != null)
+            {
+                return productionByIdQuery;
+            }else
+            {
+                throw new ProductionNotFoundException($"Production does not exist! with id: {productionId}");
+            }
         }
 
         // Returns a list of productions by a previous date. 
@@ -86,8 +94,7 @@ namespace ServiceLayer.Services
         {
             Production currentProduction = _dbContext.Productions
                  .Where(o => o.ProductionID == production.ProductionID)
-                 .FirstOrDefault(); //gives you first production that satisfies the where. 
-                //if item doesn't exist it returns null Todo: throw a specific exception
+                 .FirstOrDefault(); //gives you first production that satisfies the where.
 
             if (currentProduction != null)
             {
@@ -113,9 +120,8 @@ namespace ServiceLayer.Services
             Production productionToDelete = _dbContext.Productions
                 .Where(o => o.ProductionID == productionID)
                 .FirstOrDefault(); //gives you first production that satisfies the where
-                //if item doesn't exist it returns null Todo: throw a specific exception
+                //if item doesn't exist it returns null
 
-            // If the production found is not null, delete the production
             if (productionToDelete != null)
             {
                 _dbContext.Productions.Remove(productionToDelete);
@@ -144,7 +150,11 @@ namespace ServiceLayer.Services
             var subdir = Path.Combine(dir, $"Production{productionId}/");
             var filePath = Path.Combine(subdir, $"{productionId}{extension}");
 
-            //check if prodid exists in database because we dont store data for things that don't exist by getting it and check if that variable is null. if it is null then it doesnt exist
+            // If production does not exist then we will not save a program
+            if (!_dbContext.Productions.Where(o => o.ProductionID == productionId).Any())
+            {
+                throw new ProductionNotFoundException($"Production does not exist! with id: {productionId}");
+            }
 
             if (!Directory.Exists(dir))
             {
@@ -176,6 +186,12 @@ namespace ServiceLayer.Services
             var dir = Path.Combine(currentDirectory, "Photos/");
             var subdir = Path.Combine(dir, $"Production{productionId}/");
 
+            // If production does not exist then we will not save the photos
+            if (!_dbContext.Productions.Where(o => o.ProductionID == productionId).Any())
+            {
+                throw new ProductionNotFoundException($"Production does not exist! with id: {productionId}");
+            }
+
             if (!Directory.Exists(subdir))
             {
                 Directory.CreateDirectory(subdir);
@@ -190,8 +206,13 @@ namespace ServiceLayer.Services
             postedFile.SaveAs(filePath);
         }
 
-        public void CreateProductionDateTime(ProductionDateTime productionDateTime)
+        public void CreateProductionDateTime(int productionId, ProductionDateTime productionDateTime)
         {
+            if (!_dbContext.Productions.Where(o => o.ProductionID == productionId).Any())
+            {
+                throw new ProductionNotFoundException($"Production does not exist! with id: {productionId}");
+            }
+
             _dbContext.ProductionDateTimes.Add(productionDateTime);
         }
 
@@ -219,16 +240,14 @@ namespace ServiceLayer.Services
             ProductionDateTime productionDateTimeToDelete = _dbContext.ProductionDateTimes
                 .Where(o => o.ProductionDateTimeId == productionDateTime.ProductionDateTimeId)
                 .FirstOrDefault();//gives you first production date time that satisfies the where
-                                  //if item doesn't exist it returns null Todo: throw a specific exception
 
-            // If the production date time found is not null, delete the production
             if (productionDateTimeToDelete != null)
             {
                 _dbContext.ProductionDateTimes.Remove(productionDateTimeToDelete);
             }
             else
             {
-                //throw an exception
+                throw new ProductionDateTimeNotFoundException($"Production Date Time does not exist! with ID: {productionDateTime.ProductionDateTimeId}");
             }
 
         }
