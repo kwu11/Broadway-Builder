@@ -37,6 +37,7 @@ namespace ServiceLayer.Services
         /// <param name="user">The user that we want to create</param>
         public void CreateUser(User user)
         {
+            user.DateCreated = DateTime.Now;
             _dbContext.Users.Add(user);
         }
 
@@ -74,6 +75,7 @@ namespace ServiceLayer.Services
             {
                 userToUpdate.FirstName = user.FirstName;
                 userToUpdate.LastName = user.LastName;
+                userToUpdate.StreetAddress = user.StreetAddress;
                 userToUpdate.StateProvince = user.StateProvince;
                 userToUpdate.Country = user.Country;
                 userToUpdate.City = user.City;
