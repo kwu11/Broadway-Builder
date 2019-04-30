@@ -20,12 +20,13 @@ namespace ServiceLayer.Test
             var lastName = "Castro";
             int age = 24;
             var dob = new DateTime(1994, 1, 7);
+            var streetAddress ="address1"; 
             var city = "San Diego";
             var stateProvince = "California";
             var country = "United States";
             var enable = true;
 
-            var user = new User(username, firstName, lastName, age, dob, city, stateProvince, country, enable);
+            var user = new User(username, firstName, lastName, age, dob, streetAddress,city, stateProvince, country, enable,Guid.NewGuid());
             var permission = new Permission("RateShow", true);
             var theater = new Theater("someTheater", "Regal", "theater st", "LA", "CA", "US", "323323");
 
@@ -77,12 +78,13 @@ namespace ServiceLayer.Test
             var lastName = "Castro";
             int age = 24;
             var dob = new DateTime(1994, 1, 7);
+            var streetAddress = "address";
             var city = "San Diego";
             var stateProvince = "California";
             var country = "United States";
             var enable = true;
 
-            var user = new User(username, firstName, lastName, age, dob, city, stateProvince, country, enable);
+            var user = new User(username, firstName, lastName, age, dob, streetAddress,city, stateProvince, country, enable,Guid.NewGuid());
             var permission = new Permission("RateShow", true);
             var theater = new Theater("someTheater", "Regal", "theater st", "LA", "CA", "US", "323323");
 

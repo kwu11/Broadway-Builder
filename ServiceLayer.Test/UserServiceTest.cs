@@ -19,12 +19,13 @@ namespace ServiceLayer.Test
             var lastName = "Castro";
             int age = 24;
             var dob = new DateTime(1994, 1, 7);
+            var streetAddress = "address";
             var city = "San Diego";
             var stateProvince = "California";
             var country = "United States";
             var enable = true;
 
-            var user = new User(username, firstName, lastName, age, dob, city, stateProvince, country, enable);
+            var user = new User(username, firstName, lastName, age, dob, streetAddress,city, stateProvince, country, enable,Guid.NewGuid());
 
             var expected = true;
             var actual = false;
@@ -56,12 +57,13 @@ namespace ServiceLayer.Test
             var lastName = "Castro";
             int age = 24;
             var dob = new DateTime(1994, 1, 7);
+            var streetAddress = "address";
             var city = "San Diego";
             var stateProvince = "California";
             var country = "United States";
             var enable = true;
 
-            var user = new User(username, firstName, lastName, age, dob, city, stateProvince, country, enable);
+            var user = new User(username, firstName, lastName, age, dob, streetAddress, city, stateProvince, country, enable, Guid.NewGuid());
             //var NewRole = new Role("general");
 
             // Expected should not pass because
@@ -108,12 +110,13 @@ namespace ServiceLayer.Test
             var lastName = "Castro";
             int age = 24;
             var dob = new DateTime(1994, 1, 7);
+            var streetAddress = "address";
             var city = "San Diego";
             var stateProvince = "California";
             var country = "United States";
             var enable = true;
 
-            var user = new User(username, firstName, lastName, age, dob, city, stateProvince, country, enable);
+            var user = new User(username, firstName, lastName, age, dob, streetAddress, city, stateProvince, country, enable, Guid.NewGuid());
 
             userService.CreateUser(user);
             context.SaveChanges();
@@ -153,12 +156,13 @@ namespace ServiceLayer.Test
             var lastName = "Castro";
             int age = 24;
             var dob = new DateTime(1994, 1, 7);
+            var streetAddress = "address";
             var city = "San Diego";
             var stateProvince = "California";
             var country = "United States";
             var enable = true;
 
-            var user = new User(username, firstName, lastName, age, dob, city, stateProvince, country, enable);
+            var user = new User(username, firstName, lastName, age, dob, streetAddress, city, stateProvince, country, enable, Guid.NewGuid());
 
             userService.CreateUser(user);
             context.SaveChanges();
@@ -187,12 +191,13 @@ namespace ServiceLayer.Test
             var lastName = "Castro";
             int age = 24;
             var dob = new DateTime(1994, 1, 7);
+            var streetAddress = "address";
             var city = "San Diego";
             var stateProvince = "California";
             var country = "United States";
             var enable = true;
 
-            var user = new User(username, firstName, lastName, age, dob, city, stateProvince, country, enable);
+            var user = new User(username, firstName, lastName, age, dob, streetAddress, city, stateProvince, country, enable, Guid.NewGuid());
 
             userService.CreateUser(user);
             context.SaveChanges();
@@ -226,12 +231,13 @@ namespace ServiceLayer.Test
             var lastName = "Castro";
             int age = 24;
             var dob = new DateTime(1994, 1, 7);
+            var streetAddress = "address";
             var city = "San Diego";
             var stateProvince = "California";
             var country = "United States";
             var enable = true;
 
-            var user = new User(username, firstName, lastName, age, dob, city, stateProvince, country, enable);
+            var user = new User(username, firstName, lastName, age, dob, streetAddress, city, stateProvince, country, enable, Guid.NewGuid());
 
             userService.CreateUser(user);
             context.SaveChanges();
@@ -263,12 +269,13 @@ namespace ServiceLayer.Test
             var lastName = "Castro";
             int age = 24;
             var dob = new DateTime(1994, 1, 7);
+            var streetAddress = "address";
             var city = "San Diego";
             var stateProvince = "California";
             var country = "United States";
             var enable = true;
 
-            var user = new User(username, firstName, lastName, age, dob, city, stateProvince, country, enable);
+            var user = new User(username, firstName, lastName, age, dob, streetAddress, city, stateProvince, country, enable, Guid.NewGuid());
 
             userService.CreateUser(user);
             context.SaveChanges();
