@@ -201,7 +201,7 @@ namespace ServiceLayer.Test
                 ProductionID = production1.ProductionID
             };
 
-            productionService.CreateProductionDateTime(productionDateTime1);
+            productionService.CreateProductionDateTime(production1.ProductionID, productionDateTime1);
             dbcontext.SaveChanges();
 
             var productionDateTime2 = new ProductionDateTime()
@@ -211,7 +211,7 @@ namespace ServiceLayer.Test
                 ProductionID = production2.ProductionID
             };
 
-            productionService.CreateProductionDateTime(productionDateTime2);
+            productionService.CreateProductionDateTime(production2.ProductionID, productionDateTime2);
             dbcontext.SaveChanges();
 
             var expected = true;
@@ -303,7 +303,7 @@ namespace ServiceLayer.Test
                 ProductionID = production1.ProductionID
             };
 
-            productionService.CreateProductionDateTime(productionDateTime1);
+            productionService.CreateProductionDateTime(production1.ProductionID, productionDateTime1);
             dbcontext.SaveChanges();
 
             var productionDateTime2 = new ProductionDateTime()
@@ -313,7 +313,7 @@ namespace ServiceLayer.Test
                 ProductionID = production2.ProductionID
             };
 
-            productionService.CreateProductionDateTime(productionDateTime2);
+            productionService.CreateProductionDateTime(production2.ProductionID ,productionDateTime2);
             dbcontext.SaveChanges();
 
             var expected = true;
@@ -577,7 +577,7 @@ namespace ServiceLayer.Test
             var actual = false;
 
             // Act
-            productionService.CreateProductionDateTime(productionDateTime);
+            productionService.CreateProductionDateTime(production.ProductionID, productionDateTime);
             dbcontext.SaveChanges();
 
             if (productionDateTime.ProductionDateTimeId > 0)
@@ -637,7 +637,7 @@ namespace ServiceLayer.Test
             var time = TimeSpan.Parse("11:30:00");
 
             var productionDateTime = new ProductionDateTime(production.ProductionID, date, time);
-            productionService.CreateProductionDateTime(productionDateTime);
+            productionService.CreateProductionDateTime(production.ProductionID, productionDateTime);
             dbcontext.SaveChanges();
 
             productionDateTime.Date = DateTime.Parse("3/27/2019 3:22:29 PM");
@@ -708,7 +708,7 @@ namespace ServiceLayer.Test
 
             var productionDateTime = new ProductionDateTime(production.ProductionID, date, time);
 
-            productionService.CreateProductionDateTime(productionDateTime);
+            productionService.CreateProductionDateTime(production.ProductionID, productionDateTime);
             dbcontext.SaveChanges();
 
             var expected = true;

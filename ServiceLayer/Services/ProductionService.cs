@@ -24,7 +24,12 @@ namespace ServiceLayer.Services
 
         public void CreateProduction(Production production)
         {
+            if (!_dbContext.Productions.Where(o => o.TheaterID == production.TheaterID).Any())
+            {
+                throw new NullNotFoundException($"Theater does not exist! with id: {production.TheaterID}");
+            }
             _dbContext.Productions.Add(production);
+
         }
 
         public Production GetProduction(int productionId)
