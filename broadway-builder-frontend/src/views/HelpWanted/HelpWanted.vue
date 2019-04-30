@@ -1,5 +1,5 @@
 <template>
-  <div class="HelpWanted">
+  <div id="HelpWanted">
 
     <h1>
       <strong>Job Opportunities</strong> | {{ theater.TheaterName }}
@@ -20,7 +20,7 @@
                 <span class="file-label"><strong>Upload Your Resume</strong></span>
               </span>
               <span class="file-name" v-if="file === ''">No file uploaded...</span>
-              <span class="file-name" v-else>{{ file.name }}</span>
+              <span class="file-name" v-else><a :href="file" target="_blank">Your Resume</a></span>
             </label>
           </div>
           <div id="buttons" v-if="hasPermission === false">
@@ -34,8 +34,8 @@
       <div class="column is-10">
 
         <!-- This displays all jobs stored in the database as cards on the page -->
-        <DisplayJobPostings v-if="hasPermission" :jobPostings="jobs" :hasPermission="true" :filters="filters" />
-        <DisplayJobPostings v-else :jobPostings="jobs" :hasPermission="false" :filters="filters" :file="file" />
+        <DisplayJobPostings v-if="hasPermission" :jobPostings="jobs" :hasPermission="true" :filters="filters" @deleteFinished="getTotalPages(), getJobPostings()" />
+        <DisplayJobPostings v-else :jobPostings="jobs" :hasPermission="false" :filters="filters" :file="file" @deleteFinished="getTotalPages(), getJobPostings()" />
         <h1 v-if="jobs.length === 0">No job postings available</h1>
         <v-divider></v-divider>
 
@@ -45,7 +45,7 @@
         </div>
       </div>
     </div>
-    <AddJobModal v-if="addJob" :theaterId="theater.TheaterID" @cancel="addJob = false" />
+    <AddJobModal v-if="addJob" :theaterId="theater.TheaterID" @cancel="addJob = false, getTotalPages(), getJobPostings()" />
 
   </div>
 </template>
@@ -113,11 +113,12 @@ export default {
         formData.append(this.file.name, this.file);
         await axios
           .put(
-            "https://api.broadwaybuilder.xyz/helpwanted/" +
-              this.userid +
-              "/uploadresume",
+            "https://api.broadwaybuilder.xyz/helpwanted/uploadresume",
             formData,
             {
+              params: {
+                userId: this.userId
+              },
               headers: {
                 "Content-Type": "multipart/form-data"
               }
@@ -129,9 +130,11 @@ export default {
     },
     async getResume() {
       await axios
-        .get(
-          "https://api.broadwaybuilder.xyz/helpwanted/myresume/" + this.userId
-        )
+        .get("https://api.broadwaybuilder.xyz/helpwanted/myresume", {
+          params: {
+            userId: this.userId
+          }
+        })
         .then(response => (this.file = response.data));
     },
     async getJobPostings() {
@@ -167,9 +170,10 @@ export default {
         .then(response => {
           if (this.numberOfItems === 1) {
             this.totalPages = response.data;
-          } else if (this.numberOfItems === response.data) {
+          } else if (this.numberOfItems < response.data) {
             this.totalPages = Math.floor(response.data / this.numberOfItems);
-          } else {
+          }
+          if (response.data % this.numberOfItems != 0) {
             this.totalPages =
               Math.floor(response.data / this.numberOfItems) + 1;
           }
@@ -181,6 +185,8 @@ export default {
     this.getJobPostings();
     // Get the numer of total job postings
     this.getTotalPages();
+    // Get resume for the user (if it exists)
+    this.getResume();
   }
 };
 </script>
@@ -188,7 +194,8 @@ export default {
 <style lang="sass" scoped>
 @import '../../../node_modules/bulma/bulma.sass'
 
-.HelpWanted
+#HelpWanted
+  margin: 0 8em
   padding-bottom: 3.5em
 
 #buttons

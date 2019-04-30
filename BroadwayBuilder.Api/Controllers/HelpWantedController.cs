@@ -1,4 +1,5 @@
-﻿using DataAccessLayer;
+﻿using BroadwayBuilder.Api.Models;
+using DataAccessLayer;
 using DataAccessLayer.Models;
 using ServiceLayer.Exceptions;
 using ServiceLayer.Services;
@@ -54,7 +55,8 @@ namespace BroadwayBuilder.Api.Controllers
                     {
                         throw new NullNotFoundException();
                     }
-                    return Content((HttpStatusCode)200, list);
+                    
+                    return Content((HttpStatusCode)200, (new { Count = list.Count,JobPosting = list}));
                 }
                 catch (NullNotFoundException)
                 {
@@ -344,7 +346,7 @@ namespace BroadwayBuilder.Api.Controllers
         }
 
         [HttpPost,Route("apply")] //apply to a theater job
-        public IHttpActionResult ApplyToJob(int id,int helpwantedid)
+        public IHttpActionResult ApplyToJob([FromUri]int id,[FromUri]int helpwantedid)
         {
             try
             {

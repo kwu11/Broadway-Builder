@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 
-
-namespace ServiceLayer.Test
+namespace TestUtilites
 {
-    class MockPostedFile : HttpPostedFileBase
+    public class MockPostedFile : HttpPostedFileBase
     {
         public override string ContentType { get; }
 
