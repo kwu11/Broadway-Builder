@@ -9,6 +9,7 @@ using System.Configuration;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using TestUtilites;
 
 namespace ServiceLayer.Test
 {
@@ -200,7 +201,7 @@ namespace ServiceLayer.Test
                 ProductionID = production1.ProductionID
             };
 
-            productionService.CreateProductionDateTime(productionDateTime1);
+            productionService.CreateProductionDateTime(production1.ProductionID, productionDateTime1);
             dbcontext.SaveChanges();
 
             var productionDateTime2 = new ProductionDateTime()
@@ -210,7 +211,7 @@ namespace ServiceLayer.Test
                 ProductionID = production2.ProductionID
             };
 
-            productionService.CreateProductionDateTime(productionDateTime2);
+            productionService.CreateProductionDateTime(production2.ProductionID, productionDateTime2);
             dbcontext.SaveChanges();
 
             var expected = true;
@@ -302,7 +303,7 @@ namespace ServiceLayer.Test
                 ProductionID = production1.ProductionID
             };
 
-            productionService.CreateProductionDateTime(productionDateTime1);
+            productionService.CreateProductionDateTime(production1.ProductionID, productionDateTime1);
             dbcontext.SaveChanges();
 
             var productionDateTime2 = new ProductionDateTime()
@@ -312,7 +313,7 @@ namespace ServiceLayer.Test
                 ProductionID = production2.ProductionID
             };
 
-            productionService.CreateProductionDateTime(productionDateTime2);
+            productionService.CreateProductionDateTime(production2.ProductionID ,productionDateTime2);
             dbcontext.SaveChanges();
 
             var expected = true;
@@ -576,7 +577,7 @@ namespace ServiceLayer.Test
             var actual = false;
 
             // Act
-            productionService.CreateProductionDateTime(productionDateTime);
+            productionService.CreateProductionDateTime(production.ProductionID, productionDateTime);
             dbcontext.SaveChanges();
 
             if (productionDateTime.ProductionDateTimeId > 0)
@@ -636,7 +637,7 @@ namespace ServiceLayer.Test
             var time = TimeSpan.Parse("11:30:00");
 
             var productionDateTime = new ProductionDateTime(production.ProductionID, date, time);
-            productionService.CreateProductionDateTime(productionDateTime);
+            productionService.CreateProductionDateTime(production.ProductionID, productionDateTime);
             dbcontext.SaveChanges();
 
             productionDateTime.Date = DateTime.Parse("3/27/2019 3:22:29 PM");
@@ -707,7 +708,7 @@ namespace ServiceLayer.Test
 
             var productionDateTime = new ProductionDateTime(production.ProductionID, date, time);
 
-            productionService.CreateProductionDateTime(productionDateTime);
+            productionService.CreateProductionDateTime(production.ProductionID, productionDateTime);
             dbcontext.SaveChanges();
 
             var expected = true;
@@ -805,7 +806,7 @@ namespace ServiceLayer.Test
         }
 
         [TestMethod]
-        public void ProductionService_UploadPhotos_Pass()
+        public void ProductionService_SavePhotos_Pass()
         {
             // Arrange
             var dbcontext = new BroadwayBuilderContext();
@@ -844,22 +845,20 @@ namespace ServiceLayer.Test
 
             var mockedPostedPdfFile = new MockPostedFile("jpg", 5000000, "productionPhotoTestFile.jpg");
 
-            var count = 1;
-
             var extension = Path.GetExtension(mockedPostedPdfFile.FileName);
 
             var currentDirectory = ConfigurationManager.AppSettings["FileDir"];
 
             var dir = Path.Combine(currentDirectory, "Photos/");
             var subdir = Path.Combine(dir, $"Production{production.ProductionID}/");
-            var filePath = Path.Combine(subdir, $"{production.ProductionID}-{count}{extension}");
+            var filePath = Path.Combine(subdir, $"{production.ProductionID}-0{extension}");
 
 
             var expected = true;
             var actual = false;
 
             // Act
-            productionService.SavePhoto(production.ProductionID, count, mockedPostedPdfFile);
+            productionService.SavePhoto(production.ProductionID, mockedPostedPdfFile);
 
             if (File.Exists(filePath))
             {
