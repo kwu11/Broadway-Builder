@@ -58,7 +58,7 @@
             <a class="card-footer-item" v-if="permission" @click="viewResumes = true; helpWantedId = job.HelpWantedId">View Applicants</a>
           </footer>
           <footer class="card-footer" v-if="permission && job.show">
-            <a class="card-footer-item" v-if="!job.edit" @click="editJobPosting(job)">Edit</a>
+            <a class="card-footer-item" v-if="!job.edit" @click="job.edit = true;">Edit</a>
             <a class="card-footer-item" v-if="job.edit" @click="finishEditing(job)">Finish Editing</a>
             <a class="card-footer-item" v-if="!job.edit" @click="deleteConfirmation = true; helpWantedId = job.HelpWantedId; jobIndex = index">Delete</a>
           </footer>
@@ -67,7 +67,7 @@
           </footer>
         </div>
       </div>
-
+      <EditJobModal v-if="editConfirmation" :modalMessage="editModalMessage" @cancel="editConfirmation = false" />
       <ResumeModal v-if="viewResumes" :helpWantedId="helpWantedId" @cancel="viewResumes = false" />
       <DeleteJobModal v-if="deleteConfirmation" :helpWantedId="helpWantedId" @cancel="deleteConfirmation = false; $emit('deleteFinished');" />
     </div>
@@ -79,12 +79,14 @@ import axios from "axios";
 
 import ResumeModal from "@/components/HelpWanted/ResumeModal.vue";
 import DeleteJobModal from "@/components/HelpWanted/DeleteConfirmationModal.vue";
+import EditJobModal from "@/components/HelpWanted/EditConfirmationModal.vue";
 
 export default {
   props: ["jobPostings", "hasPermission", "filters", "file"],
   components: {
     ResumeModal,
-    DeleteJobModal
+    DeleteJobModal,
+    EditJobModal
   },
   data() {
     return {
@@ -95,6 +97,9 @@ export default {
       jobFilters: this.filters,
       permission: this.hasPermission,
       deleteConfirmation: false,
+      editConfirmation: false,
+      editConfirmationTimeout: 1000 * 3,
+      editModalMessage: "",
       viewResumes: false,
       helpWantedId: 0,
       jobIndex: 0,
@@ -126,9 +131,6 @@ export default {
         ? content.slice(0, length) + tail
         : content;
     },
-    editJobPosting(job) {
-      job.edit = true;
-    },
     async finishEditing(job) {
       await axios
         .put("https://api.broadwaybuilder.xyz/helpwanted/edittheaterjob", {
@@ -142,9 +144,16 @@ export default {
           Requirements: job.Requirements,
           JobType: job.JobType
         })
-        .then(alert("Job Posting Updated!"));
-
-      job.edit = false;
+        .then(
+          response => (
+            (this.editConfirmation = true),
+            (this.editModalMessage = response.data),
+            setTimeout(() => {
+              job.edit = false;
+              this.editConfirmation = false;
+            }, this.editConfirmationTimeout)
+          )
+        );
     },
     async applyToJob() {
       await axios
