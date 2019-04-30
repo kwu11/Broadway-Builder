@@ -40,7 +40,7 @@ namespace ServiceLayer.Services
             
         }
 
-        public IEnumerable GetAllJobsFromTheater(int theaterid, int currentPage, int numberOfItems)
+        public IList GetAllJobsFromTheater(int theaterid, int currentPage, int numberOfItems)
         {
             // Starting point of query to get data from the theater job posting table
             var startingPoint = numberOfItems * (currentPage - 1);
@@ -69,10 +69,10 @@ namespace ServiceLayer.Services
             }).ToList();
         }
 
-        public IEnumerable FilterTheaterJobPostingFromTheater(int theaterid,string title,string Postion,string Hours, string description, string requirements,DateTime date)
+        public IEnumerable FilterTheaterJobPostingFromTheater(int theaterId,string jobType,string Postion)
         {
             //IQueryable allJobsFromTheater = GetAllJobsForTheater(theaterid);
-            var list = _dbContext.TheaterJobPostings.Where(job => job.TheaterID == theaterid)
+            var list = _dbContext.TheaterJobPostings.Where(job => job.TheaterID == theaterId)
                     .Select(job => new
                     {
                         Title = job.Title,
@@ -81,14 +81,15 @@ namespace ServiceLayer.Services
                         Description = job.Description,
                         Requirements = job.Requirements,
                         DateCreated = job.DateCreated,
+                        JobType = job.JobType,
                         HelpWantedId = job.HelpWantedID,
                         TheaterId = job.TheaterID
                     });
-            if (String.IsNullOrEmpty(title))
+            if (!String.IsNullOrEmpty(jobType))
             {
-                list = list.Where(job=>job.Title == title);
+                list = list.Where(job => job.JobType == jobType);
             }
-            if (String.IsNullOrEmpty(Postion))
+            if (!String.IsNullOrEmpty(Postion))
             {
                 list = list.Where(job => job.Position == Postion);
             }

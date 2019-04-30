@@ -57,6 +57,42 @@ namespace ServiceLayer.Test
             Assert.AreEqual(expected, actual);
         }
 
+        //[TestMethod]
+        //public void TheaterJobService_ShouldNotCreateSameTheaterJob()
+        //{
+        //    //Arrange
+        //    var dbcontext = new BroadwayBuilderContext();
+        //    var theaterService = new TheaterService(dbcontext);
+        //    var theaterJobService = new HelpWantedService(dbcontext);
+        //    var expected = true;
+        //    var actual = false;
+
+        //    var theater = new Theater("someTheater", "Regal", "theater st", "LA", "CA", "US", "323323");
+        //    theaterService.CreateTheater(theater);
+        //    dbcontext.SaveChanges();
+        //    var jobPosting = new TheaterJobPosting(theater.TheaterID, "intern", "some decription", "title", "hours", "some requirements", "testType");
+        //    theaterJobService.CreateTheaterJob(jobPosting);
+        //    dbcontext.SaveChanges();
+        //    //Act
+        //    try
+        //    {
+        //        theaterJobService.CreateTheaterJob(jobPosting);
+        //        dbcontext.SaveChanges();
+        //    }
+        //    catch
+        //    {
+        //        actual = true;
+        //    }
+        //    theaterService.DeleteTheater(theater);
+        //    dbcontext.SaveChanges();
+        //    //Assert
+        //    Assert.AreEqual(expected, actual);
+
+        //    //theaterJobService.DeleteTheaterJob(jobPosting);
+        //    //theaterService.DeleteTheater(theater);
+        //    //dbcontext.SaveChanges();
+        //}
+
         [TestMethod]
         public void TheaterJobService_DeleteTheaterJobPosting_Pass()
         {

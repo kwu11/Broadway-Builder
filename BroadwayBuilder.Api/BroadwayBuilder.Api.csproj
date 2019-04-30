@@ -137,6 +137,7 @@
     </Compile>
     <Compile Include="Models\ProductionResponseModel.cs" />
     <Compile Include="Models\ProductionDateTimeResponseModel.cs" />
+    <Compile Include="Models\TheaterJobResponseModel.cs" />
     <Compile Include="Models\ValidationResultModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -53,5 +53,26 @@ namespace ServiceLayer.Services
             }
 
         }
+
+        public void DeleteRole(int roleId)
+        {
+
+            Role RoleToDelete = _dbContext.Roles.Find(roleId);
+            if (RoleToDelete != null)
+            {
+                _dbContext.Roles.Remove(RoleToDelete);
+            }
+
+        }
+
+        public void UpdateRole(Role role)
+        {
+            Role roleFromDb = _dbContext.Roles.Find(role.RoleID);
+            if (roleFromDb != null)
+            {
+                roleFromDb.RoleName = role.RoleName;
+                roleFromDb.isEnabled = roleFromDb.isEnabled;
+            }
+        }
     }
 }
