@@ -7,11 +7,15 @@
         <p class="modal-card-title">Resumes</p>
         <button class="delete" aria-label="close" @click="$emit('cancel')"></button>
       </header>
-      <section class="modal-card-body">
+      <section class="modal-card-body" v-if="resumes.length > 0">
         <!-- Content ... -->
         <div v-for="(resume, index) in resumes" :key="index">
           <a :href="resume" target="_blank">Resume {{index + 1}}</a>
         </div>
+      </section>
+      <section class="modal-card-body" v-else>
+        <!-- Content ... -->
+        <div>No applicants for this job.</div>
       </section>
       <footer class="modal-card-foot"></footer>
     </div>
@@ -31,10 +35,11 @@ export default {
   methods: {
     async getJobApplicants() {
       await axios
-        .get(
-          "https://api.broadwaybuilder.xyz/helpwanted/getResumesForJob/" +
-            this.helpWantedId
-        )
+        .get("https://api.broadwaybuilder.xyz/helpwanted/getresumesforjob", {
+          params: {
+            helpwantedId: this.helpWantedId
+          }
+        })
         .then(response => (this.resumes = response.data));
     }
   },
