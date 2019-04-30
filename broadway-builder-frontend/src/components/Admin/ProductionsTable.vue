@@ -11,40 +11,82 @@
           </template>
           <v-card>
             <v-card-title>
-              <span class="headline">New Production</span>
+              <span class="headline">{{formTitle}}</span>
             </v-card-title>
             <v-card-text>
               <v-container grid-list-md>
                 <v-layout wrap>
                   <v-flex xs12 sm6 md4>
-                    <v-text-field v-model="editedProduction.productionName" label="Production Name"></v-text-field>
-                  </v-flex>
-                  <v-flex xs12 sm6 md4>
-                    <v-text-field v-model="editedProduction.theaterID" label="Theater ID"></v-text-field>
+                    <v-text-field
+                      v-model="editedProduction.productionName"
+                      :rules="[
+                      () => !!editedProduction.productionName || 'This field is required',
+                      () => !!editedProduction.productionName && editedProduction.productionName.length <=30 || 'Too many characters']"
+                      label="Production Name"
+                      counter="30"
+                      required
+                    ></v-text-field>
                   </v-flex>
                   <v-flex xs12 sm6 md4>
                     <v-text-field
+                      v-model="editedProduction.theaterID"
+                      :rules="[() => !!editedProduction.theaterID || 'This field is required']"
+                      label="Theater ID"
+                      required
+                    ></v-text-field>
+                  </v-flex>
+
+                  <v-flex xs12 sm6 md4>
+                    <v-text-field
                       v-model="editedProduction.directorFirstName"
+                      :rules="[() => !!editedProduction.directorFirstName || 'This field is required',
+                      ()=> !!editedProduction.directorFirstName && editedProduction.directorFirstName.length <=15 || 'Too many characters']"
                       label="Director First Name"
+                      counter="15"
+                      required
                     ></v-text-field>
                   </v-flex>
                   <v-flex xs12 sm6 md4>
                     <v-text-field
                       v-model="editedProduction.directorLastName"
+                      :rules="[() => !!editedProduction.directorLastName || 'This field is required',
+                      ()=> !!editedProduction.directorLastName && editedProduction.directorLastName.length <=15 || 'Too many characters']"
                       label="Director Last Name"
+                      counter="15"
+                      required
                     ></v-text-field>
                   </v-flex>
                   <v-flex>
-                    <v-text-field v-model="editedProduction.street" label="Street"></v-text-field>
+                    <v-text-field
+                      v-model="editedProduction.street"
+                      :rules="[() => !!editedProduction.street || 'This field is required']"
+                      label="Street"
+                      required
+                    ></v-text-field>
                   </v-flex>
                   <v-flex>
-                    <v-text-field v-model="editedProduction.city" label="City"></v-text-field>
+                    <v-text-field
+                      v-model="editedProduction.city"
+                      :rules="[() => !!editedProduction.city || 'This field is required']"
+                      label="City"
+                    ></v-text-field>
                   </v-flex>
                   <v-flex>
-                    <v-text-field v-model="editedProduction.zipcode" label="Zipcode"></v-text-field>
+                    <v-text-field
+                      v-model="editedProduction.zipcode"
+                      :rules="[() => !!editedProduction.zipcode || 'This field is required']"
+                      label="Zipcode"
+                    ></v-text-field>
                   </v-flex>
                   <v-flex>
-                    <v-text-field v-model="editedProduction.country" label="Country"></v-text-field>
+                    <v-select
+                      :items="states"
+                      v-model="editedProduction.stateProvince"
+                      label="State/Province"
+                    ></v-select>
+                  </v-flex>
+                  <v-flex>
+                    <v-text-field value="United States" readonly></v-text-field>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -66,7 +108,7 @@
           <td>{{props.item.DirectorFirstName}} {{props.item.DirectorLastName}}</td>
           <td>{{props.item.Street}}, {{props.item.City}}, {{props.item.StateProvince}} {{props.item.Zipcode}}</td>
           <td>
-            <a>
+            <a @click="editProduction(props.item)">
               <img src="@/assets/edit.png" alt="Edit">
             </a>
           </td>
@@ -76,12 +118,15 @@
             </a>
           </td>
           <td>
-            <a v-on:click="programIDSelect(props.item.ProductionID)">
+            <a
+              v-if="programID != props.item.ProductionID"
+              v-on:click="programIDSelect(props.item.ProductionID)"
+            >
               <img src="@/assets/upload.png" alt="Upload">
             </a>
             <div v-if="programID === props.item.ProductionID">
               <input type="file" ref="file" id="file" v-on:change="onFileChange()">
-              <div class="button is-primary" v-on:click="uploadProgram(programID)">Submit</div>
+              <v-btn color="info" v-on:click="uploadProgram(programID)">Submit</v-btn>
             </div>
           </td>
         </template>
@@ -105,7 +150,58 @@ export default {
       minPage: 1,
       maxPage: 1,
       numberOfItems: 5,
-
+      states: [
+        "AL",
+        "AK",
+        "AZ",
+        "AR",
+        "CA",
+        "CO",
+        "CT",
+        "DE",
+        "FL",
+        "GA",
+        "HI",
+        "ID",
+        "IL",
+        "IN",
+        "IA",
+        "KS",
+        "KY",
+        "LA",
+        "ME",
+        "MD",
+        "MA",
+        "MI",
+        "MN",
+        "MS",
+        "MO",
+        "MT",
+        "NE",
+        "NV",
+        "NH",
+        "NJ",
+        "NM",
+        "NY",
+        "NC",
+        "ND",
+        "OH",
+        "OK",
+        "OR",
+        "PA",
+        "RI",
+        "SC",
+        "SD",
+        "TN",
+        "TX",
+        "UT",
+        "VT",
+        "VA",
+        "WA",
+        "WV",
+        "WI",
+        "WY"
+      ],
       prod: [],
       editedItem: -1,
       editedProduction: {
@@ -117,7 +213,7 @@ export default {
         city: "",
         stateProvince: "",
         zipcode: "",
-        country: ""
+        country: "United States"
       },
       defaultProduction: {
         productionName: "",
@@ -128,7 +224,7 @@ export default {
         city: "",
         stateProvince: "",
         zipcode: "",
-        country: ""
+        country: "United States"
       },
       headers: [
         {
@@ -174,6 +270,16 @@ export default {
         }
       ]
     };
+  },
+  computed: {
+    formTitle() {
+      return this.editedItem === -1 ? "New Production" : "Edit Production";
+    }
+  },
+  watched: {
+    dialog(val) {
+      val || this.close();
+    }
   },
   async mounted() {
     this.getProductions();
@@ -248,6 +354,11 @@ export default {
         this.productions.push(this.editedProduction);
       }
       this.close();
+    },
+    editProduction(item) {
+      this.editedIndex = 0;
+      this.editedProduction = Object.assign({}, item);
+      this.dialog = true;
     }
   }
 };
