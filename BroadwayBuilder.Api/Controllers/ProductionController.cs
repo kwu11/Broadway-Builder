@@ -16,6 +16,8 @@ using System.Text;
 using System.ComponentModel;
 using Swashbuckle.Swagger.Annotations;
 using System.Configuration;
+using System.Data.SqlClient;
+using System.Data.Entity.Infrastructure;
 
 namespace BroadwayBuilder.Api.Controllers
 {
@@ -66,16 +68,14 @@ namespace BroadwayBuilder.Api.Controllers
                     HttpPostedFileBase putFile = new HttpPostedFileWrapper(fileCollection[filename]);
 
 
-                 // Todo: check if id is null or not then proceed
-                 productionService.SaveProgram(productionId, putFile);
+                    productionService.SaveProgram(productionId, putFile);
                 }
 
                 return Ok("Pdf Uploaded");
 
             }
-            catch (Exception e) {
+            catch (Exception e) { // Todo: log error
                 // Todo: add proper error handling in production service
-                // Todo: log error
                 return BadRequest(e.Message);
 
             }
@@ -90,14 +90,14 @@ namespace BroadwayBuilder.Api.Controllers
         [SwaggerResponse(HttpStatusCode.OK, "The production created and its url.", typeof(Production))]
         public IHttpActionResult CreateProduction([FromBody] Production production)
         {
-            using (var dbcontext = new BroadwayBuilderContext())
+            try
             {
-                var productionService = new ProductionService(dbcontext);
-
-                try
+                using (var dbcontext = new BroadwayBuilderContext())
                 {
-                    productionService.CreateProduction(production);
-                    dbcontext.SaveChanges();
+                    var productionService = new ProductionService(dbcontext);
+
+                        productionService.CreateProduction(production);
+                        dbcontext.SaveChanges();
 
                     var productionUrl = Url.Link("GetProductionById", new { productionId = production.ProductionID });
 
@@ -114,12 +114,15 @@ namespace BroadwayBuilder.Api.Controllers
                         TheaterID = production.TheaterID
                     });
                 }
-                // Todo: add proper error handling
-                catch (Exception e)
-                {
-                    return BadRequest();
-                }
-
+            }
+            catch (DbUpdateException e)
+            {
+                return Content((HttpStatusCode)500, e.Message);
+            }
+            // Todo: add proper error handling
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
             }
 
         }
@@ -133,22 +136,26 @@ namespace BroadwayBuilder.Api.Controllers
         [HttpGet]
         public IHttpActionResult GetProductionById(int productionId)
         {
-            using (var dbcontext = new BroadwayBuilderContext())
-
+            try
             {
-                var productionService = new ProductionService(dbcontext);
+                using (var dbcontext = new BroadwayBuilderContext())
 
-                try
                 {
-                    Production current_production = productionService.GetProduction(productionId);
+                    var productionService = new ProductionService(dbcontext);
 
-                    return Ok(current_production);
+                        Production current_production = productionService.GetProduction(productionId);
+
+                        return Ok(current_production);
                 }
-                // Hack: Need to add proper exception handling
-                catch (Exception e)
-                {
-                    return BadRequest();
-                }
+            }
+            catch(DbUpdateException e)
+            {
+                return InternalServerError(e);
+            }
+            // Catching all exceptions
+            catch (Exception e) // Todo: log error
+            {
+                return BadRequest(e.Message);
             }
         }
 
@@ -176,9 +183,7 @@ namespace BroadwayBuilder.Api.Controllers
                 {
                     var productionService = new ProductionService(dbcontext);
 
-                    try
-                    {
-                        if (previousDate != null) {
+                        if (previousDate != null || currentDate == null) {
 
                             var productionResponses = productionService.GetProductionsByPreviousDate((DateTime)previousDate, theaterID,  pageNum, pageSize)
                                 .Select(production => new ProductionResponseModel()
@@ -203,7 +208,7 @@ namespace BroadwayBuilder.Api.Controllers
 
                             return Ok(productionResponses);
                         }
-                        else if (currentDate != null)
+                        else 
                         {
                             var productionResponses = productionService.GetProductionsByCurrentAndFutureDate((DateTime)currentDate, theaterID, pageNum, pageSize)
                                 .Select(production => new ProductionResponseModel()
@@ -229,19 +234,16 @@ namespace BroadwayBuilder.Api.Controllers
                             return Ok(productionResponses);
                         }
 
-                        // none of the if conditions were met therfore...
-                        return BadRequest("PreviousDate and Current date were both null");
-                    }
-                    // Todo: Add proper exception handling for getting a production
-                    catch (Exception e)
-                    {
-                        return BadRequest();
-                    }
                 }
             }
-            catch (Exception e) // Todo: Catch a SqlException ... or Sqlconnection exception?
+            catch (DbUpdateException e) // Todo: Log Error
             {
-                return BadRequest("Something big went bad!");
+                return Content((HttpStatusCode)500, e.Message);
+            }
+            // Todo: Add proper exception handling for getting a production
+            catch (Exception e) // Todo: Log Error Might not catch this since okay with returning [] emtpy list
+            {
+                return BadRequest();
             }
         }
 
@@ -254,35 +256,36 @@ namespace BroadwayBuilder.Api.Controllers
         [SwaggerResponse(HttpStatusCode.OK, "The updated production object.", typeof(Production))]
         public IHttpActionResult UpdateProduction([FromBody] Production production_to_update)
         {
-            using (var dbcontext = new BroadwayBuilderContext())
+            try
             {
-                var productionService = new ProductionService(dbcontext);
-
-                try
+                using (var dbcontext = new BroadwayBuilderContext())
                 {
-                    if (production_to_update == null)
-                    {
-                        return BadRequest("no production object provided");
-                    }
-                    else if (production_to_update.ProductionID == 0)
-                    {
-                        return BadRequest("Production id was not sent");
-                    }
+                    var productionService = new ProductionService(dbcontext);
+
+                        if (production_to_update == null)
+                        {
+                            return BadRequest("No production object provided");
+                        }
+                        else if (production_to_update.ProductionID == 0)
+                        {
+                            return BadRequest("Production id was not sent");
+                        }
 
 
-                    Production updated_production = productionService.UpdateProduction(production_to_update);
-                    dbcontext.SaveChanges();
+                        Production updated_production = productionService.UpdateProduction(production_to_update);
+                        dbcontext.SaveChanges();
 
-                    return Ok(updated_production);
-
+                        return Ok(updated_production);
                 }
-                // Catching all exceptions and returning to user
-                catch (Exception e)
-                {
-                    return BadRequest(e.Message);
-
-                    // Todo: Log error
-                }
+            }
+            catch (DbUpdateException e)
+            {
+                return Content((HttpStatusCode)500, e.Message);
+            }
+            // Catching all general exceptions and returning to user
+            catch (Exception e)  // Todo: Log error
+            {
+                return BadRequest(e.Message);
             }
 
         }
@@ -296,25 +299,27 @@ namespace BroadwayBuilder.Api.Controllers
         [HttpDelete]
         public IHttpActionResult deleteProduction(int productionid)
         {
-            using (var dbcontext = new BroadwayBuilderContext())
+            try
             {
-                var productionService = new ProductionService(dbcontext);
-
-                try
+                using (var dbcontext = new BroadwayBuilderContext())
                 {
-                    productionService.DeleteProduction(productionid);
-                    dbcontext.SaveChanges();
+                    var productionService = new ProductionService(dbcontext);
+
+                        productionService.DeleteProduction(productionid);
+                        dbcontext.SaveChanges();
 
                     return Ok("Production deleted succesfully");
-
-                }
-                catch (Exception e)
-                {
-                    return BadRequest(e.Message);
-
-                    // Todo: Log error
                 }
             }
+            catch (DbUpdateException e)
+            {
+                return Content((HttpStatusCode)500, e.Message);
+            }
+            catch (Exception e) // Todo: Log error
+            {
+                return BadRequest(e.Message);
+            }
+
         }
 
         /// <summary>
@@ -368,12 +373,9 @@ namespace BroadwayBuilder.Api.Controllers
                 return Ok("Photo Uploaded");
             }
 
-            catch (Exception ex)
+            catch (Exception ex) // Todo: log error
             {
-                // Todo: add proper error handling
-                // Todo: log error
                 return BadRequest(ex.Message);
-
             }
         }
 
@@ -384,7 +386,7 @@ namespace BroadwayBuilder.Api.Controllers
         [SwaggerResponse(HttpStatusCode.OK, "A list of file urls", typeof(List<string>))]
         [Route("{productionId}/getPhotos")]
         [HttpGet]
-        public IHttpActionResult getPhotos(int productionId)
+        public IHttpActionResult GetPhotos(int productionId)
         {
 
             var currentDirectory = ConfigurationManager.AppSettings["FileDir"];
@@ -423,38 +425,34 @@ namespace BroadwayBuilder.Api.Controllers
         [SwaggerResponse(HttpStatusCode.OK, "The production date time created and its url.", typeof(ProductionDateTime))]
         [Route("{productionId}/create")]
         [HttpPost]
-        public IHttpActionResult createProductionDateTime(int productionId, [FromBody] ProductionDateTime productionDateTime)
+        public IHttpActionResult CreateProductionDateTime(int productionId, [FromBody] ProductionDateTime productionDateTime)
         {
             try
             {
                 using (var dbcontext = new BroadwayBuilderContext())
                 {
                     var productionService = new ProductionService(dbcontext);
-
-                    try
-                    {
+                   
                         if (productionDateTime == null)
                         {
                             return BadRequest("no production date time object provided");
                         }
 
                         productionDateTime.ProductionID = productionId;
-                        productionService.CreateProductionDateTime(productionDateTime);
+                        productionService.CreateProductionDateTime(productionId,productionDateTime);
                         dbcontext.SaveChanges();
 
-                        return Ok("Production Date and time have been added!");
-                    }
-                    catch (Exception e)
-                    {
-                        return BadRequest();
-                    }
+                        return Ok("Production Date and time have been added!");                  
                 }
+            }
+            catch (DbUpdateException e)
+            {
+                return Content((HttpStatusCode)500, e.Message);
             }
             catch (Exception e)
             {
-                return BadRequest("Something went wrong!");
+                return BadRequest(e.Message);
             }
-
         }
 
         /// <summary>
@@ -473,8 +471,6 @@ namespace BroadwayBuilder.Api.Controllers
                 {
                     var productionService = new ProductionService(dbContext);
 
-                    try
-                    {
                         if (productionDateTime == null)
                         {
                             return BadRequest("no date time was provided");
@@ -486,18 +482,16 @@ namespace BroadwayBuilder.Api.Controllers
                         dbContext.SaveChanges();
 
                         return Ok(updatedProductionDateTime);
-                    }
-                    catch (Exception e)
-                    {
-                        // If none of those if statements were met and we couldnt update a production...
-                        return BadRequest();
-                    }
                 }
             }
+            catch (DbUpdateException e)
+            {
+                return Content((HttpStatusCode)500, e.Message);
+            }
+
             catch (Exception e)
             {
-                // Todo: add proper error response when requet fails due to not being able to create dbcontext...
-                return BadRequest("Something bad happend!");
+                return BadRequest(e.Message);
             }
         }
 
@@ -517,30 +511,25 @@ namespace BroadwayBuilder.Api.Controllers
                 {
                     var productionService = new ProductionService(dbcontext);
 
-                    try
+                    if (productionDateTimeToDelete == null)
                     {
-                        if (productionDateTimeToDelete == null)
-                        {
-                            return BadRequest("no production date time object provided");
-                        }
-
-                        productionService.DeleteProductionDateTime(productionDateTimeToDelete);
-                        dbcontext.SaveChanges();
-                        return Ok("Production date time deleted succesfully!");
-
+                        return BadRequest("no production date time object provided");
                     }
-                    catch (Exception e)
-                    {
-                        // Todo: Catch a specific error so you can tell send a specific response model stating why a production date time was not able to be deleted
-                        return BadRequest("Was not able to delete production date time because.....");
-                    }
+
+                    productionService.DeleteProductionDateTime(productionDateTimeToDelete);
+                    dbcontext.SaveChanges();
+                    return Ok("Production date time deleted succesfully!");
                 }
+            }
+            catch (DbUpdateException e)
+            {
+                return Content((HttpStatusCode)500, e.Message);
             }
             catch (Exception e)
             {
-                // Todo: User proper error handling responses catch  a more specific error
-                return BadRequest("Major error happened!"); 
+                return BadRequest(e.Message);
             }
         }
+
     }
 }

@@ -24,6 +24,7 @@ namespace DataAccessLayer
 
         public User user { get; set; }
         ICollection<ResumeTheaterJob> resumeTheaterJobs { get; set; }
+
         public Resume()
         {
 

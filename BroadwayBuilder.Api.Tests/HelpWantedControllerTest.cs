@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Web.Http.Results;
 using BroadwayBuilder.Api.Controllers;
+using BroadwayBuilder.Api.Models;
 using DataAccessLayer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ServiceLayer.Services;
@@ -16,37 +17,37 @@ namespace BroadwayBuilder.Api.Tests
         [TestMethod]
         public void PostShouldAddTheaterJob()//need to update
         {
+            //Arrange
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
-            var theater = new Theater("someTheater", "Regal", "theater st", "LA", "CA", "US", "323323");
+            var theater = new Theater("someTheater2", "Regal", "theater st", "LA", "CA", "US", "323323");
             theaterService.CreateTheater(theater);
             dbcontext.SaveChanges();
-            //Arrange
             var controller = new HelpWantedController();
             TheaterJobPosting job = new TheaterJobPosting(theater.TheaterID,"test", "test", "test", "test", "test","testType");
+            
             //Act
             var actionResult = controller.CreateTheaterJob(job);
-            var response = actionResult as NegotiatedContentResult<TheaterJobPosting>;
+            var response = actionResult as NegotiatedContentResult<TheaterJobResponseModel>;
             var content = response.Content;
 
-            var jobservice = new HelpWantedService(dbcontext);
-            jobservice.DeleteTheaterJob(content);
-            theaterService.DeleteTheater(theater);
-            dbcontext.SaveChanges();
-            ////Assert
+            //Assert
             Assert.IsNotNull(response);
             Assert.IsNotNull(response.Content);
             //Assert.AreEqual("Theater Job Posting Created",content);
             Assert.AreEqual((HttpStatusCode)201,response.StatusCode);
 
-
+            var jobservice = new TheaterJobPostingService(dbcontext);
+            jobservice.DeleteTheaterJob(content.HelpWantedID);
+            theaterService.DeleteTheater(theater);
+            dbcontext.SaveChanges();
         }
 
         [TestMethod]
         public void PutShouldUpdateTheaterJob() {
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
-            var theaterJobService = new HelpWantedService(dbcontext);
+            var theaterJobService = new TheaterJobPostingService(dbcontext);
             //var expected = true;
             //var actual = false;
 
@@ -60,18 +61,20 @@ namespace BroadwayBuilder.Api.Tests
 
             //Act
             jobPosting.Description = "testing";
+            //TheaterJobResponseModel theaterJobResponseModel = new TheaterJobResponseModel(jobPosting);
             var actionResult = controller.EditTheaterJob(jobPosting);
             var response = actionResult as NegotiatedContentResult<string>;
             var content = response.Content;
-
-            theaterJobService.DeleteTheaterJob(jobPosting);
-            theaterService.DeleteTheater(theater);
-            dbcontext.SaveChanges();
+            
             ////Assert
             Assert.IsNotNull(response);
             Assert.IsNotNull(response.Content);
             Assert.AreEqual("Updated Job Posting", content);
             Assert.AreEqual((HttpStatusCode)202,response.StatusCode);
+
+            theaterJobService.DeleteTheaterJob(jobPosting.HelpWantedID);
+            theaterService.DeleteTheater(theater);
+            dbcontext.SaveChanges();
         }
 
         [TestMethod]
@@ -79,7 +82,7 @@ namespace BroadwayBuilder.Api.Tests
         {
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
-            var theaterJobService = new HelpWantedService(dbcontext);
+            var theaterJobService = new TheaterJobPostingService(dbcontext);
             //var expected = true;
             //var actual = false;
 
@@ -113,7 +116,7 @@ namespace BroadwayBuilder.Api.Tests
         {
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
-            var theaterJobService = new HelpWantedService(dbcontext);
+            var theaterJobService = new TheaterJobPostingService(dbcontext);
             //var expected = true;
             //var actual = false;
 
@@ -129,7 +132,7 @@ namespace BroadwayBuilder.Api.Tests
             var numberOfItems = 100;
             //Act
             var actionResult = controller.GetTheaterJobs(theater.TheaterID, currentPage, numberOfItems);
-            var response = actionResult as NegotiatedContentResult<IEnumerable>;
+            var response = actionResult as NegotiatedContentResult<TheaterJobResponseList>;
             var content = response.Content;
             //IEnumerable test;
             //Assert
@@ -137,7 +140,7 @@ namespace BroadwayBuilder.Api.Tests
             Assert.IsNotNull(response.Content);
             Assert.AreEqual((HttpStatusCode)200, response.StatusCode);
 
-            theaterJobService.DeleteTheaterJob(jobPosting);
+            theaterJobService.DeleteTheaterJob(jobPosting.HelpWantedID);
             theaterService.DeleteTheater(theater);
             dbcontext.SaveChanges();
         }
