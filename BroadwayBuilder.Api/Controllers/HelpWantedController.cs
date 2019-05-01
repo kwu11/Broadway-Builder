@@ -25,41 +25,27 @@ namespace BroadwayBuilder.Api.Controllers
     {
         public HelpWantedController() { }
 
-        [HttpGet, Route("length")]
-        public IHttpActionResult GetTheaterJobsCount(int theaterid)
-        {
-            using (var dbContext = new BroadwayBuilderContext())
-            {
-                try
-                {
-                    HelpWantedService service = new HelpWantedService(dbContext);
-                    return Content((HttpStatusCode)200, service.GetTheaterJobsCount(theaterid));
-                }
-                catch
-                {
-                    return Content((HttpStatusCode)404, "Unable to get count of job postings for theater " + theaterid);
-                }
-            }
-        }
-
         [HttpGet, Route("gettheaterjobs")]
-        public IHttpActionResult GetTheaterJobs(int theaterId, int currentPage, int numberOfItems)//needs to be changed to string for encryption purposes
+        public IHttpActionResult GetTheaterJobs(int theaterId, int currentPage, int numberOfItems)
         {
             using(var dbcontext = new BroadwayBuilderContext())
             {
                 try
                 {
-                    HelpWantedService service = new HelpWantedService(dbcontext);
+                    TheaterService theaterService = new TheaterService(dbcontext);
+                    Theater theater = theaterService.GetTheaterByID(theaterId);
+                    if (theater == null)
+                    {
+                        throw new DbEntityNotFoundException("There is no record of that Theater in our database");
+                    }
+                    TheaterJobPostingService service = new TheaterJobPostingService(dbcontext);
                     int count = 0;
                     var list = service.GetAllJobsFromTheater(theaterId, currentPage, numberOfItems,out count);
-                    if(list == null)
-                    {
-                        throw new NullNotFoundException();
-                    }
                     
-                    return Content((HttpStatusCode)200, (new { Count = count,JobPosting = list}));
+                    TheaterJobResponseList theaterJobResponseList = new TheaterJobResponseList(count, list);
+                    return Content((HttpStatusCode)200, theaterJobResponseList);
                 }
-                catch (NullNotFoundException)
+                catch (DbEntityNotFoundException)
                 {
                     return Content((HttpStatusCode)404, "Unable to find any jobs related to that Theater");
                 }
@@ -77,10 +63,21 @@ namespace BroadwayBuilder.Api.Controllers
             {
                 try
                 {
-                    HelpWantedService service = new HelpWantedService(dbcontext);
+                    TheaterService theaterService = new TheaterService(dbcontext);
+                    Theater theater = theaterService.GetTheaterByID(theaterId);
+                    if (theater == null)
+                    {
+                        throw new DbEntityNotFoundException("There is no record of that Theater in our database");
+                    }
+                    TheaterJobPostingService service = new TheaterJobPostingService(dbcontext);
                     int count = 0;
                     var list = service.FilterTheaterJobPostingsFromTheater(theaterId, jobType, position,currentPage,numberOfItems,out count);
-                    return Content((HttpStatusCode)200, new {Count = count,JobPostings = list });
+                    TheaterJobResponseList theaterJobResponseList = new TheaterJobResponseList(count, list);
+                    return Content((HttpStatusCode)200, theaterJobResponseList);
+                }
+                catch(DbEntityNotFoundException dbEntityNotFoundException)
+                {
+                    return Content((HttpStatusCode)404, dbEntityNotFoundException.Message);
                 }
                 catch(Exception e)
                 {
@@ -96,7 +93,8 @@ namespace BroadwayBuilder.Api.Controllers
             {
                 try
                 {
-                    HelpWantedService service = new HelpWantedService(dbContext);
+                    //TheaterJobPosting job = jobRequest.GetTheaterJobPosting();
+                    TheaterJobPostingService service = new TheaterJobPostingService(dbContext);
                     //TheaterJobPosting job = service.GetTheaterJob(helpwantedid);
                     if (job != null)
                     {
@@ -111,7 +109,7 @@ namespace BroadwayBuilder.Api.Controllers
                     }
                     else
                     {
-                        return Content((HttpStatusCode)500, "NO such posting exists");//need to edit 
+                        return Content((HttpStatusCode)404, "No such posting exists");//need to edit 
                     }
                 }
                 //TODO: Log errors - stacktrace, message, source, TheaterJob object
@@ -119,13 +117,17 @@ namespace BroadwayBuilder.Api.Controllers
                 {
                     return Content((HttpStatusCode)500, "There appears to be no changes detected. The Theater Job was not updated");
                 }
-                catch (DbEntityValidationException)//save was aborted because validation of the entity property values failed
+                catch(DbEntityNotFoundException dbEntityNotFoundException)
+                {
+                    return Content((HttpStatusCode)404, dbEntityNotFoundException.Message);
+                }
+                catch (DbEntityValidationException dbEntityValidationException)//save was aborted because validation of the entity property values failed
                 {
                     return Content((HttpStatusCode)500, "Theater Job could not be updated");
                 }
                 catch(DbUpdateConcurrencyException dbUpdateConcurrencyException)//concurrency violation; row has been changed in the database since it was queried
                 {
-                    return Content((HttpStatusCode)500,"An Error has occurred while trying to update the requested theater job posting");
+                    return Content((HttpStatusCode)500,"An Error has occurred while trying to update the requested theater job posting. Please try again.");
                 }
                 catch (DbUpdateException dbUpdateException)
                 {
@@ -144,15 +146,11 @@ namespace BroadwayBuilder.Api.Controllers
         {
             using (var dbContext = new BroadwayBuilderContext())
             {
-                HelpWantedService service = new HelpWantedService(dbContext);
-                TheaterJobPosting job = service.GetTheaterJob(helpWantedId);
+                TheaterJobPostingService service = new TheaterJobPostingService(dbContext);
+                //TheaterJobPosting job = service.GetTheaterJob(helpWantedId);
                 try
                 {
-                    service.DeleteTheaterJob(job);
-                    if (job == null)
-                    {
-                        return Content((HttpStatusCode)404, "Job Listing does not exist in the database");
-                    }
+                    service.DeleteTheaterJob(helpWantedId);
                     var results = dbContext.SaveChanges();
                     if (results > 0)
                     {
@@ -167,9 +165,21 @@ namespace BroadwayBuilder.Api.Controllers
                 {
                     return Content((HttpStatusCode)500, "There appears to be no changes made in the database. The job posting wasn't deleted");
                 }
-                catch (DbEntityValidationException)
+                catch (DbEntityNotFoundException dbEntityNotFoundException)
+                {
+                    return Content((HttpStatusCode)404, dbEntityNotFoundException.Message);
+                }
+                catch (DbEntityValidationException dbEntityValidationException)
                 {
                     return Content((HttpStatusCode)500, "Unable to delete the job posting");
+                }
+                catch (DbUpdateConcurrencyException dbUpdateConcurrencyException)//concurrency violation; row has been changed in the database since it was queried
+                {
+                    return Content((HttpStatusCode)500, "An Error has occurred while trying to delete the requested theater job posting. Please try again.");
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    return Content((HttpStatusCode)500, "Failed to delete the requested theater job posting.");
                 }
                 catch (Exception e)
                 {
@@ -183,9 +193,10 @@ namespace BroadwayBuilder.Api.Controllers
         {
             using(var dbContext = new BroadwayBuilderContext())
             {
-                HelpWantedService jobService = new HelpWantedService(dbContext);
+                TheaterJobPostingService jobService = new TheaterJobPostingService(dbContext);
                 try
                 {
+                    //TheaterJobPosting theaterJob = jobRequest.GetTheaterJobPosting();
                     if (theaterJob == null)
                     {
                         return Content((HttpStatusCode)400, "That job posting does not exist");
@@ -196,7 +207,8 @@ namespace BroadwayBuilder.Api.Controllers
                     {
                         throw new ZeroAffectedRowsException();
                     }
-                    return Content((HttpStatusCode)201, theaterJob);
+                    TheaterJobResponseModel theaterJobResponseModel = new TheaterJobResponseModel(theaterJob);
+                    return Content((HttpStatusCode)201, theaterJobResponseModel);
                     //return Content((HttpStatusCode)201, "Theater Job Posting Created");
                 }
                 catch (ZeroAffectedRowsException)
@@ -208,44 +220,6 @@ namespace BroadwayBuilder.Api.Controllers
                     return Content((HttpStatusCode)500,"Unable to create the requested job posting");
                 }
                 catch(Exception e)//needs to be updated
-                {
-                    return Content((HttpStatusCode)400, e.Message);
-                }
-            }
-        }
-
-        [HttpPost, Route("createproductionjob")]
-        public IHttpActionResult CreateProductionJob([FromBody]ProductionJobPosting productionJob)
-        {
-            using (var dbContext = new BroadwayBuilderContext())
-            {
-                ProductionJobService jobService = new ProductionJobService(dbContext);
-                try
-                {
-                    if (productionJob == null)
-                    {
-                        return Content((HttpStatusCode)404,"The job posting does not exist");
-                    }
-                    jobService.CreateProductionJob(productionJob);
-                    var results = dbContext.SaveChanges();
-                    if (results > 0)
-                    {
-                        return Content((HttpStatusCode)201, "Production Job Posting Created");
-                    }
-                    else
-                    {
-                        throw new ZeroAffectedRowsException();
-                    }
-                }
-                catch (ZeroAffectedRowsException)
-                {
-                    return Content((HttpStatusCode)500, "There appears to be no changes made. The job posting was not created");
-                }
-                catch (DbEntityValidationException)
-                {
-                    return Content((HttpStatusCode)500,"Unable to created the requested job posting");
-                }
-                catch (Exception e)
                 {
                     return Content((HttpStatusCode)400, e.Message);
                 }
@@ -387,7 +361,7 @@ namespace BroadwayBuilder.Api.Controllers
                     {
                         throw new Exception("No resume on file");
                     }
-                    var theaterJobService = new HelpWantedService(dbContext);
+                    var theaterJobService = new TheaterJobPostingService(dbContext);
                     TheaterJobPosting job = theaterJobService.GetTheaterJob(helpwantedid);
                     if (job == null)//check if job exists
                     {
@@ -411,34 +385,34 @@ namespace BroadwayBuilder.Api.Controllers
             }
         }
 
-        [HttpGet,Route("getResume")] // all resumes submitted to the theater -- dont recommend this
-        public IHttpActionResult GetResumesForAllTheaterJobs(int theaterid)
-        {
-            try
-            {
-                using (var dbcontext = new BroadwayBuilderContext())
-                {
-                    var theaterService = new TheaterService(dbcontext);
-                    if (theaterService.GetTheaterByID(theaterid) == null)
-                    {
-                        throw new Exception("theater does not exist");
-                    }
-                    var resumetheaterjobservice = new ResumeTheaterJobService(dbcontext);
-                    var resumelist = resumetheaterjobservice.GetAllResumeGuidsTheater(theaterid);
-                    List<string> urlList = null;
-                    foreach(Guid guid in resumelist)
-                    {
-                        string url = "https://api.broadwaybuilder.xyz/Resumes/" + guid + "/" + guid + ".pdf";
-                        urlList.Add(url);
-                    }
-                    return Content((HttpStatusCode)200, urlList);
-                }
-            }
-            catch(Exception e)
-            {
-                return Content((HttpStatusCode)500, e.Message);
-            }
-        }
+        //[HttpGet,Route("getResume")] // all resumes submitted to the theater -- dont recommend this
+        //public IHttpActionResult GetResumesForAllTheaterJobs(int theaterid)
+        //{
+        //    try
+        //    {
+        //        using (var dbcontext = new BroadwayBuilderContext())
+        //        {
+        //            var theaterService = new TheaterService(dbcontext);
+        //            if (theaterService.GetTheaterByID(theaterid) == null)
+        //            {
+        //                throw new Exception("theater does not exist");
+        //            }
+        //            var resumetheaterjobservice = new ResumeTheaterJobService(dbcontext);
+        //            var resumelist = resumetheaterjobservice.GetAllResumeGuidsTheater(theaterid);
+        //            List<string> urlList = null;
+        //            foreach(Guid guid in resumelist)
+        //            {
+        //                string url = "https://api.broadwaybuilder.xyz/Resumes/" + guid + "/" + guid + ".pdf";
+        //                urlList.Add(url);
+        //            }
+        //            return Content((HttpStatusCode)200, urlList);
+        //        }
+        //    }
+        //    catch(Exception e)
+        //    {
+        //        return Content((HttpStatusCode)500, e.Message);
+        //    }
+        //}
 
         [HttpGet,Route("getresumesforjob")] //get all resumes for a single job posting
         public IHttpActionResult GetResumesforTheaterJob(int helpwantedId)
@@ -447,7 +421,7 @@ namespace BroadwayBuilder.Api.Controllers
             {
                 using (var dbContext = new BroadwayBuilderContext())
                 {
-                    var theaterJobService = new HelpWantedService(dbContext);
+                    var theaterJobService = new TheaterJobPostingService(dbContext);
                     if (theaterJobService.GetTheaterJob(helpwantedId) == null)
                     {
                         throw new Exception("Theater job does not exist");

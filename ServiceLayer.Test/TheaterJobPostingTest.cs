@@ -9,32 +9,12 @@ namespace ServiceLayer.Test
     public class TheaterJobPostingTest
     {
         [TestMethod]
-        public void TheaterJobSerice_GetTheaterJobPostingCount_Pass()
-        {
-            var dbcontext = new BroadwayBuilderContext();
-            var theaterService = new TheaterService(dbcontext);
-            var theaterJobService = new HelpWantedService(dbcontext);
-            var theaterId = 1;
-            var expected = true;
-            var actual = false;
-
-            var length = theaterJobService.GetTheaterJobsCount(theaterId);
-            if (length > 0)
-            {
-                actual = true;
-            }
-
-            Assert.AreEqual(expected, actual);
-
-        }
-
-        [TestMethod]
         public void TheaterJobService_CreateTheaterJobPosting_Pass()
         {
             //Arrange
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
-            var theaterJobService = new HelpWantedService(dbcontext);
+            var theaterJobService = new TheaterJobPostingService(dbcontext);
             var expected = true;
             var actual = false;
             
@@ -50,7 +30,7 @@ namespace ServiceLayer.Test
                 actual = true;
             }
 
-            theaterJobService.DeleteTheaterJob(jobPosting);
+            theaterJobService.DeleteTheaterJob(jobPosting.HelpWantedID);
             theaterService.DeleteTheater(theater);
             dbcontext.SaveChanges();
             //Assert 
@@ -99,7 +79,7 @@ namespace ServiceLayer.Test
             //Arrange
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
-            var theaterJobService = new HelpWantedService(dbcontext);
+            var theaterJobService = new TheaterJobPostingService(dbcontext);
             var expected = true;
             var actual = false;
 
@@ -111,7 +91,7 @@ namespace ServiceLayer.Test
             //dbcontext.SaveChanges();
             theaterJobService.CreateTheaterJob(jobPosting);
             dbcontext.SaveChanges();
-            theaterJobService.DeleteTheaterJob(jobPosting);
+            theaterJobService.DeleteTheaterJob(jobPosting.HelpWantedID);
             var results = dbcontext.SaveChanges();
             theaterService.DeleteTheater(theater);
             dbcontext.SaveChanges();
@@ -129,7 +109,7 @@ namespace ServiceLayer.Test
             //Arrange
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
-            var theaterJobService = new HelpWantedService(dbcontext);
+            var theaterJobService = new TheaterJobPostingService(dbcontext);
             var expected = true;
             var actual = false;
 
@@ -145,7 +125,7 @@ namespace ServiceLayer.Test
             {
                 actual = true;
             }
-            theaterJobService.DeleteTheaterJob(jobPosting);
+            theaterJobService.DeleteTheaterJob(jobPosting.HelpWantedID);
             dbcontext.SaveChanges();
             theaterService.DeleteTheater(theater);
             dbcontext.SaveChanges();

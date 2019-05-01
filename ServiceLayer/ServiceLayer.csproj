@@ -50,7 +50,7 @@
     <Compile Include="Exceptions\ProductionNotFoundException.cs" />
     <Compile Include="Services\AuthorizationService.cs" />
     <Compile Include="Services\EncryptionService.cs" />
-    <Compile Include="Services\HelpWantedService.cs" />
+    <Compile Include="Services\TheaterJobPostingService.cs" />
     <Compile Include="Services\IAuthorizationService.cs" />
     <Compile Include="Services\PasswordValidatorService.cs" />
     <Compile Include="Services\PermissionService.cs" />
