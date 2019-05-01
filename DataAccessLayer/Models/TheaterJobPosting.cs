@@ -12,10 +12,8 @@ namespace DataAccessLayer
     public class TheaterJobPosting
     {
         [Key]
-        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        //[Column(Order = 2)]
         public int HelpWantedID { get; set; }
-        //[Required]
+        [Required]
         public DateTime DateCreated { get; set; }
         [Required]
         public string Position { get; set; }

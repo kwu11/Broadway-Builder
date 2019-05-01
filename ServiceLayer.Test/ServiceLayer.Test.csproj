@@ -72,7 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthorizationTests.cs" />
-    <Compile Include="HelpWantedTest.cs" />
+    <Compile Include="TheaterJobPostingTest.cs" />
     <Compile Include="PermissionServiceTest.cs" />
     <Compile Include="ProductionJobTest.cs" />
     <Compile Include="ProductionServiceTest.cs" />

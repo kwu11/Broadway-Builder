@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer;
+using ServiceLayer.Exceptions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace ServiceLayer.Services
 {
-    public class HelpWantedService
+    public class TheaterJobPostingService
     {
         private readonly BroadwayBuilderContext _dbContext;
 
-        public HelpWantedService(BroadwayBuilderContext dbContext)
+        public TheaterJobPostingService(BroadwayBuilderContext dbContext)
         {
             this._dbContext = dbContext;
         }
@@ -34,12 +35,6 @@ namespace ServiceLayer.Services
             return _dbContext.TheaterJobPostings.Find(helpwantedid);
         }
 
-        public int GetTheaterJobsCount(int theaterid)
-        {
-            return _dbContext.TheaterJobPostings.Where(job => job.TheaterID == theaterid).Count();
-            
-        }
-
         public IEnumerable GetAllJobsFromTheater(int theaterid, int currentPage, int numberOfItems,out int count)
         {
             // Starting point of query to get data from the theater job posting table
@@ -51,10 +46,6 @@ namespace ServiceLayer.Services
                 // Gets jobs for just a specific theater
                 .Where(job => job.TheaterID == theaterid)
                 .OrderBy(job=>job.HelpWantedID)
-                // Skip this many ahead
-                //.Skip(startingPoint)
-                //// Take all the items that was skipped
-                //.Take(numberOfItems)
                 // Select specific data for the response
                 .Select(job => new
             {
@@ -78,6 +69,7 @@ namespace ServiceLayer.Services
             var startingPoint = numberOfItems * (currentPage - 1);
             var list = _dbContext.TheaterJobPostings
                 .OrderByDescending(job=>job.HelpWantedID)
+                .Where(job=>job.TheaterID == theaterId)
                 .Where(job => jobType.Contains(job.JobType))
                 .Where(job => Postion.Contains(job.Position))
                 .ToList();
@@ -88,15 +80,35 @@ namespace ServiceLayer.Services
 
         public void UpdateTheaterJob(TheaterJobPosting updatedTheaterJob)
         {
-            _dbContext.Entry(updatedTheaterJob).State = EntityState.Modified;
+            TheaterJobPosting theaterJobPostingToUpdate = _dbContext.TheaterJobPostings.Find(updatedTheaterJob.HelpWantedID);
+            
+            if (theaterJobPostingToUpdate!=null)
+            {
+                theaterJobPostingToUpdate.Position = updatedTheaterJob.Position;
+                theaterJobPostingToUpdate.Description = updatedTheaterJob.Description;
+                theaterJobPostingToUpdate.Title = updatedTheaterJob.Title;
+                theaterJobPostingToUpdate.Hours = updatedTheaterJob.Hours;
+                theaterJobPostingToUpdate.Requirements = updatedTheaterJob.Requirements;
+                theaterJobPostingToUpdate.JobType = updatedTheaterJob.JobType;
+            }
+            else
+            {
+                throw new DbEntityNotFoundException("There is no record of the specified job posting in our records.");
+            }
+
+
         }
 
-        public void DeleteTheaterJob(TheaterJobPosting theaterJob)
+        public void DeleteTheaterJob(int helpWantedId)
         {
-            TheaterJobPosting jobToRemove = _dbContext.TheaterJobPostings.Find(theaterJob.HelpWantedID);
+            TheaterJobPosting jobToRemove = _dbContext.TheaterJobPostings.Find(helpWantedId);
             if (jobToRemove != null)
             {
                 _dbContext.TheaterJobPostings.Remove(jobToRemove);
+            }
+            else
+            {
+                throw new DbEntityNotFoundException("There is no record of the specified job posting in our records.");
             }
         }
     }
