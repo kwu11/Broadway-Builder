@@ -72,7 +72,18 @@ namespace ServiceLayer.Services
                 .Where(job=>job.TheaterID == theaterId)
                 .Where(job => jobType.Contains(job.JobType))
                 .Where(job => Postion.Contains(job.Position))
-                .ToList();
+                .Select(job => new
+                {
+                    Title = job.Title,
+                    Position = job.Position,
+                    JobType = job.JobType,
+                    Hours = job.Hours,
+                    Description = job.Description,
+                    Requirements = job.Requirements,
+                    DateCreated = job.DateCreated,
+                    HelpWantedId = job.HelpWantedID,
+                    TheaterId = job.TheaterID
+                }).ToList();
             count = list.Count;
             var paginatedList = list.Skip(startingPoint).Take(numberOfItems);
             return paginatedList;
