@@ -17,7 +17,7 @@ namespace ServiceLayer.Test
             var userService = new UserService(context);
             var expected = true;
             var actual = false;
-            var user = new User("resumetest2@email.com","FN","LN",19,new DateTime(1994, 1, 7),"LA","CA","USA",true);
+            var user = new User("resumetest2@email.com","FN","LN",19,new DateTime(1994, 1, 7),"address","LA","CA","USA",true, Guid.NewGuid());
             userService.CreateUser(user);
             context.SaveChanges();
 
@@ -45,7 +45,7 @@ namespace ServiceLayer.Test
             var userService = new UserService(context);
             var expected = true;
             var actual = false;
-            var user = new User("resumetest2@email.com", "FN", "LN", 19, new DateTime(1994, 1, 7), "LA", "CA", "USA", true);
+            var user = new User("resumetest2@email.com", "FN", "LN", 19, new DateTime(1994, 1, 7), "address", "LA", "CA", "USA", true, Guid.NewGuid());
             userService.CreateUser(user);
             context.SaveChanges();
 
@@ -77,7 +77,7 @@ namespace ServiceLayer.Test
             var userService = new UserService(context);
             //var expected = true;
             //var actual = false;
-            var user = new User("resumetest2@email.com", "FN", "LN", 19, new DateTime(1994, 1, 7), "LA", "CA", "USA", true);
+            var user = new User("resumetest2@email.com", "FN", "LN", 19, new DateTime(1994, 1, 7), "address", "LA", "CA", "USA", true, Guid.NewGuid());
             userService.CreateUser(user);
             context.SaveChanges();
 
@@ -105,7 +105,7 @@ namespace ServiceLayer.Test
             var userService = new UserService(context);
             var expected = true;
             var actual = false;
-            var user = new User("resumetest2@email.com", "FN", "LN", 19, new DateTime(1994, 1, 7), "LA", "CA", "USA", true);
+            var user = new User("resumetest2@email.com", "FN", "LN", 19, new DateTime(1994, 1, 7), "address", "LA", "CA", "USA", true, Guid.NewGuid());
             userService.CreateUser(user);
             context.SaveChanges();
 
