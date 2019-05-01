@@ -68,7 +68,7 @@ namespace BroadwayBuilder.Api.Controllers
                     HttpPostedFileBase putFile = new HttpPostedFileWrapper(fileCollection[filename]);
 
 
-                 productionService.SaveProgram(productionId, putFile);
+                    productionService.SaveProgram(productionId, putFile);
                 }
 
                 return Ok("Pdf Uploaded");
@@ -99,20 +99,20 @@ namespace BroadwayBuilder.Api.Controllers
                         productionService.CreateProduction(production);
                         dbcontext.SaveChanges();
 
-                        var productionUrl = Url.Link("GetProductionById", new { productionId = production.ProductionID });
+                    var productionUrl = Url.Link("GetProductionById", new { productionId = production.ProductionID });
 
-                        return Created(productionUrl, new ProductionResponseModel()
-                        {
-                            ProductionID = production.ProductionID,
-                            DirectorFirstName = production.DirectorFirstName,
-                            DirectorLastName = production.DirectorLastName,
-                            ProductionName = production.ProductionName,
-                            Street = production.Street,
-                            City = production.City,
-                            StateProvince = production.StateProvince,
-                            Country = production.Country,
-                            TheaterID = production.TheaterID
-                        });
+                    return Created(productionUrl, new ProductionResponseModel()
+                    {
+                        ProductionID = production.ProductionID,
+                        DirectorFirstName = production.DirectorFirstName,
+                        DirectorLastName = production.DirectorLastName,
+                        ProductionName = production.ProductionName,
+                        Street = production.Street,
+                        City = production.City,
+                        StateProvince = production.StateProvince,
+                        Country = production.Country,
+                        TheaterID = production.TheaterID
+                    });
                 }
             }
             catch (DbUpdateException e)
@@ -150,7 +150,7 @@ namespace BroadwayBuilder.Api.Controllers
             }
             catch(DbUpdateException e)
             {
-                return Content((HttpStatusCode)500, e.Message);
+                return InternalServerError(e);
             }
             // Catching all exceptions
             catch (Exception e) // Todo: log error
@@ -183,7 +183,7 @@ namespace BroadwayBuilder.Api.Controllers
                 {
                     var productionService = new ProductionService(dbcontext);
 
-                        if (previousDate != null) {
+                        if (previousDate != null || currentDate == null) {
 
                             var productionResponses = productionService.GetProductionsByPreviousDate((DateTime)previousDate, theaterID,  pageNum, pageSize)
                                 .Select(production => new ProductionResponseModel()
@@ -208,7 +208,7 @@ namespace BroadwayBuilder.Api.Controllers
 
                             return Ok(productionResponses);
                         }
-                        else if (currentDate != null)
+                        else 
                         {
                             var productionResponses = productionService.GetProductionsByCurrentAndFutureDate((DateTime)currentDate, theaterID, pageNum, pageSize)
                                 .Select(production => new ProductionResponseModel()
@@ -234,7 +234,6 @@ namespace BroadwayBuilder.Api.Controllers
                             return Ok(productionResponses);
                         }
 
-                        return BadRequest("PreviousDate and Current date were both null");
                 }
             }
             catch (DbUpdateException e) // Todo: Log Error
@@ -387,7 +386,7 @@ namespace BroadwayBuilder.Api.Controllers
         [SwaggerResponse(HttpStatusCode.OK, "A list of file urls", typeof(List<string>))]
         [Route("{productionId}/getPhotos")]
         [HttpGet]
-        public IHttpActionResult getPhotos(int productionId)
+        public IHttpActionResult GetPhotos(int productionId)
         {
 
             var currentDirectory = ConfigurationManager.AppSettings["FileDir"];
@@ -426,7 +425,7 @@ namespace BroadwayBuilder.Api.Controllers
         [SwaggerResponse(HttpStatusCode.OK, "The production date time created and its url.", typeof(ProductionDateTime))]
         [Route("{productionId}/create")]
         [HttpPost]
-        public IHttpActionResult createProductionDateTime(int productionId, [FromBody] ProductionDateTime productionDateTime)
+        public IHttpActionResult CreateProductionDateTime(int productionId, [FromBody] ProductionDateTime productionDateTime)
         {
             try
             {
