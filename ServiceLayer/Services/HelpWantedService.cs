@@ -40,20 +40,21 @@ namespace ServiceLayer.Services
             
         }
 
-        public IList GetAllJobsFromTheater(int theaterid, int currentPage, int numberOfItems)
+        public IEnumerable GetAllJobsFromTheater(int theaterid, int currentPage, int numberOfItems,out int count)
         {
             // Starting point of query to get data from the theater job posting table
             var startingPoint = numberOfItems * (currentPage - 1);
 
-            return _dbContext.TheaterJobPostings
+            var list = _dbContext.TheaterJobPostings
                 // Order by newest data first
                 .OrderByDescending(job => job.DateCreated)
                 // Gets jobs for just a specific theater
                 .Where(job => job.TheaterID == theaterid)
+                .OrderBy(job=>job.HelpWantedID)
                 // Skip this many ahead
-                .Skip(startingPoint)
-                // Take all the items that was skipped
-                .Take(numberOfItems)
+                //.Skip(startingPoint)
+                //// Take all the items that was skipped
+                //.Take(numberOfItems)
                 // Select specific data for the response
                 .Select(job => new
             {
@@ -67,34 +68,22 @@ namespace ServiceLayer.Services
                 HelpWantedId = job.HelpWantedID,
                 TheaterId = job.TheaterID
             }).ToList();
+            count = list.Count;
+            var paginatedList = list.Skip(startingPoint).Take(numberOfItems);
+            return paginatedList;
         }
 
-        public IEnumerable FilterTheaterJobPostingFromTheater(int theaterId,string jobType,string Postion)
+        public IEnumerable FilterTheaterJobPostingsFromTheater(int theaterId, string[] jobType, string[] Postion,int currentPage, int numberOfItems,out int count)
         {
-            //IQueryable allJobsFromTheater = GetAllJobsForTheater(theaterid);
-            var list = _dbContext.TheaterJobPostings.Where(job => job.TheaterID == theaterId)
-                    .Select(job => new
-                    {
-                        Title = job.Title,
-                        Position = job.Position,
-                        Hours = job.Hours,
-                        Description = job.Description,
-                        Requirements = job.Requirements,
-                        DateCreated = job.DateCreated,
-                        JobType = job.JobType,
-                        HelpWantedId = job.HelpWantedID,
-                        TheaterId = job.TheaterID
-                    });
-            if (!String.IsNullOrEmpty(jobType))
-            {
-                list = list.Where(job => job.JobType == jobType);
-            }
-            if (!String.IsNullOrEmpty(Postion))
-            {
-                list = list.Where(job => job.Position == Postion);
-            }
-            return list;
-            
+            var startingPoint = numberOfItems * (currentPage - 1);
+            var list = _dbContext.TheaterJobPostings
+                .OrderByDescending(job=>job.HelpWantedID)
+                .Where(job => jobType.Contains(job.JobType))
+                .Where(job => Postion.Contains(job.Position))
+                .ToList();
+            count = list.Count;
+            var paginatedList = list.Skip(startingPoint).Take(numberOfItems);
+            return paginatedList;
         }
 
         public void UpdateTheaterJob(TheaterJobPosting updatedTheaterJob)

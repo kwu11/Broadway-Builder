@@ -12,7 +12,7 @@ namespace BroadwayBuilder.Api.Models
     {
         public int HelpWantedID { get; set; }
         
-        public DateTime DateCreated { get; set; }
+        //public DateTime DateCreated { get; set; }
         [Required]
         public string Position { get; set; }
         [Required]
