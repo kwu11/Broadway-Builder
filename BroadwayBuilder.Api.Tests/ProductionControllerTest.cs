@@ -524,7 +524,7 @@ namespace BroadwayBuilder.Api.Tests
             var productionController = new ProductionController();
             
             // Act
-            var actionResult = productionController.createProductionDateTime(production.ProductionID, productionDateTime);
+            var actionResult = productionController.CreateProductionDateTime(production.ProductionID, productionDateTime);
             var response = actionResult as OkNegotiatedContentResult<string>;
 
             productionService.DeleteProductionDateTime(productionDateTime);
@@ -734,7 +734,7 @@ namespace BroadwayBuilder.Api.Tests
             var subdir = Path.Combine(dir, $"Production{production.ProductionID}/");
 
             // Act
-            var actionResult = productionController.getPhotos(production.ProductionID);
+            var actionResult = productionController.GetPhotos(production.ProductionID);
 
             // Need access to contet of the response
             var response = actionResult as OkNegotiatedContentResult<List<string>>;

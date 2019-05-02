@@ -24,7 +24,7 @@ namespace ServiceLayer.Services
 
         public void CreateProduction(Production production)
         {
-            if (!_dbContext.Productions.Where(o => o.TheaterID == production.TheaterID).Any())
+            if (!_dbContext.Theaters.Where(o => o.TheaterID == production.TheaterID).Any())
             {
                 throw new NullNotFoundException($"Theater does not exist! with id: {production.TheaterID}");
             }
@@ -42,10 +42,9 @@ namespace ServiceLayer.Services
             if (productionByIdQuery != null)
             {
                 return productionByIdQuery;
-            }else
-            {
-                throw new ProductionNotFoundException($"Production does not exist! with id: {productionId}");
             }
+                throw new ProductionNotFoundException($"Production does not exist! with id: {productionId}");
+
         }
 
         // Returns a list of productions by a previous date. 
@@ -99,7 +98,7 @@ namespace ServiceLayer.Services
         {
             Production currentProduction = _dbContext.Productions
                  .Where(o => o.ProductionID == production.ProductionID)
-                 .FirstOrDefault(); //gives you first production that satisfies the where.
+                 .FirstOrDefault(); // Gives you first production that satisfies the where.
 
             if (currentProduction != null)
             {
@@ -111,12 +110,11 @@ namespace ServiceLayer.Services
                 currentProduction.StateProvince = production.StateProvince;
                 currentProduction.Country = production.Country;
                 currentProduction.Zipcode = production.Zipcode;
-            } else
-            {
-                throw new ProductionNotFoundException($"Production does not exist! with id: {production.ProductionID}");
-            }
 
-            return currentProduction;
+                return currentProduction;
+
+            }
+            throw new ProductionNotFoundException($"Production does not exist! with id: {production.ProductionID}");
         }
 
 
