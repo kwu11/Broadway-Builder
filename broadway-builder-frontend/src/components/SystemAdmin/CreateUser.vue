@@ -122,7 +122,7 @@ export default {
       if (infoIsComplete)
       {
         await axios
-          .post("http://localhost:64512/user/createuser", this.user)
+          .post("https://api.broadwaybuilder.xyz/user/createuser", this.user)
           .then(response => alert(response.data));
       }
       else
