@@ -9,8 +9,8 @@
           <th>Company Name</th>
           <th>Address</th>
           <th>Phone Number</th>
-          <th></th>
-          <th></th>
+          <th>Edit</th>
+          <th>Delete</th>
         </tr>
       </thead>
       <tbody v-for="(theater, index) in theaters" :key="index">
@@ -21,11 +21,15 @@
           <td>{{theater.StreetAddress}} {{theater.City}}, {{theater.State}} {{theater.Country}}</td>
           <td>{{theater.PhoneNumber}}</td>
           <td>
-            <button class="button" v-on:click="showModal(theater)">EDIT</button>
+            <a v-on:click="showModal(theater)">
+              <img src="@/assets/edit.png" alt="Edit">
+            </a>
             <TheatersTableModal v-if="isModalVisible" v-bind:passedTheater="modalTheater" @close="closeModal"/>
           </td>
           <td>
-            <button class="button" v-on:click="deleteTheater(theater)">DELETE</button>
+            <a v-on:click="deleteTheater(theater)">
+              <img src="@/assets/tester.png" alt="Delete">
+            </a>
           </td>
         </tr>
       </tbody>
@@ -58,6 +62,7 @@ export default {
       await axios
         .delete("https://api.broadwaybuilder.xyz/theater/deleteTheater",{data: theater})
         .then(response => alert(response.data));
+        this.$forceUpdate();
     },
     showModal(theater) {
       this.modalTheater = theater;
@@ -74,8 +79,11 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-a
- color: black
+
+img
+ width: 2em
+ height: 2em
+
 
 </style>
 
