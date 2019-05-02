@@ -42,7 +42,7 @@ namespace ServiceLayer.Services
 
             var list = _dbContext.TheaterJobPostings
                 // Order by newest data first
-                .OrderBy(job => job.DateCreated)
+                .OrderByDescending(job => job.DateCreated)
                 // Gets jobs for just a specific theater
                 .Where(job => job.TheaterID == theaterid)
                 // Select specific data for the response
@@ -67,7 +67,7 @@ namespace ServiceLayer.Services
         {
             var startingPoint = numberOfItems * (currentPage - 1);
             var list = _dbContext.TheaterJobPostings
-                .OrderBy(job=>job.DateCreated)
+                .OrderByDescending(job=>job.DateCreated)
                 .Where(job=>job.TheaterID == theaterId)
                 .Where(job => jobType.Contains(job.JobType))
                 .Where(job => Postion.Contains(job.Position))
