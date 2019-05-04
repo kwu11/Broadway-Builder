@@ -119,16 +119,14 @@ namespace BroadwayBuilder.Api.Controllers
             {
                 try
                 {
-                    //TheaterJobPosting job = jobRequest.GetTheaterJobPosting();
                     TheaterJobPostingService service = new TheaterJobPostingService(dbContext);
-                    //TheaterJobPosting job = service.GetTheaterJob(helpwantedid);
                     if (job != null)
                     {
                         service.UpdateTheaterJob(job);
                         var results = dbContext.SaveChanges();
                         if (results > 0)
                         {
-                            return Content((HttpStatusCode)202, "Updated Job Posting");//not sure to return object or just string response
+                            return Content((HttpStatusCode)200, "Updated Job Posting");//not sure to return object or just string response
                         }
 
                         throw new ZeroAffectedRowsException();
@@ -179,14 +177,13 @@ namespace BroadwayBuilder.Api.Controllers
             using (var dbContext = new BroadwayBuilderContext())
             {
                 TheaterJobPostingService service = new TheaterJobPostingService(dbContext);
-                //TheaterJobPosting job = service.GetTheaterJob(helpWantedId);
                 try
                 {
                     service.DeleteTheaterJob(helpWantedId);
                     var results = dbContext.SaveChanges();
                     if (results > 0)
                     {
-                        return Content((HttpStatusCode)202, "Successfully Deleted Job Posting");
+                        return Content((HttpStatusCode)200, "Successfully Deleted Job Posting");
                     }
                     else
                     {
@@ -234,7 +231,6 @@ namespace BroadwayBuilder.Api.Controllers
                 TheaterJobPostingService jobService = new TheaterJobPostingService(dbContext);
                 try
                 {
-                    //TheaterJobPosting theaterJob = jobRequest.GetTheaterJobPosting();
                     if (theaterJob == null)
                     {
                         return Content((HttpStatusCode)400, "That job posting does not exist");
@@ -247,7 +243,6 @@ namespace BroadwayBuilder.Api.Controllers
                     }
                     TheaterJobResponseModel theaterJobResponseModel = new TheaterJobResponseModel(theaterJob);
                     return Content((HttpStatusCode)201, theaterJobResponseModel);
-                    //return Content((HttpStatusCode)201, "Theater Job Posting Created");
                 }
                 catch (ZeroAffectedRowsException)
                 {
@@ -395,7 +390,6 @@ namespace BroadwayBuilder.Api.Controllers
                     }
                     var subdir = Path.Combine(ConfigurationManager.AppSettings["ResumeDir"], resume.ResumeGuid.ToString()); 
                     var filePath = Path.Combine(subdir, (resume.ResumeGuid.ToString()+"/"), ".pdf");
-                    //var filepath = @"C:\Resumes\" + resume.ResumeGuid + @"\" + resume.ResumeGuid + ".pdf";
                     string url = "";
                     if (File.Exists(filePath))
                     {

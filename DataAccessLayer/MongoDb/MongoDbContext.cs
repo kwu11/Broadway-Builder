@@ -14,7 +14,7 @@ namespace DataAccessLayer.MongoDb
 
         public MongoDbContext()
         {
-            var client = new MongoClient("mongodb://localhost:27017"); //TODO: add connectionstring
+            var client = new MongoClient("mongodb+srv://F5MongodbUser:F5BroadwayBuilder@broadwaybuilder-e1ziq.mongodb.net/test?retryWrites=true");
             Database = client.GetDatabase("BroadwayBuilder");
         }
 
