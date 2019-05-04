@@ -12,6 +12,7 @@
                 <a v-on:click="createTheater"> Create Theater </a>
                 <!-- <a v-on:click="deleteTheater"> Delete Theater </a> -->
                 <a v-on:click="manageTheaters"> Manage Theaters </a>
+                <a v-on:click="createUser"> Create User </a>
                 <a>Manage Users</a>
                 <ul>
                   <li>
@@ -53,6 +54,7 @@
             <PublishSite v-if="publish === true" @cancel="cancelPublish"/>
             <CreateTheater v-if="theaterCreated === true" @cancelCreateTheater="cancelCreateTheater"/>
             <!-- <DeleteTheater v-if="theaterDeleted === true" @cancelDeleteTheater="cancelDeleteTheater"/> -->
+            <CreateUser v-if="userCreated === true" @cancelCreateUser="cancelCreateUser"/>
             <TheatersTable v-if="theatersManaged === true" @cancelManageTheaters="cancelManageTheaters"/>
           </div>
         </div>
@@ -67,6 +69,7 @@ import PublishSite from "@/components/SystemAdmin/PublishSite.vue";
 import CreateTheater from "@/components/SystemAdmin/CreateTheater.vue";
 //import DeleteTheater from "@/components/SystemAdmin/DeleteTheater.vue";
 import TheatersTable from "@/components/SystemAdmin/TheatersTable.vue";
+import CreateUser from "@/components/SystemAdmin/CreateUser.vue"
 
 export default {
   name: "SysAdminAccount",
@@ -74,6 +77,7 @@ export default {
     PublishSite,
     CreateTheater,
     //DeleteTheater,
+    CreateUser,
     TheatersTable
   },
   data() {
@@ -81,7 +85,8 @@ export default {
       publish: false,
       theaterCreated: false,
       theaterDeleted: false,
-      theatersManaged: false
+      theatersManaged: false,
+      userCreated: false,
     };
   },
   methods: {
@@ -110,6 +115,12 @@ export default {
     },
     cancelManageTheaters(cancel) {
       this.theatersManaged = cancel;
+    },
+    createUser() {
+      this.userCreated = !this.userCreated;
+    },
+    cancelCreateUser(cancel) {
+      this.userCreated = cancel;
     },
     deleteTheater() {
       this.theaterDeleted = !this.theaterDeleted;

@@ -93,9 +93,14 @@
     <Compile Include="Migrations\201904300548151_updatedUserModel.Designer.cs">
       <DependentUpon>201904300548151_updatedUserModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201905020231230_Add_Session_Model_And_Changed_Context.cs" />
+    <Compile Include="Migrations\201905020231230_Add_Session_Model_And_Changed_Context.Designer.cs">
+      <DependentUpon>201905020231230_Add_Session_Model_And_Changed_Context.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ProductionDateTime.cs" />
     <Compile Include="Models\ResumeTheaterJob.cs" />
+    <Compile Include="Models\Session.cs" />
     <Compile Include="Models\TheaterJobPosting.cs" />
     <Compile Include="Models\Permission.cs" />
     <Compile Include="Models\Production.cs" />
@@ -132,6 +137,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904300548151_updatedUserModel.resx">
       <DependentUpon>201904300548151_updatedUserModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905020231230_Add_Session_Model_And_Changed_Context.resx">
+      <DependentUpon>201905020231230_Add_Session_Model_And_Changed_Context.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
