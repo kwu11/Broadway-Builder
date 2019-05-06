@@ -6,6 +6,7 @@ namespace DataAccessLayer.Migrations
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
+    using System.Text;
 
     internal sealed class Configuration : DbMigrationsConfiguration<DataAccessLayer.BroadwayBuilderContext>
     {
@@ -15,6 +16,40 @@ namespace DataAccessLayer.Migrations
             ContextKey = "DataAccessLayer.BroadwayBuilderContext";
         }
 
+        string GenerateEmailAddress(int numberOfCharacters)
+        {
+            var characters = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz";
+
+            var random = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+
+            var sb = new StringBuilder();
+            for (int i = 0; i < numberOfCharacters; i++)
+            {
+                var randChar = characters[random.Next(characters.Length)];
+                sb.Append(randChar);
+            }
+            sb.Append($"@{GenerateName(random.Next(10,30))}.com");
+
+            var emailAddress = sb.ToString();
+            return emailAddress;
+        }
+
+        string GenerateName(int numberOfCharacters)
+        {
+            var characters = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz";
+
+            var random = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+
+            var sb = new StringBuilder();
+            for (int i = 0; i < numberOfCharacters; i++)
+            {
+                var randChar = characters[random.Next(characters.Length)];
+                sb.Append(randChar);
+            }
+
+            return sb.ToString();
+        }
+
         protected override void Seed(DataAccessLayer.BroadwayBuilderContext context)
         {
             //  This method will be called after migrating to the latest version.
@@ -22,21 +57,45 @@ namespace DataAccessLayer.Migrations
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
             //  to avoid creating duplicate seed data.
 
-            context.Users.AddOrUpdate(x => x.UserId,
-                new User { UserId = 1, Username = "joseramir1240@yahoo.com", FirstName = "Jose", LastName = "Ramirez", Age = 22, DateOfBirth = new DateTime(1996, 12, 19), City = "Los Angeles", StateProvince = "California", Country = "USA", isEnabled = true, DateCreated = DateTime.Now, StreetAddress = "address",UserGuid = Guid.NewGuid() },
-                new User { UserId = 2, Username = "hollow1240@gmail.com", FirstName = "Jose", LastName = "Ramirez", Age = 22, DateOfBirth = new DateTime(1996, 12, 19), City = "Los Angeles", StateProvince = "California", Country = "USA", isEnabled = true, DateCreated = DateTime.Now, StreetAddress = "address", UserGuid = Guid.NewGuid() },
-                new User { UserId = 3,Username= "trollingLex@yahoo.com", FirstName= "Lexzander", LastName= "Saplan", Age=23,DateOfBirth= new DateTime(1996, 03, 29),City= "Long Beach",StateProvince= "California",Country= "USA", isEnabled= true, DateCreated = DateTime.Now, StreetAddress = "address", UserGuid = Guid.NewGuid() },
-                new User { UserId = 4, Username = "abicastro@gmail.com", FirstName = "Abi", LastName = "Castro", Age = 22, DateOfBirth = new DateTime(1996, 07, 19), City = "Los Angeles", StateProvince = "California", Country = "USA", isEnabled = true, DateCreated = DateTime.Now, StreetAddress = "address", UserGuid = Guid.NewGuid() },
-                new User { UserId = 5, Username = "dramaticbryce@aol.com", FirstName = "Bryce", LastName = "Moser", Age = 26, DateOfBirth = new DateTime(1991, 05, 26), City = "New York", StateProvince = "New York", Country = "USA", isEnabled = true, DateCreated = DateTime.Now, StreetAddress = "address", UserGuid = Guid.NewGuid() },
-                new User { UserId = 6, Username = "abdul23@outlook.com", FirstName = "Abdul", LastName = "ohfoeshow", Age = 31, DateOfBirth = new DateTime(1988, 06, 09), City = "Las Vega", StateProvince = "Nevada", Country = "USA", isEnabled = true, DateCreated = DateTime.Now, StreetAddress = "address", UserGuid = Guid.NewGuid() },
-                new User { UserId = 7, Username = "sleepyabi@yahoo.com", FirstName = "Abi", LastName = "Castro", Age = 24, DateOfBirth = new DateTime(1994, 01, 05), City = "San Diego", StateProvince = "California", Country = "USA", isEnabled = true, DateCreated = DateTime.Now, StreetAddress = "address", UserGuid = Guid.NewGuid() },
-                new User { UserId = 8, Username = "janedoe@aol.com", FirstName = "Jane", LastName = "Doe", Age = 31, DateOfBirth = new DateTime(1988, 04, 01), City = "Houston", StateProvince = "Texas", Country = "USA", isEnabled = true, DateCreated = DateTime.Now, StreetAddress = "address", UserGuid = Guid.NewGuid() },
-                new User { UserId = 9, Username = "pundavidibarra@yahoo.com", FirstName = "David", LastName = "Ibarra", Age = 21, DateOfBirth = new DateTime(1997, 09, 11), City = "Los Angeles", StateProvince = "California", Country = "USA", isEnabled = true, DateCreated = DateTime.Now, StreetAddress = "address", UserGuid = Guid.NewGuid() },
-                new User { UserId = 10, Username = "carlosorellana@yahoo.com", FirstName = "Carlos", LastName = "Orellana", Age = 21, DateOfBirth = new DateTime(1996, 07, 18), City = "Los Angeles", StateProvince = "California", Country = "USA", isEnabled = true, DateCreated = DateTime.Now, StreetAddress = "address", UserGuid = Guid.NewGuid() }
-                );
+
+            var userIds = Enumerable.Range(1, 100);
+            foreach (var userId in userIds)
+            {
+                var random = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
+                context.Users.AddOrUpdate(x => x.UserId, new User()
+                {
+                    UserId = userId,
+                    Age = random.Next(18,99),
+                    StreetAddress = GenerateName(20),
+                    City = GenerateName(12),
+                    Country = GenerateName(3),
+                    FirstName = GenerateName(random.Next(6, 12)),
+                    LastName = GenerateName(random.Next(5,15)),
+                    DateCreated = DateTime.Now,
+                    DateOfBirth = DateTime.Now - TimeSpan.FromDays(365 * 19),
+                    isEnabled = true,
+                    Username = GenerateEmailAddress(random.Next(5, 20)),
+                    UserGuid = Guid.NewGuid(),
+                    StateProvince = GenerateName(2),
+                });
+            }
+
+
+            //context.Users.AddOrUpdate(x => x.UserId,
+            //    new User { UserId = 1, Username = "joseramir1240@yahoo.com", FirstName = "Jose", LastName = "Ramirez", Age = 22, DateOfBirth = new DateTime(1996, 12, 19), City = "Los Angeles", StateProvince = "California", Country = "USA", isEnabled = true, DateCreated = DateTime.Now, StreetAddress = "address", UserGuid = Guid.NewGuid() },
+            //    new User { UserId = 2, Username = "hollow1240@gmail.com", FirstName = "Jose", LastName = "Ramirez", Age = 22, DateOfBirth = new DateTime(1996, 12, 19), City = "Los Angeles", StateProvince = "California", Country = "USA", isEnabled = true, DateCreated = DateTime.Now, StreetAddress = "address", UserGuid = Guid.NewGuid() },
+            //    new User { UserId = 3, Username = "trollingLex@yahoo.com", FirstName = "Lexzander", LastName = "Saplan", Age = 23, DateOfBirth = new DateTime(1996, 03, 29), City = "Long Beach", StateProvince = "California", Country = "USA", isEnabled = true, DateCreated = DateTime.Now, StreetAddress = "address", UserGuid = Guid.NewGuid() },
+            //    new User { UserId = 4, Username = "abicastro@gmail.com", FirstName = "Abi", LastName = "Castro", Age = 22, DateOfBirth = new DateTime(1996, 07, 19), City = "Los Angeles", StateProvince = "California", Country = "USA", isEnabled = true, DateCreated = DateTime.Now, StreetAddress = "address", UserGuid = Guid.NewGuid() },
+            //    new User { UserId = 5, Username = "dramaticbryce@aol.com", FirstName = "Bryce", LastName = "Moser", Age = 26, DateOfBirth = new DateTime(1991, 05, 26), City = "New York", StateProvince = "New York", Country = "USA", isEnabled = true, DateCreated = DateTime.Now, StreetAddress = "address", UserGuid = Guid.NewGuid() },
+            //    new User { UserId = 6, Username = "abdul23@outlook.com", FirstName = "Abdul", LastName = "ohfoeshow", Age = 31, DateOfBirth = new DateTime(1988, 06, 09), City = "Las Vega", StateProvince = "Nevada", Country = "USA", isEnabled = true, DateCreated = DateTime.Now, StreetAddress = "address", UserGuid = Guid.NewGuid() },
+            //    new User { UserId = 7, Username = "sleepyabi@yahoo.com", FirstName = "Abi", LastName = "Castro", Age = 24, DateOfBirth = new DateTime(1994, 01, 05), City = "San Diego", StateProvince = "California", Country = "USA", isEnabled = true, DateCreated = DateTime.Now, StreetAddress = "address", UserGuid = Guid.NewGuid() },
+            //    new User { UserId = 8, Username = "janedoe@aol.com", FirstName = "Jane", LastName = "Doe", Age = 31, DateOfBirth = new DateTime(1988, 04, 01), City = "Houston", StateProvince = "Texas", Country = "USA", isEnabled = true, DateCreated = DateTime.Now, StreetAddress = "address", UserGuid = Guid.NewGuid() },
+            //    new User { UserId = 9, Username = "pundavidibarra@yahoo.com", FirstName = "David", LastName = "Ibarra", Age = 21, DateOfBirth = new DateTime(1997, 09, 11), City = "Los Angeles", StateProvince = "California", Country = "USA", isEnabled = true, DateCreated = DateTime.Now, StreetAddress = "address", UserGuid = Guid.NewGuid() },
+            //    new User { UserId = 10, Username = "carlosorellana@yahoo.com", FirstName = "Carlos", LastName = "Orellana", Age = 21, DateOfBirth = new DateTime(1996, 07, 18), City = "Los Angeles", StateProvince = "California", Country = "USA", isEnabled = true, DateCreated = DateTime.Now, StreetAddress = "address", UserGuid = Guid.NewGuid() }
+            //    );
 
             context.Theaters.AddOrUpdate(x => x.TheaterID,
-                new Theater { TheaterID=1,TheaterName="Dramatic", CompanyName="Company1", StreetAddress="street", City="LA", State="CA", Country="USA", PhoneNumber="222-222-2222",DateCreated= DateTime.Now },
+                new Theater { TheaterID = 1, TheaterName = "Dramatic", CompanyName = "Company1", StreetAddress = "street", City = "LA", State = "CA", Country = "USA", PhoneNumber = "222-222-2222", DateCreated = DateTime.Now },
                 new Theater { TheaterID = 2, TheaterName = "Broadway", CompanyName = "Company2", StreetAddress = "street", City = "LA", State = "CA", Country = "USA", PhoneNumber = "222-222-2222", DateCreated = DateTime.Now },
                 new Theater { TheaterID = 3, TheaterName = "Alamo", CompanyName = "Company3", StreetAddress = "street", City = "LA", State = "CA", Country = "USA", PhoneNumber = "333-222-2222", DateCreated = DateTime.Now },
                 new Theater { TheaterID = 4, TheaterName = "Dreamworks", CompanyName = "Company4", StreetAddress = "street", City = "LA", State = "CA", Country = "USA", PhoneNumber = "444-222-2222", DateCreated = DateTime.Now },
@@ -89,7 +148,7 @@ namespace DataAccessLayer.Migrations
                 );
 
             context.TheaterJobPostings.AddOrUpdate(x => x.HelpWantedID,
-                new TheaterJobPosting { HelpWantedID=1, TheaterID = 1,DateCreated = new DateTime(2019,01,27),Position="Actor",Description="lengthy description",Title="SOS",Hours="20",Requirements="some reqirements",JobType="type of job"},
+                new TheaterJobPosting { HelpWantedID = 1, TheaterID = 1, DateCreated = new DateTime(2019, 01, 27), Position = "Actor", Description = "lengthy description", Title = "SOS", Hours = "20", Requirements = "some reqirements", JobType = "type of job" },
                 new TheaterJobPosting { HelpWantedID = 2, TheaterID = 1, DateCreated = new DateTime(2019, 02, 11), Position = "Backstage", Description = "lengthy description", Title = "Help Please", Hours = "20", Requirements = "some reqirements", JobType = "Full Time" },
                 new TheaterJobPosting { HelpWantedID = 3, TheaterID = 1, DateCreated = new DateTime(2019, 03, 24), Position = "Usher", Description = "lengthy description", Title = "Low Wages", Hours = "20", Requirements = "some reqirements", JobType = "Full Time" },
                 new TheaterJobPosting { HelpWantedID = 4, TheaterID = 1, DateCreated = new DateTime(2018, 12, 19), Position = "Director", Description = "lengthy description", Title = "Just For Show", Hours = "20", Requirements = "some reqirements", JobType = "Full Time" },
@@ -141,9 +200,9 @@ namespace DataAccessLayer.Migrations
                 new TheaterJobPosting { HelpWantedID = 50, TheaterID = 5, DateCreated = DateTime.Now, Position = "Actor", Description = "lengthy description", Title = "Broly", Hours = "20", Requirements = "some reqirements", JobType = "Seasonal" }
                 );
 
-            context.Productions.AddOrUpdate(x=>x.ProductionID,
-                new Production { ProductionID=1, TheaterID = 1, ProductionName ="Production Name1",DirectorFirstName="DiectorF1",DirectorLastName="DirectorL1",StateProvince="state1",Street="street1",City="city1",Country="USA",Zipcode="90044"},
-                new Production { ProductionID = 2, TheaterID = 1 , ProductionName = "Production Name2", DirectorFirstName = "DiectorF2", DirectorLastName = "DirectorL2", StateProvince = "state2", Street = "street2", City = "city2", Country = "USA", Zipcode = "90044" },
+            context.Productions.AddOrUpdate(x => x.ProductionID,
+                new Production { ProductionID = 1, TheaterID = 1, ProductionName = "Production Name1", DirectorFirstName = "DiectorF1", DirectorLastName = "DirectorL1", StateProvince = "state1", Street = "street1", City = "city1", Country = "USA", Zipcode = "90044" },
+                new Production { ProductionID = 2, TheaterID = 1, ProductionName = "Production Name2", DirectorFirstName = "DiectorF2", DirectorLastName = "DirectorL2", StateProvince = "state2", Street = "street2", City = "city2", Country = "USA", Zipcode = "90044" },
                 new Production { ProductionID = 3, TheaterID = 1, ProductionName = "Production Name3", DirectorFirstName = "DiectorF3", DirectorLastName = "DirectorL3", StateProvince = "state3", Street = "street3", City = "city3", Country = "USA", Zipcode = "90044" },
                 new Production { ProductionID = 4, TheaterID = 1, ProductionName = "Production Name4", DirectorFirstName = "DiectorF4", DirectorLastName = "DirectorL4", StateProvince = "state4", Street = "street4", City = "city4", Country = "USA", Zipcode = "90044" },
                 new Production { ProductionID = 5, TheaterID = 1, ProductionName = "Production Name5", DirectorFirstName = "DiectorF5", DirectorLastName = "DirectorL5", StateProvince = "state5", Street = "street5", City = "city5", Country = "USA", Zipcode = "90044" },
@@ -195,7 +254,7 @@ namespace DataAccessLayer.Migrations
                 );
 
             context.ProductionDateTimes.AddOrUpdate(x => x.ProductionDateTimeId,
-                new ProductionDateTime { ProductionDateTimeId=1, ProductionID = 1,Date = new DateTime(2019, 01, 27), Time =new TimeSpan(2,30,00)},
+                new ProductionDateTime { ProductionDateTimeId = 1, ProductionID = 1, Date = new DateTime(2019, 01, 27), Time = new TimeSpan(2, 30, 00) },
                 new ProductionDateTime { ProductionDateTimeId = 2, ProductionID = 1, Date = new DateTime(2019, 01, 27), Time = new TimeSpan(3, 30, 00) },
                 new ProductionDateTime { ProductionDateTimeId = 3, ProductionID = 1, Date = new DateTime(2019, 01, 27), Time = new TimeSpan(4, 30, 00) },
                 new ProductionDateTime { ProductionDateTimeId = 4, ProductionID = 2, Date = new DateTime(2019, 03, 27), Time = new TimeSpan(5, 30, 00) },
@@ -279,8 +338,7 @@ namespace DataAccessLayer.Migrations
                 new ProductionDateTime { ProductionDateTimeId = 82, ProductionID = 48, Date = new DateTime(2019, 02, 27), Time = new TimeSpan(3, 30, 00) },
                 new ProductionDateTime { ProductionDateTimeId = 83, ProductionID = 49, Date = new DateTime(2019, 05, 27), Time = new TimeSpan(4, 30, 00) },
                 new ProductionDateTime { ProductionDateTimeId = 84, ProductionID = 50, Date = new DateTime(2019, 05, 27), Time = new TimeSpan(5, 30, 00) }
-
-                );
+               );
             base.Seed(context);
             
             
