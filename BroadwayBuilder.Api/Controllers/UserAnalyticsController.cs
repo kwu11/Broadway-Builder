@@ -21,7 +21,7 @@ namespace BroadwayBuilder.Api.Controllers
             {
                 Month = month,
                 Year = year,
-                AverageSuccssfulLogins = 10,
+                AverageSuccessfulLogins = 10,
                 MinSuccessfulLogins = 2,
                 MaxSuccessfulLogins = 15
             };

@@ -9,7 +9,7 @@ namespace BroadwayBuilder.Api.Models
     {
         public int Month { get; set; }
         public int Year { get; set; }
-        public int AverageSuccssfulLogins { get; set; }
+        public int AverageSuccessfulLogins { get; set; }
         public int MinSuccessfulLogins { get; set; }
         public int MaxSuccessfulLogins { get; set; }
     }
