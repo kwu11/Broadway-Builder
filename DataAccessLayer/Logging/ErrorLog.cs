@@ -15,19 +15,36 @@ namespace DataAccessLayer.Logging
         public string ID { get; set; }
 
         [BsonElement("User")]
-        public int userId { get; set; }
+        public int UserId { get; set; }
+
+        [BsonElement("HttpMethod")]
+        public string HttpMethod { get; set; }
 
         [BsonElement("Request")]
-        public string request { get; set; }
+        public string Request { get; set; }
 
         [BsonElement("Message")]
-        public string message { get; set; }
+        public string Message { get; set; }
 
-        [BsonElement("Layer")]
-        public string layer { get; set; }
+        [BsonElement("StackTrace")]
+        public string StackTrace { get; set; }
+
+        [BsonElement("TargetSite")]
+        public string TargetSite { get; set; }
 
         [BsonElement("TimeStamp")]
-        public DateTime timeStamp{get;set;}
+        public DateTime TimeStamp{get;set;}
 
+
+        public ErrorLog(int userId, string httpMethod, string request, string message, string stack, string targetSite, DateTime timeStamp)
+        {
+            this.UserId = userId;
+            this.HttpMethod = httpMethod;
+            this.Request = request;
+            this.Message = message;
+            this.StackTrace = stack;
+            this.TargetSite = targetSite;
+            this.TimeStamp = timeStamp;
+        }
     }
 }

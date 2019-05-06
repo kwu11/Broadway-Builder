@@ -69,6 +69,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Logging\ErrorLog.cs" />
+    <Compile Include="Logging\LogDetail.cs" />
+    <Compile Include="Logging\PerformanceTracker.cs" />
     <Compile Include="Migrations\201903251740017_InitialCreate.cs" />
     <Compile Include="Migrations\201903251740017_InitialCreate.Designer.cs">
       <DependentUpon>201903251740017_InitialCreate.cs</DependentUpon>

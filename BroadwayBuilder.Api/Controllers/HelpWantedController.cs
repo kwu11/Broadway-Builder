@@ -500,5 +500,23 @@ namespace BroadwayBuilder.Api.Controllers
             }
         }
 
+        [HttpPost,Route("log")]
+        public IHttpActionResult Log(int id)
+        {
+            try
+            {
+                LogService logService = new LogService();
+                logService.TestLogger();
+                return Ok("Logged Failed");
+            }
+            catch(Exception e)
+            {
+                LogService logService2 = new LogService();
+                var context = HttpContext.Current;
+                logService2.LogError(context,e);
+                return Ok("Check Atlas!");
+            }
+        }
+
     }
 }
