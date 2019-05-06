@@ -12,7 +12,7 @@ namespace BroadwayBuilder.Api.Controllers
     public class UserAnalyticsController : ApiController
     {
         
-        [Route("NumberOfSuccessfulLogins")]
+        [Route("NumberOfSuccessfulLogins/{month}/{year}")]
         [HttpGet]
         public IHttpActionResult NumberOfSuccessfulLogins(int month, int year)
         {
