@@ -3,10 +3,11 @@
     <v-container text-xs-center fluid>
       <v-layout row wrap>
         <v-flex xs3>
-          <AccountSideBar @productions="viewProductions = true" />
+          <AccountSideBar @productions="viewProductions = true; viewAnalytics = false;" @analytics="viewProductions = false; viewAnalytics = true;"/>
         </v-flex>
         <v-flex xs9>
           <ProductionsTable v-if="viewProductions" />
+          <AnalyticsDashboard v-if="viewAnalytics" />
         </v-flex>
       </v-layout>
     </v-container>
@@ -18,19 +19,22 @@ import AccountSideBar from "@/components/AccountSideBar.vue";
 import EditTheater from "@/components/Admin/EditTheater.vue";
 import CreateProduction from "@/components/Admin/CreateProduction.vue";
 import ProductionsTable from "@/components/Admin/ProductionsTable.vue";
+import AnalyticsDashboard from "@/components/Admin/AnalyticsDashboard.vue";
 export default {
   name: "AdminAccount",
   components: {
     EditTheater,
     CreateProduction,
     ProductionsTable,
-    AccountSideBar
+    AccountSideBar,
+    AnalyticsDashboard
   },
   data() {
     return {
       editTheater: false,
       createProduction: false,
       viewProductions: false,
+      viewAnalytics: false,
       theater: {
         TheaterName: "Theater",
         CompanyName: "Company",

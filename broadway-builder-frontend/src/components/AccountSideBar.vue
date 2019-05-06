@@ -36,6 +36,12 @@
             <v-list-tile-title v-text="crud[0]"></v-list-tile-title>
           </v-list-tile>
         </v-list-group>
+
+        <v-list-tile @click="$emit('analytics')">
+          <v-list-tile-action>
+          </v-list-tile-action>
+          <v-list-tile-title>Analytics</v-list-tile-title>
+        </v-list-tile>
       </v-list-group>
     </v-list>
   </v-navigation-drawer>
