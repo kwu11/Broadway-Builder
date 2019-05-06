@@ -136,11 +136,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\AverageSessionLengthResponseModel.cs" />
+    <Compile Include="Models\SessionLengthResponseModel.cs" />
     <Compile Include="Models\LoginRequestPaylod.cs" />
     <Compile Include="Models\NumberOfSuccessfulLoginsResponseModel.cs" />
     <Compile Include="Models\ProductionResponseModel.cs" />
     <Compile Include="Models\ProductionDateTimeResponseModel.cs" />
+    <Compile Include="Models\SuccessfulVsFailedLoginsResponseModel.cs" />
     <Compile Include="Models\TheaterJobResponseModel.cs" />
     <Compile Include="Models\ValidationResultModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

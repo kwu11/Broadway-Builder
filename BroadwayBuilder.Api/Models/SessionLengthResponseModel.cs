@@ -5,8 +5,9 @@ using System.Web;
 
 namespace BroadwayBuilder.Api.Models
 {
-    public class AverageSessionLengthResponseModel
+    public class SessionLengthResponseModel
     {
+      
         public int Month { get; set; }
         public int Year { get; set; }
         public int AverageSessionLength { get; set; }

@@ -30,22 +30,38 @@ namespace BroadwayBuilder.Api.Controllers
 
         }
 
-
         [Route("SessionLength/{month}/{year}")]
         [HttpGet]
-        public IHttpActionResult AverageSessionDuration(int month, int year)
+        public IHttpActionResult SessionLength(int month, int year)
         {
 
-            var successfulLoginsPerMonth = new AverageSessionLengthResponseModel()
+            var sessionLength = new SessionLengthResponseModel()
             {
                 Month = month,
                 Year = year,
-                AverageSessionLength = 10,
-                MinSessionLength = 2,
-                MaxSessionLength = 15
+                AverageSessionLength = 4,
+                MinSessionLength = 1,
+                MaxSessionLength = 10
             };
 
-            return Ok(successfulLoginsPerMonth);
+            return Ok(sessionLength);
+
+        }
+
+        [Route("SuccessfulVsFailedLogins/{month}/{year}")]
+        [HttpGet]
+        public IHttpActionResult SuccessfulVsFailedLogins(int month, int year)
+        {
+
+            var successVsFailedLogins = new SuccessfulVsFailedLoginsResponseModel()
+            {
+                Month = month,
+                Year = year,
+                SuccessfulLogins = 20,
+                FailedLogins = 5
+            };
+
+            return Ok(successVsFailedLogins);
 
         }
     }
