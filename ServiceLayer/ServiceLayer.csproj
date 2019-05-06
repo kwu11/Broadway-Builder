@@ -32,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+    <Reference Include="MongoDB.Driver, Version=2.9.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -48,8 +49,12 @@
     <Compile Include="Exceptions\Exceptions.cs" />
     <Compile Include="Exceptions\ProductionDateTimeNotFoundException.cs" />
     <Compile Include="Exceptions\ProductionNotFoundException.cs" />
+    <Compile Include="KFC_API_Services\SignatureService.cs" />
+    <Compile Include="KFC_API_Services\SSO_API_Service.cs" />
     <Compile Include="Services\AuthorizationService.cs" />
     <Compile Include="Services\EncryptionService.cs" />
+    <Compile Include="Services\ErrorLogService.cs" />
+    <Compile Include="Services\LogService.cs" />
     <Compile Include="Services\TheaterJobPostingService.cs" />
     <Compile Include="Services\IAuthorizationService.cs" />
     <Compile Include="Services\PasswordValidatorService.cs" />

@@ -31,6 +31,7 @@ namespace DataAccessLayer
         public DbSet<ProductionDateTime> ProductionDateTimes { get; set; }
         public DbSet<Resume> Resumes { get; set; }
         public DbSet<ResumeTheaterJob> ResumeTheaterJobs {get;set;}
+        public DbSet<Session> Sessions { get; set; }
 
         //
         // Summary:

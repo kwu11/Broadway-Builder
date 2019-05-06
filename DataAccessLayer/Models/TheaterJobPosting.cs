@@ -34,7 +34,6 @@ namespace DataAccessLayer
 
         public TheaterJobPosting( int theaterID, string position, string description, string title, string hour, string requirement, string jobtype)
         {
-            //this.HelpWantedID = Guid.NewGuid();
             this.TheaterID = theaterID;
             this.Position = position;
             this.Description = description;
