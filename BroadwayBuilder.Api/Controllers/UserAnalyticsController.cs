@@ -8,7 +8,7 @@ using System.Web.Http;
 
 namespace BroadwayBuilder.Api.Controllers
 {
-    [RoutePrefix("api")]
+    [RoutePrefix("api/userAnalytics")]
     public class UserAnalyticsController : ApiController
     {
         
@@ -24,6 +24,25 @@ namespace BroadwayBuilder.Api.Controllers
                 AverageSuccessfulLogins = 10,
                 MinSuccessfulLogins = 2,
                 MaxSuccessfulLogins = 15
+            };
+
+            return Ok(successfulLoginsPerMonth);
+
+        }
+
+
+        [Route("SessionLength/{month}/{year}")]
+        [HttpGet]
+        public IHttpActionResult AverageSessionDuration(int month, int year)
+        {
+
+            var successfulLoginsPerMonth = new AverageSessionLengthResponseModel()
+            {
+                Month = month,
+                Year = year,
+                AverageSessionLength = 10,
+                MinSessionLength = 2,
+                MaxSessionLength = 15
             };
 
             return Ok(successfulLoginsPerMonth);
