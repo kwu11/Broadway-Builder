@@ -9,6 +9,7 @@ using BroadwayBuilder.Api.Models;
 using DataAccessLayer.Models;
 using Swashbuckle.Swagger.Annotations;
 using System.Linq;
+using ServiceLayer.Exceptions;
 
 namespace BroadwayBuilder.Api.Controllers 
 {
@@ -103,10 +104,12 @@ namespace BroadwayBuilder.Api.Controllers
                     // Now we have to get a user (check if it exists)
                     UserService userService = new UserService(_dbcontext);
 
-                    var user = userService.GetUser(request.Email);
-
-                    // User is not found, register user as a new user
-                    if (user == null)
+                    User user;
+                    try
+                    {
+                        user = userService.GetUser(request.Email);
+                    }
+                    catch (UserNotFoundException ex)
                     {
                         var newUser = new User()
                         {
@@ -124,7 +127,12 @@ namespace BroadwayBuilder.Api.Controllers
                     Session session = new Session()
                     {
                         UserId = user.UserId,
-                        Token = Guid.NewGuid().ToString()
+                        Token = Guid.NewGuid().ToString(),
+                        Signature = request.Signature,
+                        CreatedAt = DateTime.UtcNow,
+                        ExpiresAt = DateTime.UtcNow.AddMinutes(30),
+                        UpdatedAt = DateTime.UtcNow,
+                        Id = Guid.NewGuid(),
                     };
 
                     _dbcontext.Sessions.Add(session);

@@ -49,7 +49,10 @@ namespace ServiceLayer.Services
         /// <returns>The user that was obtained using the username</returns>
         public User GetUser(string username)
         {
-            var user = _dbContext.Users.Find(username);
+            var user = _dbContext.Users
+                .Where(o => o.Username == username)
+                .FirstOrDefault();
+
             if (user == null)
             {
                 throw new UserNotFoundException($"User with email {username} not found");
@@ -60,7 +63,16 @@ namespace ServiceLayer.Services
 
         public User GetUser(int id)
         {
-            return _dbContext.Users.Find(id);
+            var user = _dbContext.Users
+                .Where(o => o.UserId == id)
+                .FirstOrDefault();
+
+            if (user == null)
+            {
+                throw new UserNotFoundException($"User with id {id} not found");
+            }
+
+            return user;
         }
 
         public User GetUser(User user)
