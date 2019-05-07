@@ -87,7 +87,7 @@ export default {
     async publishApp() {
       await axios
         .post(
-          "http://api.kfc-sso.com/api/applications/publish",
+          "https://api.kfc-sso.com/api/applications/publish",
           this.appDetails
         )
         .then(
