@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer;
+using ServiceLayer.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,7 +49,13 @@ namespace ServiceLayer.Services
         /// <returns>The user that was obtained using the username</returns>
         public User GetUser(string username)
         {
-            return _dbContext.Users.Find(username);
+            var user = _dbContext.Users.Find(username);
+            if (user == null)
+            {
+                throw new UserNotFoundException($"User with email {username} not found");
+            }
+
+            return user;
         }
 
         public User GetUser(int id)
@@ -79,7 +86,7 @@ namespace ServiceLayer.Services
                 userToUpdate.StateProvince = user.StateProvince;
                 userToUpdate.Country = user.Country;
                 userToUpdate.City = user.City;
-                userToUpdate.isEnabled = user.isEnabled;
+                userToUpdate.IsEnabled = user.IsEnabled;
             }
             return userToUpdate;
 
@@ -121,7 +128,7 @@ namespace ServiceLayer.Services
             User UserToEnable = _dbContext.Users.Find(user.UserId);
             if (UserToEnable != null)
             {
-                UserToEnable.isEnabled = true;
+                UserToEnable.IsEnabled = true;
             }
             return UserToEnable;
         }
@@ -136,7 +143,7 @@ namespace ServiceLayer.Services
             User UserToDisable = _dbContext.Users.Find(user.UserId);
             if (UserToDisable != null)
             {
-                UserToDisable.isEnabled = false;
+                UserToDisable.IsEnabled = false;
             }
             return UserToDisable;
         }

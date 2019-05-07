@@ -18,13 +18,11 @@ namespace DataAccessLayer
             this.Username = null;
             this.FirstName = null;
             this.LastName = null;
-            this.DateOfBirth = new DateTime();
             this.StreetAddress = null;
             this.City = null;
             this.StateProvince = null;
             this.Country = null;
-            this.Age = 0;
-            this.isEnabled = false;
+            this.IsEnabled = false;
             this.UserGuid = Guid.NewGuid();
         }
 
@@ -44,13 +42,11 @@ namespace DataAccessLayer
             this.Username = email.ToLower();
             this.FirstName = firstName;
             this.LastName = lastName;
-            this.Age = age;
-            this.DateOfBirth = dob;
             this.StreetAddress = streetAddress;
             this.City = city;
             this.StateProvince = stateProvince;
             this.Country = country;
-            this.isEnabled = isEnabled;
+            this.IsEnabled = isEnabled;
             this.UserGuid = userGuid;
         }
 
@@ -67,40 +63,30 @@ namespace DataAccessLayer
         [Index(IsClustered =false,IsUnique =true)]
         public string Username { get; set; }
 
-        [Required]
         public string FirstName { get; set; }
 
-        [Required]
         public string LastName { get; set; }
 
-        [Required]
-        public int Age { get; set; }
-
-        [Required]
-        [DataType(DataType.Date)]
-        public DateTime DateOfBirth { get; set; }
-
-        [Required]
         public string StreetAddress { get; set; }
 
-        [Required]
         public string City { get; set; }
 
-        [Required]
         public string StateProvince { get; set; }
 
-        [Required]
         public string Country { get; set; }
 
         [Required]
-        public bool isEnabled { get; set; }
+        public bool IsEnabled { get; set; }
+        
+        [Required]
+        public bool IsComplete { get; set; }
 
         [Required]
         public Guid UserGuid { get; set; }
 
         [Required]
         public DateTime DateCreated { get; set; }
-        
+
         public virtual ICollection<UserPermission> UserPermissions { get; set; }
         public ICollection<Resume> Resumes { get; set; }
     }

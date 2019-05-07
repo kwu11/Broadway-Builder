@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -33,9 +34,7 @@ namespace ServiceLayer.KFC_API_Services
             // Order the provided dictionary by key
             // This is necessary so that the recipient of the payload will be able to generate the
             // correct hash even if the order changes
-            var orderedPayload = from payloadItem in payload
-                                 orderby payloadItem.Value descending
-                                 select payloadItem;
+            var orderedPayload = payload.OrderByDescending(o => o.Value);
 
             var payloadString = "";
             // Build a payload string with the format:
@@ -43,7 +42,8 @@ namespace ServiceLayer.KFC_API_Services
             // SECURITY: This must be passed in this format so that the resulting hash is the same
             foreach (var pair in orderedPayload)
             {
-                payloadString = payloadString + pair.Key + "=" + pair.Value + ";";
+                //payloadString = payloadString + pair.Key + "=" + pair.Value + ";";
+                payloadString = $"{payloadString}{pair.Key}={pair.Value};";
             }
 
             var signature = Sign(payloadString);
@@ -54,7 +54,7 @@ namespace ServiceLayer.KFC_API_Services
         public string Sign(string payloadString)
         {
             // Instantiate a new hashing algorithm with the provided key
-            HMACSHA256 hashingAlg = new HMACSHA256(Encoding.ASCII.GetBytes(SSO_API_Service.APISecret));
+            HMACSHA256 hashingAlg = new HMACSHA256(Encoding.ASCII.GetBytes(ConfigurationManager.AppSettings["SSO:APISecret"]));
 
             // Get the raw bytes from our payload string
             byte[] payloadBuffer = Encoding.ASCII.GetBytes(payloadString);

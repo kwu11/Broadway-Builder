@@ -127,6 +127,8 @@
   <ItemGroup>
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\ControllerHelper.cs" />
+    <Compile Include="Controllers\HealthCheckController.cs" />
     <Compile Include="Controllers\ProductionController.cs" />
     <Compile Include="Controllers\HelpWantedController.cs" />
     <Compile Include="Controllers\TheaterController.cs" />
@@ -136,8 +138,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\LogoutRequestModel.cs" />
     <Compile Include="Models\SessionLengthResponseModel.cs" />
-    <Compile Include="Models\LoginRequestPaylod.cs" />
+    <Compile Include="Models\LoginRequestModel.cs" />
     <Compile Include="Models\NumberOfSuccessfulLoginsResponseModel.cs" />
     <Compile Include="Models\ProductionResponseModel.cs" />
     <Compile Include="Models\ProductionDateTimeResponseModel.cs" />

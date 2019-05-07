@@ -65,15 +65,13 @@ namespace DataAccessLayer.Migrations
                 context.Users.AddOrUpdate(x => x.UserId, new User()
                 {
                     UserId = userId,
-                    Age = random.Next(18,99),
                     StreetAddress = GenerateName(20),
                     City = GenerateName(12),
                     Country = GenerateName(3),
                     FirstName = GenerateName(random.Next(6, 12)),
                     LastName = GenerateName(random.Next(5,15)),
                     DateCreated = DateTime.Now,
-                    DateOfBirth = DateTime.Now - TimeSpan.FromDays(365 * 19),
-                    isEnabled = true,
+                    IsEnabled = true,
                     Username = GenerateEmailAddress(random.Next(5, 20)),
                     UserGuid = Guid.NewGuid(),
                     StateProvince = GenerateName(2),

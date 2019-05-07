@@ -121,7 +121,6 @@ namespace ServiceLayer.Test
             userService.CreateUser(user);
             context.SaveChanges();
             user.FirstName = "Lex";
-            user.DateOfBirth = new DateTime(1992, 12, 7);
             user.City = "Irvine";
 
             var expected = user;
@@ -139,8 +138,6 @@ namespace ServiceLayer.Test
             Assert.AreEqual(expected.Country, actual.Country);
             Assert.AreEqual(expected.City, actual.City);
             Assert.AreEqual(expected.StateProvince, actual.StateProvince);
-            Assert.AreEqual(expected.DateOfBirth, actual.DateOfBirth);
-
         }
         
 
@@ -248,7 +245,7 @@ namespace ServiceLayer.Test
             //Act
             User EnabledUser = userService.EnableAccount(user);
             context.SaveChanges();
-            actual = EnabledUser.isEnabled;
+            actual = EnabledUser.IsEnabled;
 
             userService.DeleteUser(user);
             context.SaveChanges();
@@ -286,7 +283,7 @@ namespace ServiceLayer.Test
             //Act
             User DisabledUser = userService.DisableAccount(user);
             context.SaveChanges();
-            actual = DisabledUser.isEnabled;
+            actual = DisabledUser.IsEnabled;
 
             userService.DeleteUser(user);
             context.SaveChanges();
