@@ -19,5 +19,6 @@ namespace DataAccessLayer.MongoDb
         }
 
         public IMongoCollection<ErrorLog> ErrorLogs => Database.GetCollection<ErrorLog>("errorLogs");
+        public IMongoCollection<UsageLog> UsageLogs => Database.GetCollection<UsageLog>("usageLogs");
     }
 }
