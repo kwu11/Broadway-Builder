@@ -138,7 +138,7 @@ namespace BroadwayBuilder.Api.Controllers
                     _dbcontext.Sessions.Add(session);
                     _dbcontext.SaveChanges();
 
-                    var redirectURL = "https://www.broadwaybuilder.xyz/#/login/?token=" + session.Token;
+                    var redirectURL = $"https://www.broadwaybuilder.xyz/#/login?token={session.Token}";
                     return Redirect(redirectURL);
                 }
                 catch (Exception e)
