@@ -67,19 +67,66 @@ namespace BroadwayBuilder.Api.Controllers
         //    }
         //}
 
-        [HttpGet, Route("{token}")]
-        public User GetUser(string token)
+        [HttpGet, Route("registrationstatus")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(bool))]
+        public IHttpActionResult GetUserRegistrationStatus()
         {
+            var authHeaderValue = Request.Headers.GetValues("Authorization").FirstOrDefault();
+            if (authHeaderValue == null)
+            {
+                return BadRequest("No Authorization Header");
+            }
+
+            var token = authHeaderValue.Split(' ')[1];
+
             using (var _db = new BroadwayBuilderContext())
             {
                 UserService userService = new UserService(_db);
 
-                // Get Session
-                var session = _db.Sessions.Find(token);
+                var user = userService.GetUserByToken(token);
 
-                // Get User
-                return userService.GetUser(session.UserId);
+                return Ok(user.IsComplete);
             }
+        }
+
+        [HttpPut, Route("completeregistration")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        public IHttpActionResult UserCompleteRegistration([FromBody] UserCompleteRegistrationRequestModel userData)
+        {
+            var authHeaderValue = Request.Headers.GetValues("Authorization").FirstOrDefault();
+            if (authHeaderValue == null)
+            {
+                return BadRequest("No Authorization Header");
+            }
+
+            var token = authHeaderValue.Split(' ')[1];
+
+            using (var _db = new BroadwayBuilderContext())
+            {
+                UserService userService = new UserService(_db);
+
+                var user = userService.GetUserByToken(token);
+
+                if (user.IsComplete)
+                {
+                    return BadRequest("User is already registered");
+                }
+
+                user.FirstName = userData.FirstName;
+                user.LastName = userData.LastName;
+                user.City = userData.City;
+                user.StreetAddress = userData.StreetAddress;
+                user.StateProvince = userData.StateProvince;
+                user.Country = userData.Country;
+                user.IsComplete = true;
+                user.IsEnabled = true;
+
+                userService.UpdateUser(user);
+
+                _db.SaveChanges();
+            }
+
+            return Ok();
         }
 
         [HttpPost, Route("login")]
@@ -138,7 +185,7 @@ namespace BroadwayBuilder.Api.Controllers
                     _dbcontext.Sessions.Add(session);
                     _dbcontext.SaveChanges();
 
-                    var redirectURL = "https://www.broadwaybuilder.xyz/#/login/?token=" + session.Token;
+                    var redirectURL = $"https://www.broadwaybuilder.xyz/#/login?token={session.Token}";
                     return Redirect(redirectURL);
                 }
                 catch (Exception e)

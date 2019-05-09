@@ -34,7 +34,6 @@ namespace BroadwayBuilder.Api.Tests
             //Assert
             Assert.IsNotNull(response);
             Assert.IsNotNull(response.Content);
-            //Assert.AreEqual("Theater Job Posting Created",content);
             Assert.AreEqual((HttpStatusCode)201,response.StatusCode);
 
             var jobservice = new TheaterJobPostingService(dbcontext);
@@ -48,8 +47,6 @@ namespace BroadwayBuilder.Api.Tests
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
             var theaterJobService = new TheaterJobPostingService(dbcontext);
-            //var expected = true;
-            //var actual = false;
 
             var theater = new Theater("someTheater", "Regal", "theater st", "LA", "CA", "US", "323323");
             theaterService.CreateTheater(theater);
@@ -70,7 +67,7 @@ namespace BroadwayBuilder.Api.Tests
             Assert.IsNotNull(response);
             Assert.IsNotNull(response.Content);
             Assert.AreEqual("Updated Job Posting", content);
-            Assert.AreEqual((HttpStatusCode)202,response.StatusCode);
+            Assert.AreEqual((HttpStatusCode)200,response.StatusCode);
 
             theaterJobService.DeleteTheaterJob(jobPosting.HelpWantedID);
             theaterService.DeleteTheater(theater);
@@ -83,8 +80,6 @@ namespace BroadwayBuilder.Api.Tests
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
             var theaterJobService = new TheaterJobPostingService(dbcontext);
-            //var expected = true;
-            //var actual = false;
 
             var theater = new Theater("someTheater", "Regal", "theater st", "LA", "CA", "US", "323323");
             theaterService.CreateTheater(theater);
@@ -106,8 +101,7 @@ namespace BroadwayBuilder.Api.Tests
             //Assert
             Assert.IsNotNull(response);
             Assert.IsNotNull(response.Content);
-            Assert.AreEqual("Successfully Deleted Job Posting", content);
-            Assert.AreEqual((HttpStatusCode)202, response.StatusCode);
+            Assert.AreEqual((HttpStatusCode)200, response.StatusCode);
 
         }
 
@@ -117,8 +111,6 @@ namespace BroadwayBuilder.Api.Tests
             var dbcontext = new BroadwayBuilderContext();
             var theaterService = new TheaterService(dbcontext);
             var theaterJobService = new TheaterJobPostingService(dbcontext);
-            //var expected = true;
-            //var actual = false;
 
             var theater = new Theater("someTheater", "Regal", "theater st", "LA", "CA", "US", "323323");
             theaterService.CreateTheater(theater);
@@ -133,8 +125,8 @@ namespace BroadwayBuilder.Api.Tests
             //Act
             var actionResult = controller.GetTheaterJobs(theater.TheaterID, currentPage, numberOfItems);
             var response = actionResult as NegotiatedContentResult<TheaterJobResponseList>;
-            var content = response.Content;
-            //IEnumerable test;
+            //var content = response.Content;
+            
             //Assert
             Assert.IsNotNull(response);
             Assert.IsNotNull(response.Content);
@@ -143,6 +135,24 @@ namespace BroadwayBuilder.Api.Tests
             theaterJobService.DeleteTheaterJob(jobPosting.HelpWantedID);
             theaterService.DeleteTheater(theater);
             dbcontext.SaveChanges();
+        }
+
+        [TestMethod]
+        public void DeleteTheaterJob_Should_ReturnErrorMessage()
+        {
+            //Arrange
+            var controller = new HelpWantedController();
+            int nonExistantID = -(int.MaxValue);
+
+            //Act
+            var actionResult = controller.DeleteTheaterJob(nonExistantID);
+            var response = actionResult as NegotiatedContentResult<string>;
+            var content = response.Content;
+
+            //Assert
+            Assert.IsNotNull(response);
+            Assert.IsNotNull(response.Content);
+            Assert.AreEqual((HttpStatusCode)404, response.StatusCode);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace DataAccessLayer.Migrations
                 var randChar = characters[random.Next(characters.Length)];
                 sb.Append(randChar);
             }
-            sb.Append($"@{GenerateName(random.Next(10,30))}.com");
+            sb.Append($"@{GenerateName(random.Next(10, 30))}.com");
 
             var emailAddress = sb.ToString();
             return emailAddress;
@@ -52,9 +52,9 @@ namespace DataAccessLayer.Migrations
 
         protected override void Seed(DataAccessLayer.BroadwayBuilderContext context)
         {
-            //  This method will be called after migrating to the latest version.
+            //This method will be called after migrating to the latest version.
 
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
+            //  You can use the DbSet<T>.AddOrUpdate() helper extension method
             //  to avoid creating duplicate seed data.
 
 
@@ -69,7 +69,7 @@ namespace DataAccessLayer.Migrations
                     City = GenerateName(12),
                     Country = GenerateName(3),
                     FirstName = GenerateName(random.Next(6, 12)),
-                    LastName = GenerateName(random.Next(5,15)),
+                    LastName = GenerateName(random.Next(5, 15)),
                     DateCreated = DateTime.Now,
                     IsEnabled = true,
                     Username = GenerateEmailAddress(random.Next(5, 20)),
@@ -77,6 +77,20 @@ namespace DataAccessLayer.Migrations
                     StateProvince = GenerateName(2),
                 });
             }
+
+            //context.Users.AddOrUpdate(x => x.UserId, new User() {
+            //    UserId = 1,
+            //    StreetAddress = "street",
+            //    City = "LA",
+            //    Country = "USA",
+            //    FirstName = "Jose",
+            //    LastName = "Ramirez",
+            //    DateCreated = DateTime.Now,
+            //    IsEnabled = true,
+            //    Username = "joseramir1240@yahoo.com",
+            //    UserGuid = Guid.NewGuid(),
+            //    StateProvince = "CA",
+            //});
 
             context.Theaters.AddOrUpdate(x => x.TheaterID,
                 new Theater { TheaterID = 1, TheaterName = "Dramatic", CompanyName = "Company1", StreetAddress = "street", City = "LA", State = "CA", Country = "USA", PhoneNumber = "222-222-2222", DateCreated = DateTime.Now },

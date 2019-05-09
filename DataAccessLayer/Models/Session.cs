@@ -30,9 +30,13 @@ namespace DataAccessLayer.Models
         [Required]
         public string Signature { get; set; }
 
+        #region -- Relationship --
+
         [Required]
         public int UserId { get; set; }
 
         public User User { get; set; }
+
+        #endregion
     }
 }
