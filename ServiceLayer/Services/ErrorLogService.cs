@@ -19,12 +19,18 @@ namespace ServiceLayer.Services
 
         public void CreateErrorLog(ErrorLog errorLog)
         {
-            mongoDbContext.ErrorLogs.InsertOne(errorLog);
+            mongoDbContext.ErrorLogs.InsertOneAsync(errorLog);
         }
 
-        //public void DeleteErrorLog(string id)
-        //{
-        //    mongoDbContext.ErrorLogs.FindOneAndDelete({ _id:id});
-        //}
+        public List<ErrorLog> GetErrorLogs(DateTime minimumDate, DateTime maximumDate)
+        {
+            List<ErrorLog> errorLogs = mongoDbContext.ErrorLogs.Find(log => log.TimeStamp>=minimumDate & log.TimeStamp<=maximumDate).ToList();
+            return errorLogs;
+        }
+
+        public void DeleteErrorLogs(DateTime minimumDate, DateTime maximumDate)
+        {
+            mongoDbContext.ErrorLogs.DeleteManyAsync(log => log.TimeStamp >= minimumDate & log.TimeStamp <= maximumDate);
+        }
     }
 }

@@ -21,7 +21,7 @@ namespace ServiceLayer.Services
 
         public void CreateTheaterJob(TheaterJobPosting theaterJob)
         {
-            theaterJob.DateCreated = DateTime.Now;
+            theaterJob.DateCreated = DateTime.UtcNow;
             _dbContext.TheaterJobPostings.Add(theaterJob);
         }
 

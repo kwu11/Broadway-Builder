@@ -35,6 +35,9 @@ namespace DataAccessLayer.Logging
         [BsonElement("TimeStamp")]
         public DateTime TimeStamp{get;set;}
 
+        [BsonElement("AdditionalInformation")]
+        public Dictionary<string, object> AdditionalInfo { get; set; }
+
 
         public ErrorLog(int userId, string httpMethod, string request, string message, string stack, string targetSite, DateTime timeStamp)
         {

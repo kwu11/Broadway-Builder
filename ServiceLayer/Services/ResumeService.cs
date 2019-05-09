@@ -18,7 +18,7 @@ namespace ServiceLayer.Services
 
         public void CreateResume(Resume resume)
         {
-            resume.DateCreated = DateTime.Now;
+            resume.DateCreated = DateTime.UtcNow;
             _dbContext.Resumes.Add(resume);
         }
 

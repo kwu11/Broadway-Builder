@@ -71,6 +71,7 @@
     <Compile Include="Logging\ErrorLog.cs" />
     <Compile Include="Logging\LogDetail.cs" />
     <Compile Include="Logging\PerformanceTracker.cs" />
+    <Compile Include="Logging\UsageLog.cs" />
     <Compile Include="Migrations\201903251740017_InitialCreate.cs" />
     <Compile Include="Migrations\201903251740017_InitialCreate.Designer.cs">
       <DependentUpon>201903251740017_InitialCreate.cs</DependentUpon>
@@ -102,6 +103,14 @@
     <Compile Include="Migrations\201905070635080_updateSessionModel.cs" />
     <Compile Include="Migrations\201905070635080_updateSessionModel.Designer.cs">
       <DependentUpon>201905070635080_updateSessionModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201905082055472_updated_Resume_Model.cs" />
+    <Compile Include="Migrations\201905082055472_updated_Resume_Model.Designer.cs">
+      <DependentUpon>201905082055472_updated_Resume_Model.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201905082317289_updated_TheaterJobPosting_Model.cs" />
+    <Compile Include="Migrations\201905082317289_updated_TheaterJobPosting_Model.Designer.cs">
+      <DependentUpon>201905082317289_updated_TheaterJobPosting_Model.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ProductionDateTime.cs" />
@@ -149,6 +158,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201905070635080_updateSessionModel.resx">
       <DependentUpon>201905070635080_updateSessionModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905082055472_updated_Resume_Model.resx">
+      <DependentUpon>201905082055472_updated_Resume_Model.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905082317289_updated_TheaterJobPosting_Model.resx">
+      <DependentUpon>201905082317289_updated_TheaterJobPosting_Model.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
