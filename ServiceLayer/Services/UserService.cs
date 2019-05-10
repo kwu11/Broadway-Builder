@@ -80,6 +80,21 @@ namespace ServiceLayer.Services
             return _dbContext.Users.Find(user.UserId);
         }
 
+        public User GetUserByToken(string token)
+        {
+            var user = _dbContext.Sessions
+                .Where(o => o.Token == token)
+                .Select(o => o.User)
+                .FirstOrDefault();
+
+            if (user == null)
+            {
+                throw new UserNotFoundException($"User with token {token} not found");
+            }
+
+            return user;
+        }
+
         /// <summary>
         /// UpdateUser is a method in the UserService class. 
         /// The user gets updated in the database.
