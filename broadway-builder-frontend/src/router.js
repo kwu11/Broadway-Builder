@@ -58,6 +58,17 @@ export default new Router({
       path: "/sysadminaccount/{userID}/SysAdminViewAllTheaters",
       name: "SysAdminViewAllTheaters",
       component: () => import("./views/SysAdminViewAllTheaters.vue")
+    },
+    {
+      path:"/registration",
+      name:'registration',
+      component: () => import("./views/Registration.vue")
+    },
+    {
+      path:"/login",
+      name:'login',
+      component: () => import("./views/Login.vue")
     }
+
   ]
 });

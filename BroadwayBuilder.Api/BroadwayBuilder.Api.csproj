@@ -147,6 +147,7 @@
     <Compile Include="Models\ProductionDateTimeResponseModel.cs" />
     <Compile Include="Models\SuccessfulVsFailedLoginsResponseModel.cs" />
     <Compile Include="Models\TheaterJobResponseModel.cs" />
+    <Compile Include="Models\UserCompleteRegistrationRequestModel.cs" />
     <Compile Include="Models\ValidationResultModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
