@@ -1,7 +1,7 @@
 <template>
 <div>
   <br>
-  <v-flex xs6 lg4 offset-sm3 offset-lg4>
+  <v-flex xs10 md10 lg4 offset-xs1 offset-sm3 offset-md1 offset-lg4>
     <v-card >
       <v-card-title primary-title>
         <span>
@@ -88,7 +88,7 @@ export default {
       v => !!v || 'First Name is required',
       v => (v && v.length <= 10) || 'Name must be less than 10 characters'
     ],
-    LastName: '',
+    lastName: '',
     lastNameRules: [
       v => !!v || 'Last Name is required',
       v => (v && v.length <= 10) || 'Name must be less than 10 characters'
