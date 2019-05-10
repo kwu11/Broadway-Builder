@@ -18,6 +18,7 @@ namespace BroadwayBuilder.Api
             var usageLog = new UsageLog() {
             HttpMethod = httpMethod,
             Request = url,
+            IPAddress = IpAddress,
             Product = product,
             UserId = userId,
             AdditionalInfo = data};
