@@ -61,14 +61,20 @@ namespace BroadwayBuilder.Api
         private static void GetRequestParameters(HttpRequest httpRequest, Dictionary<string, object> data)
         {
             var qs = httpRequest.QueryString;
+            var form = httpRequest.Form;
             var i = 0;
             foreach (string key in qs.Keys)
             {
-                var newKey = string.Format("Parameter-{0}-{1}", i++, key);
+                var newKey = string.Format("QueryString-{0}-{1}", i++, key);
                 if (!data.ContainsKey(newKey))
                 {
                     data.Add(newKey, qs[key]);
                 }
+            }
+            i = 0;
+            foreach(string key in form.Keys)
+            {
+                var newKey = string.Format("Form Data-{0}-{1}", i++, key);
             }
         }
     }
