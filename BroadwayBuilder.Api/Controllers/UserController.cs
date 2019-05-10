@@ -184,13 +184,16 @@ namespace BroadwayBuilder.Api.Controllers
 
                     _dbcontext.Sessions.Add(session);
                     _dbcontext.SaveChanges();
-
+                    //Logging Usage
+                    //TODO: possibly change the userid argument for LogUsage
+                    LoggerHelper.LogUsage("Login", user.UserId);
                     var redirectURL = $"https://www.broadwaybuilder.xyz/#/login?token={session.Token}";
                     return Redirect(redirectURL);
                 }
                 catch (Exception e)
                 {
                     return InternalServerError(e);
+                    //TODO: LogError
                 }
             }
         }
