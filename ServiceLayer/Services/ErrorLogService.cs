@@ -2,6 +2,7 @@
 using DataAccessLayer.MongoDb;
 using MongoDB.Driver;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,9 +23,9 @@ namespace ServiceLayer.Services
             mongoDbContext.ErrorLogs.InsertOneAsync(errorLog);
         }
 
-        public List<ErrorLog> GetErrorLogs(DateTime minimumDate, DateTime maximumDate)
+        public IEnumerable GetErrorLogs(DateTime minimumDate, DateTime maximumDate)
         {
-            List<ErrorLog> errorLogs = mongoDbContext.ErrorLogs.Find(log => log.TimeStamp>=minimumDate & log.TimeStamp<=maximumDate).ToList();
+            IEnumerable errorLogs = mongoDbContext.ErrorLogs.Find(log => log.TimeStamp>=minimumDate & log.TimeStamp<=maximumDate).ToList();
             return errorLogs;
         }
 
