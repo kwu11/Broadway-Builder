@@ -19,6 +19,7 @@ namespace DataAccessLayer.Logging
         [BsonRepresentation(BsonType.ObjectId)]
         public string ID { get; set; }
 
+        [BsonElement("TimeStamp")]
         public DateTime TimeStamp { get; private set; }
         // WHERE
         [BsonElement("HttpMethod")]
@@ -30,11 +31,11 @@ namespace DataAccessLayer.Logging
         [BsonElement("Product")]
         public string Product { get; set; }
 
-        [BsonElement("Location")]
-        public string Location { get; set; }
+        //[BsonElement("Location")]
+        //public string Location { get; set; }
 
-        [BsonElement("HostName")]
-        public string Hostname { get; set; }
+        //[BsonElement("HostName")]
+        //public string Hostname { get; set; }
 
         [BsonElement("IPAddress")]
         public string IPAddress { get; set; }
@@ -42,6 +43,9 @@ namespace DataAccessLayer.Logging
         // WHO
         [BsonElement("User")]
         public int UserId { get; set; }
+
+        [BsonElement("AdditionalInformation")]
+        public Dictionary<string, object> AdditionalInfo { get; set; }  // everything else
 
     }
 }
