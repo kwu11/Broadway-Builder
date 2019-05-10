@@ -167,7 +167,7 @@ export default {
   methods: {
     async sendUserRegistrationInfo () {
       if (this.$refs.form.validate()) {
-        await axios.put('https://api.broadwaybuilder/xyz/user/completeregistration', {
+        await axios.put('https://api.broadwaybuilder.xyz/user/completeregistration', {
           firstName: this.firstName,
           lastName: this.lastName,
           streetAddress: this.streetAddress,
