@@ -73,10 +73,12 @@ namespace BroadwayBuilder.Api
                 }
             }
             i = 0;
-            foreach(string key in form.Keys)
-            {
-                var newKey = string.Format("Form Data-{0}-{1}", i++, key);
-            }
+            var formData = form.AllKeys;
+            data.Add("Form-Data: ",formData);
+            //foreach(string key in form.Keys)
+            //{
+            //    var newKey = string.Format("Form Data-{0}-{1}", i++, key);
+            //}
         }
     }
 }
