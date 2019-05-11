@@ -30,6 +30,7 @@
         type="ColumnChart"
         :data="successfulLoginData"
         :options="successfulLoginChartOptions"
+        @ready="reflowChart"
       />
     </v-flex>
 
@@ -38,6 +39,7 @@
         type="ColumnChart"
         :data="sessionLengthData"
         :options="sessionLengthChartOptions"
+        @ready="reflowChart"
       />
     </v-flex>
 
@@ -50,6 +52,7 @@
         type="ColumnChart"
         :data="successfulVsFailedLoginData"
         :options="successfulVsFailedLoginChartOptions"
+        @ready="reflowChart"
       />
     </v-flex>
 
@@ -102,6 +105,9 @@ export default {
     };
   },
   methods: {
+    reflowChart(chart, google) {
+      console.log(google);
+    },
     formatMonthAndYear(month, year) {
       let monthStr = '';
       switch (month) {

@@ -1,8 +1,14 @@
 <template>
   <v-app id="app">
-    <Navbar />
-    <router-view />
-    <Footer />
+    <div class="site">
+      <Navbar />
+
+      <div class="site-content">
+        <router-view />
+      </div>
+      
+      <Footer />
+    </div>
   </v-app>
 </template>
 
@@ -24,4 +30,11 @@ export default {
 #app
   font-family: Roboto;
   
+.site
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+
+.site-content
+  flex: 1;
 </style>
