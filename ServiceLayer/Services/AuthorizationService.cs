@@ -2,6 +2,7 @@
 //using ServiceLayer.Enums;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,28 +29,27 @@ namespace ServiceLayer.Services
         /// <param name="user">User that must be checked if they are authorized</param>
         /// <param name="checkIfAuthorized">check if user has this permission</param>
         /// <returns>true if user has permission, false otherwise</returns>
-        public bool HasPermission(User user, Permission checkIfAuthorized,Theater theater)
+        public bool HasPermission(User user, DataAccessLayer.Enums.PermissionsEnum permission)
         {
-            UserPermission userPermission = _dbContext.UserPermissions.Find(user.UserId, checkIfAuthorized.PermissionID, theater.TheaterID);
-            if (userPermission != null)
-            {
-                return true;
-            }
-            return false;
-
+            return HasPermission(user.UserId, permission);
         }
 
-        public bool HasPermission(int username, Permission checkIfAuthorized, Theater theater)
+        public bool HasPermission(int userId, DataAccessLayer.Enums.PermissionsEnum permission)
         {
-            UserPermission userPermission = _dbContext.UserPermissions.Find(username, checkIfAuthorized.PermissionID, theater.TheaterID);
-            if (userPermission != null)
+            UserRole userRoles = _dbContext.UserRoles
+                .Where(o => o.UserId == userId)
+                .Include(o => o.Role.RolePermissions)
+                .FirstOrDefault();
+            if (userRoles != null)
             {
-                return true;
+                if (userRoles.Role.RolePermissions
+                    .Where(rolePermission => rolePermission.PermissionID == permission)
+                    .Any())
+                {
+                    return true;
+                }
             }
             return false;
-
         }
-
-
     }
 }

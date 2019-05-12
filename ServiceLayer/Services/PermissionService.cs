@@ -35,7 +35,7 @@ namespace ServiceLayer.Services
         /// </summary>
         /// <param name="role">The role we want to retrieve</param>
         /// <returns></returns>
-        public Permission GetPermission(int permission)
+        public Permission GetPermission(DataAccessLayer.Enums.PermissionsEnum permission)
         {
             return _dbContext.Permissions.Find(permission);
         }

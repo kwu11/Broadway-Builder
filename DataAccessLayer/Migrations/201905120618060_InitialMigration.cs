@@ -3,7 +3,7 @@ namespace DataAccessLayer.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class InitialCreate : DbMigration
+    public partial class InitialMigration : DbMigration
     {
         public override void Up()
         {
@@ -11,7 +11,7 @@ namespace DataAccessLayer.Migrations
                 "dbo.Permissions",
                 c => new
                     {
-                        PermissionID = c.Int(nullable: false, identity: true),
+                        PermissionID = c.Int(nullable: false),
                         PermissionName = c.String(nullable: false),
                         DateCreated = c.DateTime(nullable: false),
                         Disabled = c.Boolean(nullable: false),
@@ -37,7 +37,7 @@ namespace DataAccessLayer.Migrations
                 "dbo.Roles",
                 c => new
                     {
-                        RoleID = c.Int(nullable: false, identity: true),
+                        RoleID = c.Int(nullable: false),
                         RoleName = c.String(nullable: false),
                         DateCreated = c.DateTime(nullable: false),
                         isEnabled = c.Boolean(nullable: false),
@@ -45,38 +45,72 @@ namespace DataAccessLayer.Migrations
                 .PrimaryKey(t => t.RoleID);
             
             CreateTable(
-                "dbo.UserPermissions",
+                "dbo.UserRoles",
                 c => new
                     {
                         UserId = c.Int(nullable: false),
-                        PermissionID = c.Int(nullable: false),
-                        TheaterID = c.Int(nullable: false),
+                        RoleId = c.Int(nullable: false),
                         DateCreated = c.DateTime(nullable: false),
-                        isEnabled = c.Boolean(nullable: false),
+                        IsEnabled = c.Boolean(nullable: false),
+                        Permission_PermissionID = c.Int(),
+                        Theater_TheaterID = c.Int(),
                     })
-                .PrimaryKey(t => new { t.UserId, t.PermissionID, t.TheaterID })
-                .ForeignKey("dbo.Permissions", t => t.PermissionID, cascadeDelete: true)
-                .ForeignKey("dbo.Theaters", t => t.TheaterID, cascadeDelete: true)
+                .PrimaryKey(t => new { t.UserId, t.RoleId })
+                .ForeignKey("dbo.Roles", t => t.RoleId, cascadeDelete: true)
                 .ForeignKey("dbo.Users", t => t.UserId, cascadeDelete: true)
+                .ForeignKey("dbo.Permissions", t => t.Permission_PermissionID)
+                .ForeignKey("dbo.Theaters", t => t.Theater_TheaterID)
                 .Index(t => t.UserId)
-                .Index(t => t.PermissionID)
-                .Index(t => t.TheaterID);
+                .Index(t => t.RoleId)
+                .Index(t => t.Permission_PermissionID)
+                .Index(t => t.Theater_TheaterID);
             
             CreateTable(
-                "dbo.Theaters",
+                "dbo.Users",
                 c => new
                     {
-                        TheaterID = c.Int(nullable: false, identity: true),
-                        TheaterName = c.String(nullable: false),
-                        CompanyName = c.String(nullable: false),
+                        UserId = c.Int(nullable: false, identity: true),
+                        Username = c.String(nullable: false, maxLength: 450),
+                        FirstName = c.String(),
+                        LastName = c.String(),
+                        StreetAddress = c.String(),
+                        City = c.String(),
+                        StateProvince = c.String(),
+                        Country = c.String(),
+                        IsEnabled = c.Boolean(nullable: false),
+                        IsComplete = c.Boolean(nullable: false),
+                        UserGuid = c.Guid(nullable: false),
                         DateCreated = c.DateTime(nullable: false),
-                        StreetAddress = c.String(nullable: false),
-                        City = c.String(nullable: false),
-                        State = c.String(nullable: false),
-                        Country = c.String(nullable: false),
-                        PhoneNumber = c.String(nullable: false),
                     })
-                .PrimaryKey(t => t.TheaterID);
+                .PrimaryKey(t => t.UserId)
+                .Index(t => t.Username, unique: true);
+            
+            CreateTable(
+                "dbo.Resumes",
+                c => new
+                    {
+                        ResumeID = c.Int(nullable: false, identity: true),
+                        ResumeGuid = c.Guid(nullable: false),
+                        UserId = c.Int(nullable: false),
+                        DateCreated = c.DateTime(nullable: false),
+                    })
+                .PrimaryKey(t => t.ResumeID)
+                .ForeignKey("dbo.Users", t => t.UserId, cascadeDelete: true)
+                .Index(t => t.ResumeGuid, unique: true)
+                .Index(t => t.UserId, unique: true);
+            
+            CreateTable(
+                "dbo.ProductionsDateTimes",
+                c => new
+                    {
+                        ProductionDateTimeId = c.Int(nullable: false, identity: true),
+                        Date = c.DateTime(nullable: false, storeType: "date"),
+                        Time = c.Time(nullable: false, precision: 7),
+                        ProductionID = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => t.ProductionDateTimeId)
+                .ForeignKey("dbo.Productions", t => t.ProductionID, cascadeDelete: true)
+                .Index(t => t.ProductionID);
             
             CreateTable(
                 "dbo.Productions",
@@ -98,19 +132,6 @@ namespace DataAccessLayer.Migrations
                 .Index(t => t.TheaterID);
             
             CreateTable(
-                "dbo.ProductionsDateTimes",
-                c => new
-                    {
-                        ProductionDateTimeId = c.Int(nullable: false, identity: true),
-                        Date = c.DateTime(nullable: false, storeType: "date"),
-                        Time = c.Time(nullable: false, precision: 7),
-                        ProductionID = c.Int(nullable: false),
-                    })
-                .PrimaryKey(t => t.ProductionDateTimeId)
-                .ForeignKey("dbo.Productions", t => t.ProductionID, cascadeDelete: true)
-                .Index(t => t.ProductionID);
-            
-            CreateTable(
                 "dbo.ProductionJobPostings",
                 c => new
                     {
@@ -128,53 +149,38 @@ namespace DataAccessLayer.Migrations
                 .Index(t => t.ProductionID);
             
             CreateTable(
+                "dbo.Theaters",
+                c => new
+                    {
+                        TheaterID = c.Int(nullable: false, identity: true),
+                        TheaterName = c.String(nullable: false),
+                        CompanyName = c.String(nullable: false),
+                        DateCreated = c.DateTime(nullable: false),
+                        StreetAddress = c.String(nullable: false),
+                        City = c.String(nullable: false),
+                        State = c.String(nullable: false),
+                        Country = c.String(nullable: false),
+                        PhoneNumber = c.String(nullable: false),
+                    })
+                .PrimaryKey(t => t.TheaterID);
+            
+            CreateTable(
                 "dbo.TheaterJobPostings",
                 c => new
                     {
                         HelpWantedID = c.Int(nullable: false, identity: true),
                         DateCreated = c.DateTime(nullable: false),
-                        Position = c.String(nullable: false),
-                        Description = c.String(nullable: false),
-                        Title = c.String(nullable: false),
-                        Hours = c.String(nullable: false),
-                        Requirements = c.String(nullable: false),
+                        Position = c.String(nullable: false, maxLength: 20),
+                        Description = c.String(nullable: false, maxLength: 3000),
+                        Title = c.String(nullable: false, maxLength: 70),
+                        Hours = c.String(nullable: false, maxLength: 20),
+                        Requirements = c.String(nullable: false, maxLength: 1500),
+                        JobType = c.String(nullable: false, maxLength: 20),
                         TheaterID = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.HelpWantedID)
                 .ForeignKey("dbo.Theaters", t => t.TheaterID, cascadeDelete: true)
                 .Index(t => t.TheaterID);
-            
-            CreateTable(
-                "dbo.Users",
-                c => new
-                    {
-                        UserId = c.Int(nullable: false, identity: true),
-                        Username = c.String(nullable: false, maxLength: 450),
-                        FirstName = c.String(nullable: false),
-                        LastName = c.String(nullable: false),
-                        Age = c.Int(nullable: false),
-                        DateOfBirth = c.DateTime(nullable: false),
-                        City = c.String(nullable: false),
-                        StateProvince = c.String(nullable: false),
-                        Country = c.String(nullable: false),
-                        isEnabled = c.Boolean(nullable: false),
-                    })
-                .PrimaryKey(t => t.UserId)
-                .Index(t => t.Username, unique: true);
-            
-            CreateTable(
-                "dbo.Resumes",
-                c => new
-                    {
-                        ResumeID = c.Int(nullable: false, identity: true),
-                        ResumeGuid = c.Guid(nullable: false),
-                        UserId = c.Int(nullable: false),
-                        DateCreated = c.DateTime(nullable: false),
-                    })
-                .PrimaryKey(t => t.ResumeID)
-                .ForeignKey("dbo.Users", t => t.UserId, cascadeDelete: true)
-                .Index(t => t.ResumeGuid, unique: true)
-                .Index(t => t.UserId);
             
             CreateTable(
                 "dbo.ResumeTheaterJobs",
@@ -191,45 +197,66 @@ namespace DataAccessLayer.Migrations
                 .Index(t => t.HelpWantedID)
                 .Index(t => t.ResumeID);
             
+            CreateTable(
+                "dbo.Sessions",
+                c => new
+                    {
+                        Id = c.Guid(nullable: false),
+                        Token = c.String(nullable: false),
+                        ExpiresAt = c.DateTime(nullable: false),
+                        UpdatedAt = c.DateTime(nullable: false),
+                        CreatedAt = c.DateTime(nullable: false),
+                        Signature = c.String(nullable: false),
+                        UserId = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Users", t => t.UserId, cascadeDelete: true)
+                .Index(t => t.UserId);
+            
         }
         
         public override void Down()
         {
+            DropForeignKey("dbo.Sessions", "UserId", "dbo.Users");
             DropForeignKey("dbo.ResumeTheaterJobs", "ResumeID", "dbo.Resumes");
             DropForeignKey("dbo.ResumeTheaterJobs", "HelpWantedID", "dbo.TheaterJobPostings");
-            DropForeignKey("dbo.UserPermissions", "UserId", "dbo.Users");
-            DropForeignKey("dbo.Resumes", "UserId", "dbo.Users");
-            DropForeignKey("dbo.UserPermissions", "TheaterID", "dbo.Theaters");
+            DropForeignKey("dbo.UserRoles", "Theater_TheaterID", "dbo.Theaters");
             DropForeignKey("dbo.TheaterJobPostings", "TheaterID", "dbo.Theaters");
             DropForeignKey("dbo.Productions", "TheaterID", "dbo.Theaters");
             DropForeignKey("dbo.ProductionJobPostings", "ProductionID", "dbo.Productions");
             DropForeignKey("dbo.ProductionsDateTimes", "ProductionID", "dbo.Productions");
-            DropForeignKey("dbo.UserPermissions", "PermissionID", "dbo.Permissions");
+            DropForeignKey("dbo.UserRoles", "Permission_PermissionID", "dbo.Permissions");
+            DropForeignKey("dbo.UserRoles", "UserId", "dbo.Users");
+            DropForeignKey("dbo.Resumes", "UserId", "dbo.Users");
+            DropForeignKey("dbo.UserRoles", "RoleId", "dbo.Roles");
             DropForeignKey("dbo.RolePermissions", "RoleID", "dbo.Roles");
             DropForeignKey("dbo.RolePermissions", "PermissionID", "dbo.Permissions");
+            DropIndex("dbo.Sessions", new[] { "UserId" });
             DropIndex("dbo.ResumeTheaterJobs", new[] { "ResumeID" });
             DropIndex("dbo.ResumeTheaterJobs", new[] { "HelpWantedID" });
+            DropIndex("dbo.TheaterJobPostings", new[] { "TheaterID" });
+            DropIndex("dbo.ProductionJobPostings", new[] { "ProductionID" });
+            DropIndex("dbo.Productions", new[] { "TheaterID" });
+            DropIndex("dbo.ProductionsDateTimes", new[] { "ProductionID" });
             DropIndex("dbo.Resumes", new[] { "UserId" });
             DropIndex("dbo.Resumes", new[] { "ResumeGuid" });
             DropIndex("dbo.Users", new[] { "Username" });
-            DropIndex("dbo.TheaterJobPostings", new[] { "TheaterID" });
-            DropIndex("dbo.ProductionJobPostings", new[] { "ProductionID" });
-            DropIndex("dbo.ProductionsDateTimes", new[] { "ProductionID" });
-            DropIndex("dbo.Productions", new[] { "TheaterID" });
-            DropIndex("dbo.UserPermissions", new[] { "TheaterID" });
-            DropIndex("dbo.UserPermissions", new[] { "PermissionID" });
-            DropIndex("dbo.UserPermissions", new[] { "UserId" });
+            DropIndex("dbo.UserRoles", new[] { "Theater_TheaterID" });
+            DropIndex("dbo.UserRoles", new[] { "Permission_PermissionID" });
+            DropIndex("dbo.UserRoles", new[] { "RoleId" });
+            DropIndex("dbo.UserRoles", new[] { "UserId" });
             DropIndex("dbo.RolePermissions", new[] { "RoleID" });
             DropIndex("dbo.RolePermissions", new[] { "PermissionID" });
+            DropTable("dbo.Sessions");
             DropTable("dbo.ResumeTheaterJobs");
+            DropTable("dbo.TheaterJobPostings");
+            DropTable("dbo.Theaters");
+            DropTable("dbo.ProductionJobPostings");
+            DropTable("dbo.Productions");
+            DropTable("dbo.ProductionsDateTimes");
             DropTable("dbo.Resumes");
             DropTable("dbo.Users");
-            DropTable("dbo.TheaterJobPostings");
-            DropTable("dbo.ProductionJobPostings");
-            DropTable("dbo.ProductionsDateTimes");
-            DropTable("dbo.Productions");
-            DropTable("dbo.Theaters");
-            DropTable("dbo.UserPermissions");
+            DropTable("dbo.UserRoles");
             DropTable("dbo.Roles");
             DropTable("dbo.RolePermissions");
             DropTable("dbo.Permissions");

@@ -33,7 +33,7 @@ namespace DataAccessLayer
         
 
         public ICollection<Production> Production { get; set; }
-        public ICollection<UserPermission> userPermissions { get; set; }
+        public ICollection<UserRole> userRoles { get; set; }
         public ICollection<TheaterJobPosting> theaterJobPostings { get; set; }
 
         public Theater(string theaterName, string companyName, string streetAddress, string city,

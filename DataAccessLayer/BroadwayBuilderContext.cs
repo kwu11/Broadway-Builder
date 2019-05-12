@@ -24,7 +24,7 @@ namespace DataAccessLayer
         public DbSet<Role> Roles { get; set; }
         public DbSet<Production> Productions { get; set; }
         public DbSet<Theater> Theaters { get; set; }
-        public DbSet<UserPermission> UserPermissions { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
         public DbSet<TheaterJobPosting> TheaterJobPostings { get; set; }
         public DbSet<ProductionJobPosting> ProductionJobPostings { get; set; }

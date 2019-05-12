@@ -6,32 +6,34 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace DataAccessLayer
 {
-    public class RolePermission
+    [Table("UserRoles")]
+    public class UserRole
     {
-        public RolePermission()
+        public UserRole()
         {
-
+            //this.UserId = null;
+            this.IsEnabled = false;
+            DateCreated = DateTime.Now;
         }
-
         [Required]
         public DateTime DateCreated { get; set; }
 
         [Required]
-        public bool isEnabled { get; set; }
+        public bool IsEnabled { get; set; }
 
         [Key]
-        [Required]
         [Column(Order =1)]
-        public Enums.PermissionsEnum PermissionID { get; set; }
+        public int UserId { get; set; }
 
         [Key]
-        [Required]
         [Column(Order = 2)]
-        public Enums.RoleEnum RoleID { get; set; }
+        public Enums.RoleEnum RoleId { get; set; }
 
+        public User User { get; set; }
         public Role Role { get; set; }
-        public Permission Permission { get; set; }
+
     }
 }
