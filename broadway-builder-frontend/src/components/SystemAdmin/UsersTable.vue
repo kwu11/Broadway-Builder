@@ -111,7 +111,7 @@ export default {
     cancelManageUsers() {
         this.$emit("cancel", false);
     },
-    async ElevateUser(user) {
+    async elevateUser(user) {
       await axios
         .put("https://api.broadwaybuilder.xyz/user/elevate/" + user.UserId)
         .then(response => alert(response.data));
