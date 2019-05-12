@@ -1,6 +1,7 @@
 ﻿using DataAccessLayer;
 using ServiceLayer.Exceptions;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -210,6 +211,25 @@ namespace ServiceLayer.Services
             {
                 _dbContext.UserRoles.Remove(roleToDelete);
             }
+        }
+
+        public IEnumerable GetAllUsers()
+        {
+            return _dbContext.Users.Select(user => new
+            {
+                UserId = user.UserId,
+                Username = user.Username,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Age = user.Age,
+                StreetAddress = user.StreetAddress,
+                City = user.City,
+                StateProvince = user.StateProvince,
+                Country = user.Country,
+                isEnabled = user.isEnabled,
+                UserGuid = user.UserGuid,
+                DateCreated = user.DateCreated
+            }).ToList();
         }
     }
 }

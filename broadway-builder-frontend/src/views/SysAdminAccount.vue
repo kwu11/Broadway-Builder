@@ -1,11 +1,10 @@
 <template>
 <body>
-
   <div id="sys-admin-account">
     <v-container text-xs-left fluid>
       <v-layout row wrap>
         <v-flex xs3>
-          <SystemAdminAccountSideBar @publishSite="performPublish" @createTheater="createTheater" @manageTheaters="manageTheaters" @createUser="createUser"/>
+          <SystemAdminAccountSideBar @publishSite="performPublish" @createTheater="createTheater" @manageTheaters="manageTheaters" @createUser="createUser" @manageUsers="manageUsers"/>
         </v-flex>
         <v-flex xs9>
           <div class="sysadminaccount">
@@ -16,7 +15,6 @@
                     <p style="padding-top: 15px" class="menu-label">System Administration</p>
                     <ul class="menu-list">
                       <li>
-                        <a>Manage Users</a>
                         <ul>
                           <li>
                             <a>Theater Administrators</a>
@@ -59,6 +57,7 @@
                     <!-- <DeleteTheater v-if="theaterDeleted === true" @cancelDeleteTheater="cancelDeleteTheater"/> -->
                     <CreateUser v-if="userCreated === true" @cancelCreateUser="cancelCreateUser"/>
                     <TheatersTable v-if="theatersManaged === true" @cancelManageTheaters="cancelManageTheaters"/>
+                    <UsersTable v-if="usersManaged === true" @cancelManageUsers="cancelManageUsers"/>
                   </div>
                 </div>
               </div>
@@ -77,6 +76,7 @@ import CreateTheater from "@/components/SystemAdmin/CreateTheater.vue";
 //import DeleteTheater from "@/components/SystemAdmin/DeleteTheater.vue";
 import TheatersTable from "@/components/SystemAdmin/TheatersTable.vue";
 import CreateUser from "@/components/SystemAdmin/CreateUser.vue";
+import UsersTable from "@/components/SystemAdmin/UsersTable.vue";
 import SystemAdminAccountSideBar from "@/components/SystemAdmin/SystemAdminAccountSideBar.vue";
 
 export default {
@@ -87,6 +87,7 @@ export default {
     //DeleteTheater,
     CreateUser,
     TheatersTable,
+    UsersTable,
     SystemAdminAccountSideBar
   },
   data() {
@@ -96,6 +97,7 @@ export default {
       theaterDeleted: false,
       theatersManaged: false,
       userCreated: false,
+      usersManaged: false
     };
   },
   methods: {
@@ -125,12 +127,18 @@ export default {
     cancelManageTheaters(cancel) {
       this.theatersManaged = cancel;
     },
-    // createUser() {
-    //   this.userCreated = !this.userCreated;
-    // },
-    // cancelCreateUser(cancel) {
-    //   this.userCreated = cancel;
-    // },
+    createUser() {
+      this.userCreated = !this.userCreated;
+    },
+    manageUsers() {
+      this.usersManaged = !this.usersManaged;
+    },
+    cancelManageUsers(cancel) {
+      this.usersManaged = cancel;
+    },
+    cancelCreateUser(cancel) {
+      this.userCreated = cancel;
+    },
     deleteTheater() {
       this.theaterDeleted = !this.theaterDeleted;
       this.publish = false;
