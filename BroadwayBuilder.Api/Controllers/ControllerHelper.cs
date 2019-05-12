@@ -3,6 +3,7 @@ using ServiceLayer.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Web;
 using System.Web.Http.ModelBinding;
 
@@ -31,6 +32,19 @@ namespace BroadwayBuilder.Api.Controllers
                 throw new InvalidGuidException("Invalid Id.");
             }
             return guid;
+        }
+
+        public static string GetTokenFromAuthorizationHeader(HttpRequestHeaders headers)
+        {
+            var authHeaderValue = headers.GetValues("Authorization").FirstOrDefault();
+            if (authHeaderValue == null)
+            {
+                return null;
+            }
+
+            var token = authHeaderValue.Split(' ')[1];
+
+            return token;
         }
 
     }
