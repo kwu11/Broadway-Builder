@@ -453,14 +453,17 @@ namespace BroadwayBuilder.Api.Controllers
             }
         }
 
-        [HttpPost,Route("log")]
+        [HttpGet,Route("log")]
         public IHttpActionResult Log(int id)
         {
             try
             {
                 LogService logService = new LogService();
-                logService.TestLogger();
-                return Ok("Logged Failed");
+                //logService.TestLogger();
+                DateTime old = new DateTime(2019,4,20);
+                DateTime dateTime = DateTime.UtcNow;
+                var list = logService.GetErrorLogs(old,dateTime);
+                return Content(HttpStatusCode.OK,list);
             }
             catch(Exception e)
             {

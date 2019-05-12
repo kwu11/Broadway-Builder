@@ -18,6 +18,7 @@ namespace BroadwayBuilder.Api
             var usageLog = new UsageLog() {
             HttpMethod = httpMethod,
             Request = url,
+            IPAddress = IpAddress,
             Product = product,
             UserId = userId,
             AdditionalInfo = data};
@@ -61,13 +62,25 @@ namespace BroadwayBuilder.Api
         private static void GetRequestParameters(HttpRequest httpRequest, Dictionary<string, object> data)
         {
             var qs = httpRequest.QueryString;
+            var form = httpRequest.Form;
             var i = 0;
             foreach (string key in qs.Keys)
             {
-                var newKey = string.Format("Parameter-{0}-{1}", i++, key);
+                var newKey = string.Format("QueryString-{0}-{1}", i++, key);
                 if (!data.ContainsKey(newKey))
                 {
                     data.Add(newKey, qs[key]);
+                }
+            }
+            i = 0;
+            //var formData = form.AllKeys;
+            //data.Add("Form-Data: ",formData);
+            foreach (string key in form.Keys)
+            {
+                var newKey = string.Format("FormData-{0}-{1}", i++, key);
+                if (!data.ContainsKey(newKey))
+                {
+                    data.Add(newKey, form[key]);
                 }
             }
         }

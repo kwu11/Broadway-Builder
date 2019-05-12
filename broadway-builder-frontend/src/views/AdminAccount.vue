@@ -68,9 +68,6 @@ export default {
 </script>
 
 <style lang="sass">
-#admin-account
-  margin-bottom: 20em
-
 a:hover
   font-weight: bold
 
