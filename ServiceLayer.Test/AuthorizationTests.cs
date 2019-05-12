@@ -43,7 +43,8 @@ namespace ServiceLayer.Test
             //Adding data into tables
             userService.CreateUser(user);
             theaterService.CreateTheater(theater);
-            userService.AddUserRole(user, DataAccessLayer.Enums.RoleEnum.SysAdmin);
+            broadwayBuilderContext.SaveChanges();
+            userService.AddUserRole(user.UserId, DataAccessLayer.Enums.RoleEnum.SysAdmin);
             broadwayBuilderContext.SaveChanges();
 
 
@@ -92,7 +93,8 @@ namespace ServiceLayer.Test
 
             theaterService.CreateTheater(theater);
             userService.CreateUser(user);
-            userService.AddUserRole(user, DataAccessLayer.Enums.RoleEnum.GeneralUser);
+            broadwayBuilderContext.SaveChanges();
+            userService.AddUserRole(user.UserId, DataAccessLayer.Enums.RoleEnum.GeneralUser);
             broadwayBuilderContext.SaveChanges();
 
             // Act 

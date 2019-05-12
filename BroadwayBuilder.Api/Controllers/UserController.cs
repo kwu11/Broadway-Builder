@@ -152,13 +152,7 @@ namespace BroadwayBuilder.Api.Controllers
         [SwaggerResponse(HttpStatusCode.OK)]
         public IHttpActionResult UserCompleteRegistration([FromBody] UserCompleteRegistrationRequestModel userData)
         {
-            var authHeaderValue = Request.Headers.GetValues("Authorization").FirstOrDefault();
-            if (authHeaderValue == null)
-            {
-                return BadRequest("No Authorization Header");
-            }
-
-            var token = authHeaderValue.Split(' ')[1];
+            var token = ControllerHelper.GetTokenFromAuthorizationHeader(Request.Headers);
 
             using (var _db = new BroadwayBuilderContext())
             {
@@ -229,7 +223,7 @@ namespace BroadwayBuilder.Api.Controllers
                         user = newUser;
 
                         // Everyone starts off as a general user
-                        userService.AddUserRole(user, DataAccessLayer.Enums.RoleEnum.GeneralUser);
+                        userService.AddUserRole(user.UserId, DataAccessLayer.Enums.RoleEnum.GeneralUser);
                     }
 
                     // User was found, so login user
@@ -292,7 +286,7 @@ namespace BroadwayBuilder.Api.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpPost]
         [Route("delete")]
         [SwaggerResponse(HttpStatusCode.OK)]
         public IHttpActionResult DeleteUserFromSSO([FromBody] LoginRequestModel request)
@@ -324,6 +318,45 @@ namespace BroadwayBuilder.Api.Controllers
                 {
                     return InternalServerError(e);
                 }
+            }
+        }
+
+        [HttpPut]
+        [Route("elevate/{userId}")]
+        public IHttpActionResult ElevateUser([FromUri] int userId)
+        {
+            var token = ControllerHelper.GetTokenFromAuthorizationHeader(Request.Headers);
+
+            try
+            {
+                using (var dbcontext = new BroadwayBuilderContext())
+                {
+                    var authorizationService = new AuthorizationService(dbcontext);
+
+                    var userService = new UserService(dbcontext);
+
+                    var requestingUser = userService.GetUserByToken(token);
+
+                    var isAuthorized = authorizationService.HasPermission(requestingUser, DataAccessLayer.Enums.PermissionsEnum.UpgradeGeneralUserToTheaterAdmin);
+
+                    if (!isAuthorized)
+                    {
+                        return Unauthorized();
+                    }
+
+                    var isTheaterAdmin = userService.HasUserRole(userId, DataAccessLayer.Enums.RoleEnum.TheaterAdmin);
+
+                    if (!isTheaterAdmin)
+                    {
+                        userService.AddUserRole(userId, DataAccessLayer.Enums.RoleEnum.TheaterAdmin);
+                    }
+
+                    return Ok();
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
             }
         }
     }

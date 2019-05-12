@@ -182,20 +182,20 @@ namespace ServiceLayer.Services
         /// </summary>
         /// <param name="user">The user who we will be adding a permission to</param>
         /// <param name="role">The permission we will be adding to a user</param>
-        public void AddUserRole(User user, DataAccessLayer.Enums.RoleEnum role)
+        public void AddUserRole(int userId, DataAccessLayer.Enums.RoleEnum role)
         {
             _dbContext.UserRoles.Add(new UserRole()
             {
-                UserId = user.UserId,
+                UserId = userId,
                 RoleId = role,
                 IsEnabled = true,
                 DateCreated = DateTime.UtcNow,
             });
         }
 
-        public UserRole GetUserRole(User user, DataAccessLayer.Enums.RoleEnum role)
+        public bool HasUserRole(int userId, DataAccessLayer.Enums.RoleEnum role)
         {
-            return _dbContext.UserRoles.Where(o => o.UserId == user.UserId && o.RoleId == role).FirstOrDefault();
+            return _dbContext.UserRoles.Where(o => o.UserId == userId && o.RoleId == role).Any();
         }
 
         /// <summary>
