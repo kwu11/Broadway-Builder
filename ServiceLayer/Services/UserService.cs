@@ -180,15 +180,21 @@ namespace ServiceLayer.Services
         /// Adds a permission to a specific user.
         /// </summary>
         /// <param name="user">The user who we will be adding a permission to</param>
-        /// <param name="permission">The permission we will be adding to a user</param>
-        public void AddUserPermission(User user, Permission permission,Theater theater)
+        /// <param name="role">The permission we will be adding to a user</param>
+        public void AddUserRole(User user, DataAccessLayer.Enums.RoleEnum role)
         {
-            _dbContext.UserPermissions.Add(new UserPermission(user.UserId, permission.PermissionID, theater.TheaterID, true));
+            _dbContext.UserRoles.Add(new UserRole()
+            {
+                UserId = user.UserId,
+                RoleId = role,
+                IsEnabled = true,
+                DateCreated = DateTime.UtcNow,
+            });
         }
 
-        public UserPermission GetUserPermission(User user, Permission permission, Theater theater)
+        public UserRole GetUserRole(User user, DataAccessLayer.Enums.RoleEnum role)
         {
-            return _dbContext.UserPermissions.Find(user.UserId, permission.PermissionID, theater.TheaterID); 
+            return _dbContext.UserRoles.Where(o => o.UserId == user.UserId && o.RoleId == role).FirstOrDefault();
         }
 
         /// <summary>
@@ -197,12 +203,12 @@ namespace ServiceLayer.Services
         /// </summary>
         /// <param name="user">The user whos permission we want to remove</param>
         /// <param name="permission">The permission to be removed from the user</param>
-        public void DeleteUserPermission(UserPermission userPermission)
+        public void DeleteUserRole(UserRole userRole)
         {
-            UserPermission permissionToDelete = _dbContext.UserPermissions.Find(userPermission.UserId,userPermission.PermissionID,userPermission.TheaterID);
-            if (permissionToDelete != null)
+            UserRole roleToDelete = _dbContext.UserRoles.Find(userRole.UserId, userRole.RoleId);
+            if (roleToDelete != null)
             {
-                _dbContext.UserPermissions.Remove(permissionToDelete);
+                _dbContext.UserRoles.Remove(roleToDelete);
             }
         }
     }

@@ -13,7 +13,6 @@ namespace DataAccessLayer
     {
         public Permission(string permission, bool disabled)
         {
-            //PermissionID = Guid.NewGuid();
             PermissionName = permission.ToLower();
             this.Disabled = disabled;
         }
@@ -24,7 +23,7 @@ namespace DataAccessLayer
   
         [Key]
         //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int PermissionID { get; set; }
+        public Enums.PermissionsEnum PermissionID { get; set; }
         [Required]
         public string PermissionName { get; set; }
         [Required]
@@ -32,7 +31,6 @@ namespace DataAccessLayer
         [Required]
         public bool Disabled { get; set; }
         
-        public virtual ICollection<UserPermission> UserPermissions { get; set; }
         public virtual ICollection<RolePermission> RolePermissions { get; set; }
     }
 }

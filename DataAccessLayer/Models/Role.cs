@@ -11,12 +11,6 @@ namespace DataAccessLayer
     [Table("Roles")]
     public class Role
     {
-        public Role(string role, bool disabled)
-        {
-            //RoleID = Guid.NewGuid();
-            RoleName = role;
-            this.isEnabled = disabled;
-        }
         /// <summary>
         /// The overloaded constructor for creating a role
         /// </summary>
@@ -28,7 +22,7 @@ namespace DataAccessLayer
 
         [Key]
         //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int RoleID { get; set; }
+        public Enums.RoleEnum RoleID { get; set; }
 
         [Required]
         public string RoleName { get; set; }

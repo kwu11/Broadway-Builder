@@ -168,6 +168,9 @@ namespace BroadwayBuilder.Api.Controllers
                         };
                         userService.CreateUser(newUser);
                         user = newUser;
+
+                        // Everyone starts off as a general user
+                        userService.AddUserRole(user, DataAccessLayer.Enums.RoleEnum.GeneralUser);
                     }
 
                     // User was found, so login user
