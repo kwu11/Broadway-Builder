@@ -8,6 +8,9 @@ namespace BroadwayBuilder.Api.Models
 {
     public class UserResponseModel
     {
+        [Required]
+        public int UserId { get; set; }
+        [Required]
         public string Username { get; set; }
         [Required]
         public string FirstName { get; set; }

@@ -55,7 +55,6 @@ namespace DataAccessLayer
         //[Column(Order =1)]
         public int UserId { get; set; }
 
-
         [Required]
         //[Key]
         //[Column(Order = 2)]

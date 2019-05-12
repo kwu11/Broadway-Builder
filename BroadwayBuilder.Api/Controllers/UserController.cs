@@ -111,7 +111,8 @@ namespace BroadwayBuilder.Api.Controllers
                             StateProvince = user.StateProvince,
                             Country = user.Country,
                             IsEnabled = user.IsEnabled,
-                            Username = user.Username
+                            Username = user.Username,
+                            UserId = user.UserId
                         }).ToList();
 
                     return Content((HttpStatusCode)200, usersList);
