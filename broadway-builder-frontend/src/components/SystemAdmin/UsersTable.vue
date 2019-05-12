@@ -1,41 +1,27 @@
 <template>
   <div class="UsersTable">
-    <table class="table is-hoverable">
-      <thead>
-        <tr>Users</tr>
-        <tr>
-          <th>User ID</th>
-          <th>User Name</th>
-          <th>First Name</th>
-          <th>Last Name<th>
-          <th>Age</th>
-          <th>Address</th>
-          <th>Edit</th>
-          <th>Delete</th>
-        </tr>
-      </thead>
-      <tbody v-for="(user, index) in users" :key="index">
-        <tr>
-          <td>{{user.UserId}}</td>
-          <td>{{user.Username}}</td>
-          <td>{{user.FirstName}}</td>
-          <td>{{user.LastName}}</td>
-          <td>{{user.Age}}</td>
-          <td>{{user.StreetAddress}} {{user.City}}, {{user.StateProvince}} {{user.Country}}</td>
-          <td>
-            <a v-on:click="showModal(user)">
-              <img src="@/assets/edit.png" alt="Edit">
-            </a>
-            <UsersTableModal v-if="isModalVisible" v-bind:passedUser="modalUser" @close="closeModal"/>
-          </td>
-          <td>
-            <a v-on:click="deleteUser(user)">
-              <img src="@/assets/tester.png" alt="Delete">
-            </a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+
+    <v-data-table :headers="headers" :items="users" class="elevation-1">
+      <template v-slot:items="props">
+        <td>{{props.item.UserId}}</td>
+        <td>{{props.item.Username}}</td>
+        <td>{{props.item.FirstName}}</td>
+        <td> {{props.item.LastName}}</td>
+        <td>{{props.item.StreetAddress}} {{props.item.City}}, {{props.item.State}} {{props.item.Country}}</td>
+        <td>
+          <a @click="showModal(props.item)">
+            <img src="@/assets/edit.png" alt="Edit">
+          </a>
+        </td>
+        <td>
+          <a v-on:click="deleteUser(props.item)">
+            <img src="@/assets/tester.png" alt="Delete">
+          </a>
+        </td>
+      </template>
+    </v-data-table>    
+
+    <UsersTableModal v-if="isModalVisible" v-bind:passedUser="modalUser" @close="closeModal"/>
   </div>
 </template>
 
@@ -51,7 +37,45 @@ export default {
     return {
       users: [],
       modalUser: null,
-      isModalVisible: false
+      isModalVisible: false,
+            headers: [
+        {
+          text: "User ID",
+          align: "left",
+          value: "UserID"
+        },
+        {
+          text: "Email",
+          align: "left",
+          sortable: false,
+          value: "Username"
+        },
+        {
+          text: "First Name",
+          align: "left",
+          value: "FirstName"
+        },
+        {
+          text: "Last Name",
+          align: "left",
+          value: "LastName"
+        },
+        {
+          text: "Street Address",
+          align: "left",
+          value: "Street Address"
+        },
+        {
+          text: "Edit",
+          align: "left",
+          sortable: false
+        },
+        {
+          text: "Delete",
+          align: "left",
+          sortable: false
+        }
+      ]
     };
   },
   async mounted() {

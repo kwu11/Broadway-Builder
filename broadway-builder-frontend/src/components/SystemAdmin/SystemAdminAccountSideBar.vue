@@ -53,12 +53,11 @@ export default {
       ["Manage Theaters", "manageTheaters"]
     ],
     cruds: [
-      ["Upgrade User Role", "upgradeUserRole"],
-      ["Delete User", "deleteUser"]
+      ["Manage Users", "manageUsers"]
     ],
     mini: false,
-    theaterManagementDropdownState: false,
-    userManagementDropdownState: false
+    theaterManagementDropdownState: true,
+    userManagementDropdownState: true
   }),
   methods: {
     miniMode() {

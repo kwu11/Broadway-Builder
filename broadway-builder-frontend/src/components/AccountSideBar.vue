@@ -53,8 +53,8 @@ export default {
       ["Delete", "delete"]
     ],
     mini: false,
-    theaterManagementDropdownState: false,
-    userManagementDropdownState: false
+    theaterManagementDropdownState: true,
+    userManagementDropdownState: true
   }),
   methods: {
     miniMode() {
