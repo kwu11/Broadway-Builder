@@ -18,20 +18,7 @@ namespace DataAccessLayer.Migrations
 
         string GenerateEmailAddress(int numberOfCharacters)
         {
-            var characters = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz";
-
-            var random = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
-
-            var sb = new StringBuilder();
-            for (int i = 0; i < numberOfCharacters; i++)
-            {
-                var randChar = characters[random.Next(characters.Length)];
-                sb.Append(randChar);
-            }
-            sb.Append($"@{GenerateName(random.Next(10,30))}.com");
-
-            var emailAddress = sb.ToString();
-            return emailAddress;
+            return Guid.NewGuid().ToString() + "@gmail.com";
         }
 
         string GenerateName(int numberOfCharacters)
@@ -65,20 +52,32 @@ namespace DataAccessLayer.Migrations
                 context.Users.AddOrUpdate(x => x.UserId, new User()
                 {
                     UserId = userId,
-                    Age = random.Next(18,99),
                     StreetAddress = GenerateName(20),
                     City = GenerateName(12),
                     Country = GenerateName(3),
                     FirstName = GenerateName(random.Next(6, 12)),
-                    LastName = GenerateName(random.Next(5,15)),
+                    LastName = GenerateName(random.Next(5, 15)),
                     DateCreated = DateTime.Now,
-                    DateOfBirth = DateTime.Now - TimeSpan.FromDays(365 * 19),
-                    isEnabled = true,
+                    IsEnabled = true,
                     Username = GenerateEmailAddress(random.Next(5, 20)),
                     UserGuid = Guid.NewGuid(),
                     StateProvince = GenerateName(2),
                 });
             }
+
+            //context.Users.AddOrUpdate(x => x.UserId, new User() {
+            //    UserId = 1,
+            //    StreetAddress = "street",
+            //    City = "LA",
+            //    Country = "USA",
+            //    FirstName = "Jose",
+            //    LastName = "Ramirez",
+            //    DateCreated = DateTime.Now,
+            //    IsEnabled = true,
+            //    Username = "joseramir1240@yahoo.com",
+            //    UserGuid = Guid.NewGuid(),
+            //    StateProvince = "CA",
+            //});
 
             context.Theaters.AddOrUpdate(x => x.TheaterID,
                 new Theater { TheaterID = 1, TheaterName = "Dramatic", CompanyName = "Company1", StreetAddress = "street", City = "LA", State = "CA", Country = "USA", PhoneNumber = "222-222-2222", DateCreated = DateTime.Now },
@@ -325,11 +324,151 @@ namespace DataAccessLayer.Migrations
                 new ProductionDateTime { ProductionDateTimeId = 83, ProductionID = 49, Date = new DateTime(2019, 05, 27), Time = new TimeSpan(4, 30, 00) },
                 new ProductionDateTime { ProductionDateTimeId = 84, ProductionID = 50, Date = new DateTime(2019, 05, 27), Time = new TimeSpan(5, 30, 00) }
                );
-            base.Seed(context);
-            
-            
 
-            
+            // add roles 
+            context.Roles.AddOrUpdate(x => x.RoleID,
+                new Role
+                {
+                    RoleID = Enums.RoleEnum.SysAdmin,
+                    RoleName = "SysAdmin",
+                    DateCreated = DateTime.UtcNow,
+                    isEnabled = true
+                },
+                new Role
+                {
+                    RoleID = Enums.RoleEnum.TheaterAdmin,
+                    RoleName = "TheaterAdmin",
+                    DateCreated = DateTime.UtcNow,
+                    isEnabled = true
+                },
+                new Role
+                {
+                    RoleID = Enums.RoleEnum.GeneralUser,
+                    RoleName = "GeneralUser",
+                    DateCreated = DateTime.UtcNow,
+                    isEnabled = true
+                });
+
+            // add permissions
+
+            context.Permissions.AddOrUpdate(x => x.PermissionID,
+                new Permission
+                {
+                    PermissionID = Enums.PermissionsEnum.ActivateAbusiveAccount,
+                    PermissionName = "ActivateAbusiveAccount",
+                    Disabled = false,
+                    DateCreated = DateTime.UtcNow,
+                },
+                new Permission
+                {
+                    PermissionID = Enums.PermissionsEnum.ActivateNonAbusiveAccount,
+                    PermissionName = "ActivateNonAbusiveAccount",
+                    Disabled = false,
+                    DateCreated = DateTime.UtcNow
+                },
+                new Permission
+                {
+                    PermissionID = Enums.PermissionsEnum.DisableGeneralUser,
+                    PermissionName = "DisableGeneralUser",
+                    Disabled = false,
+                    DateCreated = DateTime.UtcNow
+                },
+                new Permission
+                {
+                    PermissionID = Enums.PermissionsEnum.DisableTheaterAdmin,
+                    PermissionName = "DisableTheaterAdmin",
+                    Disabled = false,
+                    DateCreated = DateTime.UtcNow
+                },
+                new Permission
+                {
+                    PermissionID = Enums.PermissionsEnum.DowngradeTheaterAdminToGeneralUser,
+                    PermissionName = "DowngradeTheaterAdminToGeneralUser",
+                    Disabled = false,
+                    DateCreated = DateTime.UtcNow
+                },
+                new Permission
+                {
+                    PermissionID = Enums.PermissionsEnum.EnableTheaterAdmin,
+                    PermissionName = "EnableTheaterAdmin",
+                    Disabled = false,
+                    DateCreated = DateTime.UtcNow
+                },
+                new Permission
+                {
+                    PermissionID = Enums.PermissionsEnum.UpgradeGeneralUserToTheaterAdmin,
+                    PermissionName = "UpgradeGeneralUserToTheaterAdmin",
+                    Disabled = false,
+                    DateCreated = DateTime.UtcNow
+                });
+
+            // add role permissions
+            context.RolePermissions.AddOrUpdate(x => new { x.PermissionID, x.RoleID },
+                new RolePermission
+                {
+                   RoleID = Enums.RoleEnum.SysAdmin,
+                   PermissionID = Enums.PermissionsEnum.ActivateAbusiveAccount,
+                   isEnabled = true,
+                   DateCreated = DateTime.UtcNow
+                },
+                new RolePermission
+                {
+                    RoleID = Enums.RoleEnum.SysAdmin,
+                    PermissionID = Enums.PermissionsEnum.ActivateNonAbusiveAccount,
+                    isEnabled = true,
+                    DateCreated = DateTime.UtcNow
+                },
+                new RolePermission
+                {
+                    RoleID = Enums.RoleEnum.SysAdmin,
+                    PermissionID = Enums.PermissionsEnum.DisableTheaterAdmin,
+                    isEnabled = true,
+                    DateCreated = DateTime.UtcNow
+                },
+                new RolePermission
+                {
+                    RoleID = Enums.RoleEnum.SysAdmin,
+                    PermissionID = Enums.PermissionsEnum.DowngradeTheaterAdminToGeneralUser,
+                    isEnabled = true,
+                    DateCreated = DateTime.UtcNow
+                },
+                new RolePermission
+                {
+                    RoleID = Enums.RoleEnum.SysAdmin,
+                    PermissionID = Enums.PermissionsEnum.DisableGeneralUser,
+                    isEnabled = true,
+                    DateCreated = DateTime.UtcNow
+                },
+                new RolePermission
+                {
+                    RoleID = Enums.RoleEnum.SysAdmin,
+                    PermissionID = Enums.PermissionsEnum.UpgradeGeneralUserToTheaterAdmin,
+                    isEnabled = true,
+                    DateCreated = DateTime.UtcNow
+                },
+                new RolePermission
+                {
+                    RoleID = Enums.RoleEnum.SysAdmin,
+                    PermissionID = Enums.PermissionsEnum.EnableTheaterAdmin,
+                    isEnabled = true,
+                    DateCreated = DateTime.UtcNow
+                },
+                new RolePermission
+                {
+                    RoleID = Enums.RoleEnum.TheaterAdmin,
+                    PermissionID = Enums.PermissionsEnum.DisableGeneralUser,
+                    isEnabled = true,
+                    DateCreated = DateTime.UtcNow
+                },
+                new RolePermission
+                {
+                    RoleID = Enums.RoleEnum.TheaterAdmin,
+                    PermissionID = Enums.PermissionsEnum.ActivateNonAbusiveAccount,
+                    isEnabled = true,
+                    DateCreated = DateTime.UtcNow
+                });
+
+            base.Seed(context);
         }
     }
 }

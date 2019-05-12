@@ -8,6 +8,9 @@ using ServiceLayer.KFC_API_Services;
 using BroadwayBuilder.Api.Models;
 using DataAccessLayer.Models;
 using System.Collections;
+using Swashbuckle.Swagger.Annotations;
+using System.Linq;
+using ServiceLayer.Exceptions;
 
 namespace BroadwayBuilder.Api.Controllers 
 {
@@ -116,75 +119,203 @@ namespace BroadwayBuilder.Api.Controllers
 
 
 
-        [HttpGet, Route("{token}")]
-        public User GetUser(string token)
+        [HttpGet, Route("registrationstatus")]
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(bool))]
+        public IHttpActionResult GetUserRegistrationStatus()
         {
+            var authHeaderValue = Request.Headers.GetValues("Authorization").FirstOrDefault();
+            if (authHeaderValue == null)
+            {
+                return BadRequest("No Authorization Header");
+            }
+
+            var token = authHeaderValue.Split(' ')[1];
+
             using (var _db = new BroadwayBuilderContext())
             {
                 UserService userService = new UserService(_db);
 
-                // Get Session
-                var session = _db.Sessions.Find(token);
+                var user = userService.GetUserByToken(token);
 
-                // Get User
-                return userService.GetUser(session.UserId);
+                return Ok(user.IsComplete);
             }
         }
 
-        [HttpPost, Route("login")]
-        public HttpResponseMessage LoginFromSSO([FromBody] LoginRequestPaylod request)
+        [HttpPut, Route("completeregistration")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        public IHttpActionResult UserCompleteRegistration([FromBody] UserCompleteRegistrationRequestModel userData)
         {
+            var authHeaderValue = Request.Headers.GetValues("Authorization").FirstOrDefault();
+            if (authHeaderValue == null)
+            {
+                return BadRequest("No Authorization Header");
+            }
+
+            var token = authHeaderValue.Split(' ')[1];
+
             using (var _db = new BroadwayBuilderContext())
+            {
+                UserService userService = new UserService(_db);
+
+                var user = userService.GetUserByToken(token);
+
+                if (user.IsComplete)
+                {
+                    return BadRequest("User is already registered");
+                }
+
+                user.FirstName = userData.FirstName;
+                user.LastName = userData.LastName;
+                user.City = userData.City;
+                user.StreetAddress = userData.StreetAddress;
+                user.StateProvince = userData.StateProvince;
+                user.Country = userData.Country;
+                user.IsComplete = true;
+                user.IsEnabled = true;
+
+                userService.UpdateUser(user);
+
+                _db.SaveChanges();
+            }
+
+            return Ok();
+        }
+
+        [HttpPost, Route("login")]
+        public IHttpActionResult LoginFromSSO([FromBody] LoginRequestModel request)
+        {
+            using (var _dbcontext = new BroadwayBuilderContext())
             {
                 try
                 {
-                    // TODO: Validate, Parse, and Check Id ...
+                   
+                    ControllerHelper.ValidateLoginRequestModel(ModelState, request);
+
+                    Guid userSsoId = ControllerHelper.ParseAndCheckId(request.SSOUserId);
 
                     SignatureService signatureService = new SignatureService();
                     // Check if the signature is invalid
                     if (!signatureService.IsValidClientRequest(request.SSOUserId, request.Email, request.Timestamp, request.Signature))
                     {
-                        var response401 = new HttpResponseMessage();
-                        response401.StatusCode = HttpStatusCode.Unauthorized;
-                        response401.Content = new StringContent("Invalid Signature Token");
-                        return response401;
+                        return Content(HttpStatusCode.Unauthorized, "Invalid Signature Token");
                     }
 
                     // Now we have to get a user (check if it exists)
-                    UserService userService = new UserService(_db);
+                    UserService userService = new UserService(_dbcontext);
 
-                    var user = userService.GetUser(request.Email);
-
-                    // User is not found, so register that new user
-                    if (user == null)
+                    User user;
+                    try
                     {
-                        // TODO: Fill in user attributes
-                        User newUser = new User();
+                        user = userService.GetUser(request.Email);
+                    }
+                    catch (UserNotFoundException ex)
+                    {
+                        var newUser = new User()
+                        {
+                            UserGuid = userSsoId,
+                            Username = request.Email,
+                            DateCreated = DateTime.UtcNow,
+                            IsEnabled = false,
+                            IsComplete = false
+                        };
                         userService.CreateUser(newUser);
                         user = newUser;
+
+                        // Everyone starts off as a general user
+                        userService.AddUserRole(user, DataAccessLayer.Enums.RoleEnum.GeneralUser);
                     }
+
                     // User was found, so login user
-                    Session session = new Session();
-                    session.UserId = user.UserId;
-                    session.Token = Guid.NewGuid().ToString();
+                    Session session = new Session()
+                    {
+                        UserId = user.UserId,
+                        Token = Guid.NewGuid().ToString(),
+                        Signature = request.Signature,
+                        CreatedAt = DateTime.UtcNow,
+                        ExpiresAt = DateTime.UtcNow.AddMinutes(30),
+                        UpdatedAt = DateTime.UtcNow,
+                        Id = Guid.NewGuid(),
+                    };
 
-                    _db.Sessions.Add(session);
-
-                    _db.SaveChanges();
-
-                    HttpResponseMessage response = new HttpResponseMessage();
-
-                    var redirectURL = "https://www.broadwaybuilder.xyz/#/login/?token=" + session.Token;
-                    response = Request.CreateResponse(HttpStatusCode.SeeOther);
-                    response.Headers.Location = new Uri(redirectURL);
-                    return response;
+                    _dbcontext.Sessions.Add(session);
+                    _dbcontext.SaveChanges();
+                    //Logging Usage
+                    //TODO: possibly change the userid argument for LogUsage
+                    LoggerHelper.LogUsage("Login", user.UserId);
+                    var redirectURL = $"https://www.broadwaybuilder.xyz/#/login?token={session.Token}";
+                    return Redirect(redirectURL);
                 }
                 catch (Exception e)
                 {
-                    var response = new HttpResponseMessage();
-                    response.StatusCode = HttpStatusCode.InternalServerError;
-                    response.Content = new StringContent(e.Message);
-                    return response;
+                    return InternalServerError(e);
+                    //TODO: LogError
+                }
+            }
+        }
+
+        [HttpPost, Route("logout")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        public IHttpActionResult LogoutFromSSO([FromBody] LogoutRequestModel request)
+        {
+            using (var _dbcontext = new BroadwayBuilderContext())
+            {
+                try
+                {
+                    ControllerHelper.ValidateLoginRequestModel(ModelState, request);
+
+                    //Guid userSsoId = ControllerHelper.ParseAndCheckId(request.SSOUserId);
+
+                    //SignatureService signatureService = new SignatureService();
+                    //if (!signatureService.IsValidClientRequest(request.SSOUserId, request.Email, request.Timestamp, request.Signature))
+                    //{
+                    //    return Content(HttpStatusCode.Unauthorized, "Invalid Signature Token");
+                    //}
+
+                    _dbcontext.Sessions.Remove(_dbcontext.Sessions
+                        .Where(o => o.Signature == request.Signature)
+                        .First());
+                    _dbcontext.SaveChanges();
+
+                    return Ok("User logged out");
+                }
+                catch (Exception e)
+                {
+                    return InternalServerError(e);
+                }
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete")]
+        [SwaggerResponse(HttpStatusCode.OK)]
+        public IHttpActionResult DeleteUserFromSSO([FromBody] LoginRequestModel request)
+        {
+            using (var _dbcontext = new BroadwayBuilderContext())
+            {
+                try
+                {
+                    ControllerHelper.ValidateLoginRequestModel(ModelState, request);
+
+                    Guid userSsoId = ControllerHelper.ParseAndCheckId(request.SSOUserId);
+
+                    SignatureService signatureService = new SignatureService();
+                    if (!signatureService.IsValidClientRequest(request.SSOUserId, request.Email, request.Timestamp, request.Signature))
+                    {
+                        return Content(HttpStatusCode.Unauthorized, "Invalid Signature Token");
+                    }
+
+                    UserService userService = new UserService(_dbcontext);
+                    var user = userService.GetUser(request.Email);
+                    userService.DeleteUser(request.Email);
+
+                    _dbcontext.Sessions.RemoveRange(_dbcontext.Sessions.Where(o => o.UserId == user.UserId));
+                    _dbcontext.SaveChanges();
+
+                    return Ok("User deleted");
+                }
+                catch (Exception e)
+                {
+                    return InternalServerError(e);
                 }
             }
         }

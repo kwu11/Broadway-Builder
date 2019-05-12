@@ -10,7 +10,7 @@ namespace DataAccessLayer.Logging
     {
         public LogDetail()
         {
-            TimeStamp = DateTime.Now;
+            TimeStamp = DateTime.UtcNow;
         }
 
         public DateTime TimeStamp { get; private set; }

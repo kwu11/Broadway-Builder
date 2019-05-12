@@ -68,36 +68,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\PermissionEnum.cs" />
+    <Compile Include="Enums\RoleEnum.cs" />
     <Compile Include="Logging\ErrorLog.cs" />
     <Compile Include="Logging\LogDetail.cs" />
     <Compile Include="Logging\PerformanceTracker.cs" />
-    <Compile Include="Migrations\201903251740017_InitialCreate.cs" />
-    <Compile Include="Migrations\201903251740017_InitialCreate.Designer.cs">
-      <DependentUpon>201903251740017_InitialCreate.cs</DependentUpon>
+    <Compile Include="Logging\UsageLog.cs" />
+    <Compile Include="Migrations\201905120618060_InitialMigration.cs" />
+    <Compile Include="Migrations\201905120618060_InitialMigration.Designer.cs">
+      <DependentUpon>201905120618060_InitialMigration.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201904052245371_BroadwayBuilder-v1.cs" />
-    <Compile Include="Migrations\201904052245371_BroadwayBuilder-v1.Designer.cs">
-      <DependentUpon>201904052245371_BroadwayBuilder-v1.cs</DependentUpon>
+    <Compile Include="Migrations\201905120707070_addedTheaterUserRelationship.cs" />
+    <Compile Include="Migrations\201905120707070_addedTheaterUserRelationship.Designer.cs">
+      <DependentUpon>201905120707070_addedTheaterUserRelationship.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201904052252249_AddJobType.cs" />
-    <Compile Include="Migrations\201904052252249_AddJobType.Designer.cs">
-      <DependentUpon>201904052252249_AddJobType.cs</DependentUpon>
+    <Compile Include="Migrations\201905120725291_updatedTheaterUser.cs" />
+    <Compile Include="Migrations\201905120725291_updatedTheaterUser.Designer.cs">
+      <DependentUpon>201905120725291_updatedTheaterUser.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201904220339576_seed.cs" />
-    <Compile Include="Migrations\201904220339576_seed.Designer.cs">
-      <DependentUpon>201904220339576_seed.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201904220521131_seedv2.cs" />
-    <Compile Include="Migrations\201904220521131_seedv2.Designer.cs">
-      <DependentUpon>201904220521131_seedv2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201904300548151_updatedUserModel.cs" />
-    <Compile Include="Migrations\201904300548151_updatedUserModel.Designer.cs">
-      <DependentUpon>201904300548151_updatedUserModel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201905020231230_Add_Session_Model_And_Changed_Context.cs" />
-    <Compile Include="Migrations\201905020231230_Add_Session_Model_And_Changed_Context.Designer.cs">
-      <DependentUpon>201905020231230_Add_Session_Model_And_Changed_Context.cs</DependentUpon>
+    <Compile Include="Migrations\201905120751132_removedUnusedRelationships.cs" />
+    <Compile Include="Migrations\201905120751132_removedUnusedRelationships.Designer.cs">
+      <DependentUpon>201905120751132_removedUnusedRelationships.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ProductionDateTime.cs" />
@@ -107,6 +98,7 @@
     <Compile Include="Models\Permission.cs" />
     <Compile Include="Models\Production.cs" />
     <Compile Include="Models\ProductionJobPosting.cs" />
+    <Compile Include="Models\TheaterUser.cs" />
     <Compile Include="MongoDb\MongoDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BroadwayBuilderContext.cs" />
@@ -114,7 +106,7 @@
     <Compile Include="Models\RolePermission.cs" />
     <Compile Include="Models\Theater.cs" />
     <Compile Include="Models\User.cs" />
-    <Compile Include="Models\UserPermission.cs" />
+    <Compile Include="Models\UserRole.cs" />
     <Compile Include="Models\Resume.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -122,28 +114,18 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201903251740017_InitialCreate.resx">
-      <DependentUpon>201903251740017_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201905120618060_InitialMigration.resx">
+      <DependentUpon>201905120618060_InitialMigration.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201904052245371_BroadwayBuilder-v1.resx">
-      <DependentUpon>201904052245371_BroadwayBuilder-v1.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201905120707070_addedTheaterUserRelationship.resx">
+      <DependentUpon>201905120707070_addedTheaterUserRelationship.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201904052252249_AddJobType.resx">
-      <DependentUpon>201904052252249_AddJobType.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201905120725291_updatedTheaterUser.resx">
+      <DependentUpon>201905120725291_updatedTheaterUser.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201904220339576_seed.resx">
-      <DependentUpon>201904220339576_seed.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201904220521131_seedv2.resx">
-      <DependentUpon>201904220521131_seedv2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201904300548151_updatedUserModel.resx">
-      <DependentUpon>201904300548151_updatedUserModel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201905020231230_Add_Session_Model_And_Changed_Context.resx">
-      <DependentUpon>201905020231230_Add_Session_Model_And_Changed_Context.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201905120751132_removedUnusedRelationships.resx">
+      <DependentUpon>201905120751132_removedUnusedRelationships.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

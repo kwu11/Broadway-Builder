@@ -1,66 +1,71 @@
 <template>
 <body>
-  <div class="sysadminaccount">
-    <div class="container">
-      <div class="columns">
-        <div class="column is-3">
-          <aside class="menu">
-            <p style="padding-top: 15px" class="menu-label">System Administration</p>
-            <ul class="menu-list">
-              <li>
-                <a v-on:click="performPublish">Publish Site</a>
-                <a v-on:click="createTheater"> Create Theater </a>
-                <!-- <a v-on:click="deleteTheater"> Delete Theater </a> -->
-                <a v-on:click="manageTheaters"> Manage Theaters </a>
-                <a v-on:click="createUser"> Create User </a>
-                <a v-on:click="manageUsers"> Manage Users </a>
-                <ul>
-                  <li>
-                    <a>Theater Administrators</a>
-                  </li>
-                  <li>
-                    <a>Users</a>
-                  </li>
-                  <li>
-                    <a>Blacklist</a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-            <p class="menu-label">Financial</p>
-            <ul class="menu-list">
-              <li>
-                <a>List of Theaters</a>
-              </li>
-            </ul>
-            <p class="menu-label">Help Wanted</p>
-            <ul class="menu-list">
-              <li>
-                <a>Job Postings</a>
-              </li>
-            </ul>
-          </aside>
-        </div>
-        <div class="column is-9">
-          <section class="hero is-info welcome is-small">
-            <div class="hero-body">
-              <div class="container">
-                <h1 class="title">Hello, System Admin.</h1>
-                <h2 class="subtitle">Get back to work! :D</h2>
+  <div id="sys-admin-account">
+    <v-container text-xs-left fluid>
+      <v-layout row wrap>
+        <v-flex xs3>
+          <SystemAdminAccountSideBar @publishSite="performPublish" @createTheater="createTheater" @manageTheaters="manageTheaters" @createUser="createUser" @manageUsers="manageUsers"/>
+        </v-flex>
+        <v-flex xs9>
+          <div class="sysadminaccount">
+            <div class="container">
+              <div class="columns">
+                <div class="column is-3">
+                  <aside class="menu">
+                    <p style="padding-top: 15px" class="menu-label">System Administration</p>
+                    <ul class="menu-list">
+                      <li>
+                        <ul>
+                          <li>
+                            <a>Theater Administrators</a>
+                          </li>
+                          <li>
+                            <a>Users</a>
+                          </li>
+                          <li>
+                            <a>Blacklist</a>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                    <p class="menu-label">Financial</p>
+                    <ul class="menu-list">
+                      <li>
+                        <a>List of Theaters</a>
+                      </li>
+                    </ul>
+                    <p class="menu-label">Help Wanted</p>
+                    <ul class="menu-list">
+                      <li>
+                        <a>Job Postings</a>
+                      </li>
+                    </ul>
+                  </aside>
+                </div>
+                <div class="column is-9">
+                  <section class="hero is-info welcome is-small">
+                    <div class="hero-body">
+                      <div class="container">
+                        <h1 class="title">Hello, System Admin.</h1>
+                        <h2 class="subtitle">Get back to work! :D</h2>
+                      </div>
+                    </div>
+                  </section>
+                  <div class="column is-9">
+                    <PublishSite v-if="publish === true" @cancel="cancelPublish"/>
+                    <CreateTheater v-if="theaterCreated === true" @cancelCreateTheater="cancelCreateTheater"/>
+                    <!-- <DeleteTheater v-if="theaterDeleted === true" @cancelDeleteTheater="cancelDeleteTheater"/> -->
+                    <CreateUser v-if="userCreated === true" @cancelCreateUser="cancelCreateUser"/>
+                    <TheatersTable v-if="theatersManaged === true" @cancelManageTheaters="cancelManageTheaters"/>
+                    <UsersTable v-if="usersManaged === true" @cancelManageUsers="cancelManageUsers"/>
+                  </div>
+                </div>
               </div>
             </div>
-          </section>
-          <div class="column is-9">
-            <PublishSite v-if="publish === true" @cancel="cancelPublish"/>
-            <CreateTheater v-if="theaterCreated === true" @cancelCreateTheater="cancelCreateTheater"/>
-            <!-- <DeleteTheater v-if="theaterDeleted === true" @cancelDeleteTheater="cancelDeleteTheater"/> -->
-            <CreateUser v-if="userCreated === true" @cancelCreateUser="cancelCreateUser"/>
-            <TheatersTable v-if="theatersManaged === true" @cancelManageTheaters="cancelManageTheaters"/>
-            <UsersTable v-if="usersManaged === true" @cancelManageUsers="cancelManageUsers"/>
           </div>
-        </div>
-      </div>
-    </div>
+        </v-flex>
+      </v-layout>
+    </v-container>
   </div>
 </body>
 </template>
@@ -72,6 +77,7 @@ import CreateTheater from "@/components/SystemAdmin/CreateTheater.vue";
 import TheatersTable from "@/components/SystemAdmin/TheatersTable.vue";
 import CreateUser from "@/components/SystemAdmin/CreateUser.vue";
 import UsersTable from "@/components/SystemAdmin/UsersTable.vue";
+import SystemAdminAccountSideBar from "@/components/SystemAdmin/SystemAdminAccountSideBar.vue";
 
 export default {
   name: "SysAdminAccount",
@@ -81,7 +87,8 @@ export default {
     //DeleteTheater,
     CreateUser,
     TheatersTable,
-    UsersTable
+    UsersTable,
+    SystemAdminAccountSideBar
   },
   data() {
     return {

@@ -10,11 +10,9 @@ namespace DataAccessLayer
 {
     public class RolePermission
     {
-        public RolePermission(int permissionId, int roleId, bool disabled)
+        public RolePermission()
         {
-            this.PermissionID = permissionId;
-            this.RoleID = roleId;
-            this.isEnabled = disabled;
+
         }
 
         [Required]
@@ -26,14 +24,14 @@ namespace DataAccessLayer
         [Key]
         [Required]
         [Column(Order =1)]
-        public int PermissionID { get; set; }
+        public Enums.PermissionsEnum PermissionID { get; set; }
 
         [Key]
         [Required]
         [Column(Order = 2)]
-        public int RoleID { get; set; }
+        public Enums.RoleEnum RoleID { get; set; }
 
-        public Role role { get; set; }
-        public Permission permission { get; set; }
+        public Role Role { get; set; }
+        public Permission Permission { get; set; }
     }
 }

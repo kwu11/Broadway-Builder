@@ -11,29 +11,32 @@ namespace DataAccessLayer.Models
     public class Session
     {
         public static readonly int MINUTES_UNTIL_EXPIRATION = 30;
-        public Session()
-        {
-            CreatedAt = DateTime.UtcNow;
-            UpdatedAt = DateTime.UtcNow;
-            ExpiresAt = DateTime.UtcNow.AddMinutes(MINUTES_UNTIL_EXPIRATION);
-            Id = Guid.NewGuid();
-        }
 
         [Required]
         public string Token { get; set; }
+
         [Key]
         public Guid Id { get; set; }
-        [Required, Column(TypeName = "datetime2"), DataType(DataType.DateTime)]
+
+        [Required]
         public DateTime ExpiresAt { get; set; }
 
-        [Required, Column(TypeName = "datetime2"), DataType(DataType.DateTime)]
+        [Required]
         public DateTime UpdatedAt { get; set; }
 
-        [Required, Column(TypeName = "datetime2"), DataType(DataType.DateTime)]
+        [Required]
         public DateTime CreatedAt { get; set; }
 
-        [Required, ForeignKey("User")]
+        [Required]
+        public string Signature { get; set; }
+
+        #region -- Relationship --
+
+        [Required]
         public int UserId { get; set; }
+
         public User User { get; set; }
+
+        #endregion
     }
 }

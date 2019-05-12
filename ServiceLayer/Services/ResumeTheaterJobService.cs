@@ -22,7 +22,12 @@ namespace ServiceLayer.Services
 
         public void CreateResumeTheaterJob(ResumeTheaterJob resumeTheaterJob)
         {
-            resumeTheaterJob.DateUploaded = DateTime.Now;
+            ResumeTheaterJob checkExistence = _dbContext.ResumeTheaterJobs.Where(job => job.HelpWantedID == resumeTheaterJob.HelpWantedID && job.ResumeID == resumeTheaterJob.ResumeID).FirstOrDefault<ResumeTheaterJob>();
+            if (checkExistence != null)
+            {
+                throw new Exception("User has already applied to this job posting");
+            }
+            resumeTheaterJob.DateUploaded = DateTime.UtcNow;
             this._dbContext.ResumeTheaterJobs.Add(resumeTheaterJob);
         }
 

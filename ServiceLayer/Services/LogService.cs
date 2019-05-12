@@ -1,6 +1,8 @@
 ﻿using DataAccessLayer.Logging;
 using DataAccessLayer.MongoDb;
+using MongoDB.Driver;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +15,6 @@ namespace ServiceLayer.Services
     {
         public LogService()
         {
-
         }
 
         public void LogError(HttpContext httpContext,Exception exception)
@@ -29,7 +30,11 @@ namespace ServiceLayer.Services
             ErrorLogService errorLogService = new ErrorLogService();
             errorLogService.CreateErrorLog(log);
         }
-
+        public IEnumerable GetErrorLogs(DateTime minimumDate, DateTime maximumDate)
+        {
+            ErrorLogService errorLogService = new ErrorLogService();
+            return errorLogService.GetErrorLogs(minimumDate, maximumDate);
+        }
         public void TestLogger()
         {
             throw new Exception("Testing Logger");
