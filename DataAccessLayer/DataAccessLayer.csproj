@@ -78,6 +78,14 @@
     <Compile Include="Migrations\201905120618060_InitialMigration.Designer.cs">
       <DependentUpon>201905120618060_InitialMigration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201905120707070_addedTheaterUserRelationship.cs" />
+    <Compile Include="Migrations\201905120707070_addedTheaterUserRelationship.Designer.cs">
+      <DependentUpon>201905120707070_addedTheaterUserRelationship.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201905120725291_updatedTheaterUser.cs" />
+    <Compile Include="Migrations\201905120725291_updatedTheaterUser.Designer.cs">
+      <DependentUpon>201905120725291_updatedTheaterUser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ProductionDateTime.cs" />
     <Compile Include="Models\ResumeTheaterJob.cs" />
@@ -86,6 +94,7 @@
     <Compile Include="Models\Permission.cs" />
     <Compile Include="Models\Production.cs" />
     <Compile Include="Models\ProductionJobPosting.cs" />
+    <Compile Include="Models\TheaterUser.cs" />
     <Compile Include="MongoDb\MongoDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BroadwayBuilderContext.cs" />
@@ -103,6 +112,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201905120618060_InitialMigration.resx">
       <DependentUpon>201905120618060_InitialMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905120707070_addedTheaterUserRelationship.resx">
+      <DependentUpon>201905120707070_addedTheaterUserRelationship.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905120725291_updatedTheaterUser.resx">
+      <DependentUpon>201905120725291_updatedTheaterUser.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

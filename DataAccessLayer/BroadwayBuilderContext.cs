@@ -32,6 +32,7 @@ namespace DataAccessLayer
         public DbSet<Resume> Resumes { get; set; }
         public DbSet<ResumeTheaterJob> ResumeTheaterJobs {get;set;}
         public DbSet<Session> Sessions { get; set; }
+        public DbSet<TheaterUser> TheaterUsers { get; set; }
 
         //
         // Summary:

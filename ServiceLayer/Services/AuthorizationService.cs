@@ -51,5 +51,30 @@ namespace ServiceLayer.Services
             }
             return false;
         }
+
+        public bool BelongsToTheater(int userId, int theaterId)
+        {
+            // Always return true if role is SysAdmin
+            var isSysAdmin = _dbContext.UserRoles
+                .Where(o => o.UserId == userId && o.RoleId == DataAccessLayer.Enums.RoleEnum.SysAdmin)
+                .Any();
+
+            if (isSysAdmin)
+            {
+                return true;
+            }
+
+            // Used to  check what theater a theater admins belong to
+            var userTheaterRelationship = _dbContext.TheaterUsers
+                .Where(o => o.UserId == userId && o.TheaterID == theaterId)
+                .FirstOrDefault();
+
+            if (userTheaterRelationship == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }
