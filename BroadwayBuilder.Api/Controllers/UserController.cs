@@ -7,6 +7,7 @@ using System.Web.Http;
 using ServiceLayer.KFC_API_Services;
 using BroadwayBuilder.Api.Models;
 using DataAccessLayer.Models;
+using System.Collections;
 
 namespace BroadwayBuilder.Api.Controllers 
 {
@@ -44,25 +45,76 @@ namespace BroadwayBuilder.Api.Controllers
 
         }
 
-        //[HttpGet, Route("user/all")]
-        //public IHttpActionResult GetAllUsers()
-        //{
-        //    using (var dbcontext = new BroadwayBuilderContext())
-        //    {
-        //        UserService service = new UserService(dbcontext);
-        //        try
-        //        {
-        //            IEnumerable list = service.GetAllUsers();
-        //            return Content((HttpStatusCode)200, list);
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            return Content((HttpStatusCode)500, "Oops! Something went wrong on our end");
-        //        }
+        [HttpPut, Route("updateUser")]
+        public IHttpActionResult UpdateUser([FromBody] User user)
+        {
+            using (var dbcontext = new BroadwayBuilderContext())
+            {
+                try
+                {
+                    var userService = new UserService(dbcontext);
+                    var updatedUser = userService.UpdateUser(user);
+                    if (updatedUser != null)
+                    {
+                        dbcontext.SaveChanges();
+                    }
+                    else
+                    {
+                        throw new Exception();
+                    }
+                    return Content((HttpStatusCode)200, user);
+                }
+                catch
+                {
+                    return Content((HttpStatusCode)404, "The user could not be found");
+                }
+            }
+        }
+
+        [HttpDelete, Route("deleteUser")]
+        public IHttpActionResult DeleteUser([FromBody] User user)
+        {
+            using (var dbcontext = new BroadwayBuilderContext())
+            {
+                try
+                {
+                    var userService = new UserService(dbcontext);
+                    userService.DeleteUser(user);
+                    dbcontext.SaveChanges();
+                    return Content((HttpStatusCode)200, "User Successfully Deleted");
+                }
+                catch
+                {
+                    return Content((HttpStatusCode)404, "The user could not be found");
+                }
+            }
+        }
+
+        [HttpGet, Route("all")]
+        public IHttpActionResult GetAllUsers()
+        {
+            using (var dbcontext = new BroadwayBuilderContext())
+            {
+                UserService service = new UserService(dbcontext);
+                try
+                {
+                    IEnumerable list = service.GetAllUsers();
+                    foreach (var l in list)
+                    {
+
+                    }
+                    return Content((HttpStatusCode)200, list);
+                }
+                catch (Exception e)
+                {
+                    return Content((HttpStatusCode)500, "Oops! Something went wrong on our end");
+                }
 
 
-        //    }
-        //}
+            }
+        }
+
+
 
         [HttpGet, Route("{token}")]
         public User GetUser(string token)

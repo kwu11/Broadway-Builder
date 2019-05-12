@@ -13,7 +13,7 @@
                 <!-- <a v-on:click="deleteTheater"> Delete Theater </a> -->
                 <a v-on:click="manageTheaters"> Manage Theaters </a>
                 <a v-on:click="createUser"> Create User </a>
-                <a>Manage Users</a>
+                <a v-on:click="manageUsers"> Manage Users </a>
                 <ul>
                   <li>
                     <a>Theater Administrators</a>
@@ -56,6 +56,7 @@
             <!-- <DeleteTheater v-if="theaterDeleted === true" @cancelDeleteTheater="cancelDeleteTheater"/> -->
             <CreateUser v-if="userCreated === true" @cancelCreateUser="cancelCreateUser"/>
             <TheatersTable v-if="theatersManaged === true" @cancelManageTheaters="cancelManageTheaters"/>
+            <UsersTable v-if="usersManaged === true" @cancelManageUsers="cancelManageUsers"/>
           </div>
         </div>
       </div>
@@ -69,7 +70,8 @@ import PublishSite from "@/components/SystemAdmin/PublishSite.vue";
 import CreateTheater from "@/components/SystemAdmin/CreateTheater.vue";
 //import DeleteTheater from "@/components/SystemAdmin/DeleteTheater.vue";
 import TheatersTable from "@/components/SystemAdmin/TheatersTable.vue";
-import CreateUser from "@/components/SystemAdmin/CreateUser.vue"
+import CreateUser from "@/components/SystemAdmin/CreateUser.vue";
+import UsersTable from "@/components/SystemAdmin/UsersTable.vue";
 
 export default {
   name: "SysAdminAccount",
@@ -78,7 +80,8 @@ export default {
     CreateTheater,
     //DeleteTheater,
     CreateUser,
-    TheatersTable
+    TheatersTable,
+    UsersTable
   },
   data() {
     return {
@@ -87,6 +90,7 @@ export default {
       theaterDeleted: false,
       theatersManaged: false,
       userCreated: false,
+      usersManaged: false
     };
   },
   methods: {
@@ -118,6 +122,12 @@ export default {
     },
     createUser() {
       this.userCreated = !this.userCreated;
+    },
+    manageUsers() {
+      this.usersManaged = !this.usersManaged;
+    },
+    cancelManageUsers(cancel) {
+      this.usersManaged = cancel;
     },
     cancelCreateUser(cancel) {
       this.userCreated = cancel;
