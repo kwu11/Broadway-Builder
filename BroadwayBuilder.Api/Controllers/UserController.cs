@@ -101,19 +101,25 @@ namespace BroadwayBuilder.Api.Controllers
                 UserService service = new UserService(dbcontext);
                 try
                 {
-                    IEnumerable list = service.GetAllUsers();
-                    foreach (var l in list)
-                    {
+                    var usersList = service.GetAllUsers()
+                        .Select(user => new UserResponseModel()
+                        {
+                            FirstName = user.FirstName,
+                            LastName = user.LastName,
+                            StreetAddress = user.StreetAddress,
+                            City = user.City,
+                            StateProvince = user.StateProvince,
+                            Country = user.Country,
+                            IsEnabled = user.IsEnabled,
+                            Username = user.Username
+                        }).ToList();
 
-                    }
-                    return Content((HttpStatusCode)200, list);
+                    return Content((HttpStatusCode)200, usersList);
                 }
                 catch (Exception e)
                 {
                     return Content((HttpStatusCode)500, "Oops! Something went wrong on our end");
                 }
-
-
             }
         }
 

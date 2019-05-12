@@ -213,23 +213,9 @@ namespace ServiceLayer.Services
             }
         }
 
-        public IEnumerable GetAllUsers()
+        public IQueryable<User> GetAllUsers()
         {
-            return _dbContext.Users.Select(user => new
-            {
-                UserId = user.UserId,
-                Username = user.Username,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Age = user.Age,
-                StreetAddress = user.StreetAddress,
-                City = user.City,
-                StateProvince = user.StateProvince,
-                Country = user.Country,
-                isEnabled = user.isEnabled,
-                UserGuid = user.UserGuid,
-                DateCreated = user.DateCreated
-            }).ToList();
+            return _dbContext.Users;
         }
     }
 }
