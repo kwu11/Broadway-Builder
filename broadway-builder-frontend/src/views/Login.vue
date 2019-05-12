@@ -40,6 +40,9 @@ export default {
           this.$router.push({name:'home'});
         }
       });
+      // TODO: Add another axios call to get userRole if UserRole is SysAdmin show SysAdminAccountPage.
+      // IF userRole is Theater Admin just show Account tab
+      // If userRole is General User just show Home, Theaters, and About Us
   }
 };
 </script>
