@@ -112,6 +112,8 @@ export default {
         this.$emit("cancel", false);
     },
     async elevateUser(user) {
+      const token = window.localStorage.getItem('token');
+
       await axios
         .put("https://api.broadwaybuilder.xyz/user/elevate/" + user.UserId, {
           headers: {
