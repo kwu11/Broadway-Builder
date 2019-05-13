@@ -23,7 +23,6 @@ export default {
   },
   async init() {
     await this.getRoles();
-    this.isTheaterAdmin = true;
     if (this.roles.includes('SysAdmin')) {
       this.isSysAdmin = true;
     } 
