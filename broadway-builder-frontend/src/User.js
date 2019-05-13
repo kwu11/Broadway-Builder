@@ -7,6 +7,10 @@ export default {
   isGeneralUser: false,
   token: window.localStorage.getItem('token'),
   async getRoles() {
+    if (this.token == null) {
+      return;
+    }
+
     await axios
       .get("https://api.broadwaybuilder.xyz/user/getrole", {
         headers: {
