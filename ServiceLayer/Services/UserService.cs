@@ -193,6 +193,14 @@ namespace ServiceLayer.Services
             });
         }
 
+        public List<DataAccessLayer.Enums.RoleEnum> GetUserRoles(int userId)
+        {
+            return _dbContext.UserRoles
+                .Where(o => o.UserId == userId)
+                .Select(o => o.RoleId)
+                .ToList();
+        }
+
         public bool HasUserRole(int userId, DataAccessLayer.Enums.RoleEnum role)
         {
             return _dbContext.UserRoles.Where(o => o.UserId == userId && o.RoleId == role).Any();
@@ -227,9 +235,7 @@ namespace ServiceLayer.Services
             if (userRoleEntity != null)
             {
                 _dbContext.UserRoles.Remove(userRoleEntity);
-            }
-             
-            
+            }         
         }
     }
 }

@@ -401,5 +401,35 @@ namespace BroadwayBuilder.Api.Controllers
                 return InternalServerError(ex);
             }
         }
+
+        [HttpGet]
+        [Route("getrole")]
+        public IHttpActionResult GetUserRole()
+        {
+            var token = ControllerHelper.GetTokenFromAuthorizationHeader(Request.Headers);
+            if (token == null)
+            {
+                return Unauthorized();
+            }
+            try
+            {
+                using(var dbcontext = new BroadwayBuilderContext())
+                {
+                    var userService = new UserService(dbcontext);
+
+                    var userId = userService.GetUserByToken(token).UserId;
+
+                    var roles = userService.GetUserRoles(userId)
+                        .Select(o => Enum.GetName(typeof(DataAccessLayer.Enums.RoleEnum), o))
+                        .ToList();
+
+                    return Ok(roles);
+                }
+            } 
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
     }
 }
