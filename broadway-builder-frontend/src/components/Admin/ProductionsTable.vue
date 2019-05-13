@@ -6,7 +6,7 @@
       <v-spacer></v-spacer>
       <v-dialog v-model="dialog" max-width="600px">
         <template v-slot:activator="{on}">
-          <v-btn color="primary" dark class="mb-2" v-on="on">New Production</v-btn>
+          <v-btn @click="refreshForm" color="primary" dark class="mb-2" v-on="on">New Production</v-btn>
         </template>
         <v-card>
           <v-card-title>
@@ -92,7 +92,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
+            <v-btn color="blue darken-1" flat @click="close, refreshForm">Cancel</v-btn>
             <v-btn color="blue darken-1" flat @click="confirm">Confirm</v-btn>
           </v-card-actions>
         </v-card>
@@ -107,7 +107,7 @@
         <td>{{props.item.DirectorFirstName}} {{props.item.DirectorLastName}}</td>
         <td>{{props.item.Street}}, {{props.item.City}}, {{props.item.StateProvince}} {{props.item.Zipcode}}</td>
         <td>
-          <a @click="editProduction(props.item)">
+          <a @click="editProduction(props.item), refreshForm">
             <img src="@/assets/edit.png" alt="Edit">
           </a>
         </td>
@@ -144,10 +144,6 @@ export default {
 
       file: "",
       programID: 0,
-      currentPage: 1,
-      minPage: 1,
-      maxPage: 1,
-      numberOfItems: 5,
       states: [
         "AL",
         "AK",
@@ -200,7 +196,7 @@ export default {
         "WI",
         "WY"
       ],
-      prod: [],
+
       editedItem: -1,
       editedProduction: {
         productionName: "",
@@ -280,7 +276,8 @@ export default {
     }
   },
   async mounted() {
-    this.getProductions();
+    var today = new Date();
+    this.getProductions(today);
   },
   methods: {
     async deleteProduction(ProductionID) {
@@ -309,11 +306,15 @@ export default {
           console.log("Failure!");
         });
     },
-    async getProductions() {
+    async getProductions(today) {
       await axios
-        .get(
-          "https://api.broadwaybuilder.xyz/production/getProductions?currentDate=3%2F23%2F2019"
-        )
+        .get("https://api.broadwaybuilder.xyz/production/getProductions", {
+          params: {
+            previousDate: today,
+            // theaterID: 2,
+            pageSize: 1000
+          }
+        })
         .then(response => (this.productions = response.data));
     },
     async createProduction(createdProduction) {
@@ -357,6 +358,10 @@ export default {
       this.editedIndex = 0;
       this.editedProduction = Object.assign({}, item);
       this.dialog = true;
+    },
+    refreshForm() {
+      this.$refs.form.resetValidation();
+      this.$refs.form.reset();
     }
   }
 };
