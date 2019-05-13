@@ -6,7 +6,7 @@
       <v-spacer></v-spacer>
       <!-- Displays the links that route to other pages -->
       <v-toolbar-items v-for="(route, index) in pageRoutes" :key="index">
-        <v-btn :to="route.link" flat>
+        <v-btn :to="route.link" flat  v-if="route.show">
           <span class="color-white">
             {{ route.title }}
           </span>
@@ -26,7 +26,7 @@
         </template>
         <!-- Using the list of destinations, display and route to the page link -->
         <v-list v-for="(route, index) in pageRoutes" :key="index">
-          <v-list-tile>
+          <v-list-tile v-if="route.show">
             <v-btn :to="route.link" flat block>
               <span class="color-black">
                 {{ route.title }}
@@ -40,14 +40,17 @@
 </template>
 
 <script>
+import User from '@/User.js';
+
 export default {
   data: function() {
     return {
       pageRoutes: [
-        { title: "Home", link: "/" },
-        { title: "Theaters", link: "/theaters" },
-        { title: "Account", link: "/adminaccount/{userID}" },
-        { title: "About Us", link: "/register" }
+        { title: "Home", link: "/", show: true },
+        { title: "Theaters", link: "/theaters", show: true },
+        { title: "Account", link: "/sysadminaccount/{userID}", show: User.isSysAdmin },
+        { title: "Account", link: "/adminaccount/{userID}", show: User.isTheaterAdmin },
+        { title: "About Us", link: "/aboutus", show: true }
       ]
     };
   }
