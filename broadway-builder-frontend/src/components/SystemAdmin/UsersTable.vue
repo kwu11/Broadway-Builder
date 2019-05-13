@@ -113,7 +113,11 @@ export default {
     },
     async elevateUser(user) {
       await axios
-        .put("https://api.broadwaybuilder.xyz/user/elevate/" + user.UserId)
+        .put("https://api.broadwaybuilder.xyz/user/elevate/" + user.UserId, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
         .then(response => alert(response.data));
     }
   }
