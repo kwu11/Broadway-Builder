@@ -8,15 +8,20 @@
         <td>{{props.item.FirstName}}</td>
         <td> {{props.item.LastName}}</td>
         <td>{{props.item.StreetAddress}} {{props.item.City}}, {{props.item.State}} {{props.item.Country}}</td>
-        <td>
-          <a @click="showModal(props.item)">
-            <img src="@/assets/edit.png" alt="Edit">
-          </a>
+        <td class="text-xs-center">
+          <span @click="showModal(props.item)" style="cursor: pointer;" >
+            <i class="fa fa-edit fa-2x" style="color: blue;"></i>
+          </span>
         </td>
-        <td>
-          <a v-on:click="deleteUser(props.item)">
-            <img src="@/assets/tester.png" alt="Delete">
-          </a>
+        <td class="text-xs-center">
+          <span @click="elevateUser(props.item)" style="cursor: pointer;" >
+            <i class="fa fa-arrow-up fa-2x" style="color: green;"></i>
+          </span>
+        </td>
+        <td class="text-xs-center">
+          <span @click="deleteUser(props.item)" style="cursor: pointer;" >
+            <i class="fa fa-trash fa-2x" style="color: red;"></i>
+          </span>
         </td>
       </template>
     </v-data-table>    
@@ -42,7 +47,8 @@ export default {
         {
           text: "User ID",
           align: "left",
-          value: "UserID"
+          sortable: true,
+          value: "UserId"
         },
         {
           text: "Email",
@@ -71,6 +77,11 @@ export default {
           sortable: false
         },
         {
+          text: "Elevate User",
+          align: "left",
+          sortable: false
+        },
+        {
           text: "Delete",
           align: "left",
           sortable: false
@@ -86,7 +97,7 @@ export default {
   methods: {
     async deleteUser(user) {
       await axios
-        .delete("https://api.broadwaybuilder.xyz/user/deleteUser",{data: user})
+        .delete("https://api.broadwaybuilder.xyz/user/deleteUser", {data: user})
         .then(response => alert(response.data));
         this.$forceUpdate();
     },
@@ -99,6 +110,17 @@ export default {
     },
     cancelManageUsers() {
         this.$emit("cancel", false);
+    },
+    async elevateUser(user) {
+      const token = window.localStorage.getItem('token');
+
+      await axios
+        .put("https://api.broadwaybuilder.xyz/user/elevate/" + user.UserId, undefined, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+        .then(response => alert(response.data));
     }
   }
 };
