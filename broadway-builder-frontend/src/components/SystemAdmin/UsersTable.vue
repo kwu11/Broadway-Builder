@@ -120,7 +120,11 @@ export default {
             'Authorization': `Bearer ${token}`
           }
         })
-        .then(response => alert(response.data));
+        .then(response => alert({
+          message: `User with id ${user.userId}`,
+          data: response.data,
+          statusCode: response.status
+        }));
     }
   }
 };
