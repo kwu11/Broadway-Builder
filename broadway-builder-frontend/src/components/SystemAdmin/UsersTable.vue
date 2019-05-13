@@ -19,6 +19,11 @@
           </span>
         </td>
         <td class="text-xs-center">
+          <span @click="downgradeUser(props.item)" style="cursor: pointer;" >
+            <i class="fa fa-arrow-down fa-2x" style="color: orange;"></i>
+          </span>
+        </td>
+        <td class="text-xs-center">
           <span @click="deleteUser(props.item)" style="cursor: pointer;" >
             <i class="fa fa-trash fa-2x" style="color: red;"></i>
           </span>
@@ -77,7 +82,12 @@ export default {
           sortable: false
         },
         {
-          text: "Elevate User",
+          text: "Elevate User To Theater Admin",
+          align: "left",
+          sortable: false
+        },
+        {
+          text: "Downgrade User To A General User",
           align: "left",
           sortable: false
         },
@@ -120,7 +130,24 @@ export default {
             'Authorization': `Bearer ${token}`
           }
         })
-        .then(response => alert(response.data));
+        .then(response => alert(JSON.stringify({
+          message: `User with id ${user.UserId}`,
+          statusCode: response.status
+        })));
+    },
+    async downgradeUser(user) {
+      const token = window.localStorage.getItem('token');
+
+      await axios
+        .put("https://api.broadwaybuilder.xyz/user/downgrade/" + user.UserId, undefined, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+        .then(response => alert(JSON.stringify({
+          message: `User with id ${user.UserId}`,
+          statusCode: response.status
+       })));
     }
   }
 };
