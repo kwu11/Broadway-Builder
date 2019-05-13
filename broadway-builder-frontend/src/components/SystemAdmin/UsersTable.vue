@@ -115,7 +115,7 @@ export default {
       const token = window.localStorage.getItem('token');
 
       await axios
-        .put("https://api.broadwaybuilder.xyz/user/elevate/" + user.UserId, {
+        .put("https://api.broadwaybuilder.xyz/user/elevate/" + user.UserId, undefined, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
