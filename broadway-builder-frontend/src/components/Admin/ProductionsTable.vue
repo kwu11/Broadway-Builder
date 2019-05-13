@@ -144,10 +144,6 @@ export default {
 
       file: "",
       programID: 0,
-      currentPage: 1,
-      minPage: 1,
-      maxPage: 1,
-      numberOfItems: 5,
       states: [
         "AL",
         "AK",
@@ -200,7 +196,7 @@ export default {
         "WI",
         "WY"
       ],
-      prod: [],
+
       editedItem: -1,
       editedProduction: {
         productionName: "",
@@ -280,7 +276,8 @@ export default {
     }
   },
   async mounted() {
-    this.getProductions();
+    var today = new Date();
+    this.getProductions(today);
   },
   methods: {
     async deleteProduction(ProductionID) {
@@ -309,12 +306,13 @@ export default {
           console.log("Failure!");
         });
     },
-    async getProductions() {
+    async getProductions(today) {
       await axios
         .get("https://api.broadwaybuilder.xyz/production/getProductions", {
           params: {
-            previousDate: "2019-5-12",
-            theaterID: 2
+            previousDate: today,
+            // theaterID: 2,
+            pageSize: 1000
           }
         })
         .then(response => (this.productions = response.data));
