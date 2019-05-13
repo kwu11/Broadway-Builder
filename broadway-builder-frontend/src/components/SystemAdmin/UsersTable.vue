@@ -122,7 +122,6 @@ export default {
         })
         .then(response => alert(JSON.stringify({
           message: `User with id ${user.UserId}`,
-          data: response.data,
           statusCode: response.status
         })));
     }
