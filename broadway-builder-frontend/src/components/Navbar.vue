@@ -45,14 +45,18 @@ import User from '@/User.js';
 export default {
   data: function() {
     return {
-      pageRoutes: [
-        { title: "Home", link: "/", show: true },
-        { title: "Theaters", link: "/theaters", show: true },
-        { title: "Account", link: "/sysadminaccount/{userID}", show: User.isSysAdmin },
-        { title: "Account", link: "/adminaccount/{userID}", show: User.isTheaterAdmin },
-        { title: "About Us", link: "/aboutus", show: true }
-      ]
+      pageRoutes: []
     };
+  },
+  async mounted() {
+    await User.init();
+    this.pageRoutes = [
+      { title: "Home", link: "/", show: true },
+      { title: "Theaters", link: "/theaters", show: true },
+      { title: "Account", link: "/sysadminaccount/{userID}", show: User.isSysAdmin },
+      { title: "Account", link: "/adminaccount/{userID}", show: User.isTheaterAdmin },
+      { title: "About Us", link: "/aboutus", show: true }
+    ];
   }
 };
 </script>

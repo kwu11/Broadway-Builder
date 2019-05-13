@@ -9,7 +9,7 @@ export default {
   async getRoles() {
 
     await axios
-      .get("https://api.broadwaybuilder.xyz/user/user/getuserrole", {
+      .get("https://api.broadwaybuilder.xyz/user/getrole", {
         headers: {
           'Authorization': `Bearer ${this.token}`
         }
@@ -23,12 +23,14 @@ export default {
   },
   async init() {
     await this.getRoles();
-
-    if (this.roles.contains('SysAdmin')) {
+    this.isTheaterAdmin = true;
+    if (this.roles.includes('SysAdmin')) {
       this.isSysAdmin = true;
-    } else if (this.roles.contains('TheaterAdmin')) {
+    } 
+    if (this.roles.includes('TheaterAdmin')) {
       this.isTheaterAdmin = true;
-    } else if (this.roles.contains('GeneralUser')) {
+    }
+    if (this.roles.includes('GeneralUser')) {
       this.isGeneralUser = true;
     }
   }

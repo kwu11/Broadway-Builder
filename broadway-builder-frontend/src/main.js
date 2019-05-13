@@ -2,7 +2,6 @@ import Vue from "vue";
 import VueTelInput from "vue-tel-input";
 import App from "./App.vue";
 import router from "./router";
-import User from './User.js';
 import Vuetify from "vuetify";
 import "es6-promise/auto";
 import "vuetify/dist/vuetify.min.css";
@@ -25,8 +24,5 @@ Vue.config.productionTip = false;
 
 new Vue({
   router,
-  async created() {
-    await User.init();
-  },
   render: h => h(App)
 }).$mount("#app");
