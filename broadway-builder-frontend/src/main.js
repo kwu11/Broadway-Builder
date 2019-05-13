@@ -21,6 +21,7 @@ Vue.use(VueTelInput);
 Vue.use(vGallery);
 Vue.config.productionTip = false;
 
+
 new Vue({
   router,
   render: h => h(App)

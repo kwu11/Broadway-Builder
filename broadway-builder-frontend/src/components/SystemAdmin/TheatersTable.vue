@@ -19,6 +19,8 @@
         </td>
       </template>
     </v-data-table>
+
+    <TheatersTableModal v-if="isModalVisible" v-bind:passedTheater="modalTheater" @close="closeModal"/>
   </div>
 </template>
 

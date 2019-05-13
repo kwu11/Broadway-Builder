@@ -63,7 +63,7 @@
             <v-divider></v-divider>
             <div id="theater-actions">
               <v-btn @click="goToPictures(theater)" depressed large>Past Productions</v-btn>
-              <v-btn @click="goToHelpWanted(theater, true)" depressed large>Job Opportunities Admin</v-btn>
+              <v-btn v-if="isTheaterAdmin" @click="goToHelpWanted(theater, true)" depressed large>Job Opportunities Admin </v-btn>
               <v-btn @click="goToHelpWanted(theater, false)" depressed large>Job Opportunities User</v-btn>
             </div>
 
@@ -76,6 +76,8 @@
 </template>
 
 <script>
+import User from "@/User.js";
+
 export default {
   name: "TheaterProfile",
   data() {
@@ -83,7 +85,8 @@ export default {
       lorem: `Lorem ipsum dolor sit amet, mel at clita quando. Te sit oratio vituperatoribus, nam ad ipsum posidonium mediocritatem, explicari dissentiunt cu mea. Repudiare disputationi vim in, mollis iriure nec cu, alienum argumentum ius ad. Pri eu justo aeque torquatos.`,
       show: false,
       theater: this.$route.params.theater,
-      permission: true
+      permission: true,
+      isTheaterAdmin: User.isTheaterAdmin
     };
   },
   methods: {

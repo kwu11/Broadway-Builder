@@ -1,41 +1,37 @@
 <template>
   <div class="UsersTable">
-    <table class="table is-hoverable">
-      <thead>
-        <tr>Users</tr>
-        <tr>
-          <th>User ID</th>
-          <th>User Name</th>
-          <th>First Name</th>
-          <th>Last Name<th>
-          <th>Age</th>
-          <th>Address</th>
-          <th>Edit</th>
-          <th>Delete</th>
-        </tr>
-      </thead>
-      <tbody v-for="(user, index) in users" :key="index">
-        <tr>
-          <td>{{user.UserId}}</td>
-          <td>{{user.Username}}</td>
-          <td>{{user.FirstName}}</td>
-          <td>{{user.LastName}}</td>
-          <td>{{user.Age}}</td>
-          <td>{{user.StreetAddress}} {{user.City}}, {{user.StateProvince}} {{user.Country}}</td>
-          <td>
-            <a v-on:click="showModal(user)">
-              <img src="@/assets/edit.png" alt="Edit">
-            </a>
-            <UsersTableModal v-if="isModalVisible" v-bind:passedUser="modalUser" @close="closeModal"/>
-          </td>
-          <td>
-            <a v-on:click="deleteUser(user)">
-              <img src="@/assets/tester.png" alt="Delete">
-            </a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+
+    <v-data-table :headers="headers" :items="users" class="elevation-1">
+      <template v-slot:items="props">
+        <td>{{props.item.UserId}}</td>
+        <td>{{props.item.Username}}</td>
+        <td>{{props.item.FirstName}}</td>
+        <td> {{props.item.LastName}}</td>
+        <td>{{props.item.StreetAddress}} {{props.item.City}}, {{props.item.State}} {{props.item.Country}}</td>
+        <td class="text-xs-center">
+          <span @click="showModal(props.item)" style="cursor: pointer;" >
+            <i class="fa fa-edit fa-2x" style="color: blue;"></i>
+          </span>
+        </td>
+        <td class="text-xs-center">
+          <span @click="elevateUser(props.item)" style="cursor: pointer;" >
+            <i class="fa fa-arrow-up fa-2x" style="color: green;"></i>
+          </span>
+        </td>
+        <td class="text-xs-center">
+          <span @click="downgradeUser(props.item)" style="cursor: pointer;" >
+            <i class="fa fa-arrow-down fa-2x" style="color: orange;"></i>
+          </span>
+        </td>
+        <td class="text-xs-center">
+          <span @click="deleteUser(props.item)" style="cursor: pointer;" >
+            <i class="fa fa-trash fa-2x" style="color: red;"></i>
+          </span>
+        </td>
+      </template>
+    </v-data-table>    
+
+    <UsersTableModal v-if="isModalVisible" v-bind:passedUser="modalUser" @close="closeModal"/>
   </div>
 </template>
 
@@ -51,7 +47,56 @@ export default {
     return {
       users: [],
       modalUser: null,
-      isModalVisible: false
+      isModalVisible: false,
+            headers: [
+        {
+          text: "User ID",
+          align: "left",
+          sortable: true,
+          value: "UserId"
+        },
+        {
+          text: "Email",
+          align: "left",
+          sortable: false,
+          value: "Username"
+        },
+        {
+          text: "First Name",
+          align: "left",
+          value: "FirstName"
+        },
+        {
+          text: "Last Name",
+          align: "left",
+          value: "LastName"
+        },
+        {
+          text: "Street Address",
+          align: "left",
+          value: "Street Address"
+        },
+        {
+          text: "Edit",
+          align: "left",
+          sortable: false
+        },
+        {
+          text: "Elevate User To Theater Admin",
+          align: "left",
+          sortable: false
+        },
+        {
+          text: "Downgrade User To A General User",
+          align: "left",
+          sortable: false
+        },
+        {
+          text: "Delete",
+          align: "left",
+          sortable: false
+        }
+      ]
     };
   },
   async mounted() {
@@ -62,7 +107,7 @@ export default {
   methods: {
     async deleteUser(user) {
       await axios
-        .delete("https://api.broadwaybuilder.xyz/user/deleteUser",{data: user})
+        .delete("https://api.broadwaybuilder.xyz/user/deleteUser", {data: user})
         .then(response => alert(response.data));
         this.$forceUpdate();
     },
@@ -75,6 +120,34 @@ export default {
     },
     cancelManageUsers() {
         this.$emit("cancel", false);
+    },
+    async elevateUser(user) {
+      const token = window.localStorage.getItem('token');
+
+      await axios
+        .put("https://api.broadwaybuilder.xyz/user/elevate/" + user.UserId, undefined, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+        .then(response => alert(JSON.stringify({
+          message: `User with id ${user.UserId}`,
+          statusCode: response.status
+        })));
+    },
+    async downgradeUser(user) {
+      const token = window.localStorage.getItem('token');
+
+      await axios
+        .put("https://api.broadwaybuilder.xyz/user/downgrade/" + user.UserId, undefined, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        })
+        .then(response => alert(JSON.stringify({
+          message: `User with id ${user.UserId}`,
+          statusCode: response.status
+       })));
     }
   }
 };

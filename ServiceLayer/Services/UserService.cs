@@ -182,20 +182,28 @@ namespace ServiceLayer.Services
         /// </summary>
         /// <param name="user">The user who we will be adding a permission to</param>
         /// <param name="role">The permission we will be adding to a user</param>
-        public void AddUserRole(User user, DataAccessLayer.Enums.RoleEnum role)
+        public void AddUserRole(int userId, DataAccessLayer.Enums.RoleEnum role)
         {
             _dbContext.UserRoles.Add(new UserRole()
             {
-                UserId = user.UserId,
+                UserId = userId,
                 RoleId = role,
                 IsEnabled = true,
                 DateCreated = DateTime.UtcNow,
             });
         }
 
-        public UserRole GetUserRole(User user, DataAccessLayer.Enums.RoleEnum role)
+        public List<DataAccessLayer.Enums.RoleEnum> GetUserRoles(int userId)
         {
-            return _dbContext.UserRoles.Where(o => o.UserId == user.UserId && o.RoleId == role).FirstOrDefault();
+            return _dbContext.UserRoles
+                .Where(o => o.UserId == userId)
+                .Select(o => o.RoleId)
+                .ToList();
+        }
+
+        public bool HasUserRole(int userId, DataAccessLayer.Enums.RoleEnum role)
+        {
+            return _dbContext.UserRoles.Where(o => o.UserId == userId && o.RoleId == role).Any();
         }
 
         /// <summary>
@@ -213,23 +221,21 @@ namespace ServiceLayer.Services
             }
         }
 
-        public IEnumerable GetAllUsers()
+        public IQueryable<User> GetAllUsers()
         {
-            return _dbContext.Users.Select(user => new
+            return _dbContext.Users;
+        }
+
+        public void RemoveUserRole(int userId, DataAccessLayer.Enums.RoleEnum role)
+        {
+            var userRoleEntity = _dbContext.UserRoles
+                .Where(o => o.UserId == userId && o.RoleId == role)
+                .FirstOrDefault();
+
+            if (userRoleEntity != null)
             {
-                UserId = user.UserId,
-                Username = user.Username,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Age = user.Age,
-                StreetAddress = user.StreetAddress,
-                City = user.City,
-                StateProvince = user.StateProvince,
-                Country = user.Country,
-                isEnabled = user.isEnabled,
-                UserGuid = user.UserGuid,
-                DateCreated = user.DateCreated
-            }).ToList();
+                _dbContext.UserRoles.Remove(userRoleEntity);
+            }         
         }
     }
 }

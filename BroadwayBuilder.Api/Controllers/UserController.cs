@@ -101,19 +101,26 @@ namespace BroadwayBuilder.Api.Controllers
                 UserService service = new UserService(dbcontext);
                 try
                 {
-                    IEnumerable list = service.GetAllUsers();
-                    foreach (var l in list)
-                    {
+                    var usersList = service.GetAllUsers()
+                        .Select(user => new UserResponseModel()
+                        {
+                            FirstName = user.FirstName,
+                            LastName = user.LastName,
+                            StreetAddress = user.StreetAddress,
+                            City = user.City,
+                            StateProvince = user.StateProvince,
+                            Country = user.Country,
+                            IsEnabled = user.IsEnabled,
+                            Username = user.Username,
+                            UserId = user.UserId
+                        }).ToList();
 
-                    }
-                    return Content((HttpStatusCode)200, list);
+                    return Content((HttpStatusCode)200, usersList);
                 }
                 catch (Exception e)
                 {
                     return Content((HttpStatusCode)500, "Oops! Something went wrong on our end");
                 }
-
-
             }
         }
 
@@ -145,13 +152,7 @@ namespace BroadwayBuilder.Api.Controllers
         [SwaggerResponse(HttpStatusCode.OK)]
         public IHttpActionResult UserCompleteRegistration([FromBody] UserCompleteRegistrationRequestModel userData)
         {
-            var authHeaderValue = Request.Headers.GetValues("Authorization").FirstOrDefault();
-            if (authHeaderValue == null)
-            {
-                return BadRequest("No Authorization Header");
-            }
-
-            var token = authHeaderValue.Split(' ')[1];
+            var token = ControllerHelper.GetTokenFromAuthorizationHeader(Request.Headers);
 
             using (var _db = new BroadwayBuilderContext())
             {
@@ -222,7 +223,7 @@ namespace BroadwayBuilder.Api.Controllers
                         user = newUser;
 
                         // Everyone starts off as a general user
-                        userService.AddUserRole(user, DataAccessLayer.Enums.RoleEnum.GeneralUser);
+                        userService.AddUserRole(user.UserId, DataAccessLayer.Enums.RoleEnum.GeneralUser);
                     }
 
                     // User was found, so login user
@@ -285,7 +286,7 @@ namespace BroadwayBuilder.Api.Controllers
             }
         }
 
-        [HttpDelete]
+        [HttpPost]
         [Route("delete")]
         [SwaggerResponse(HttpStatusCode.OK)]
         public IHttpActionResult DeleteUserFromSSO([FromBody] LoginRequestModel request)
@@ -317,6 +318,117 @@ namespace BroadwayBuilder.Api.Controllers
                 {
                     return InternalServerError(e);
                 }
+            }
+        }
+
+        [HttpPut]
+        [Route("elevate/{userId}")]
+        public IHttpActionResult ElevateUser([FromUri] int userId)
+        {
+            var token = ControllerHelper.GetTokenFromAuthorizationHeader(Request.Headers);
+
+            try
+            {
+                using (var dbcontext = new BroadwayBuilderContext())
+                {
+                    var authorizationService = new AuthorizationService(dbcontext);
+
+                    var userService = new UserService(dbcontext);
+
+                    var requestingUser = userService.GetUserByToken(token);
+
+                    var isAuthorized = authorizationService.HasPermission(requestingUser, DataAccessLayer.Enums.PermissionsEnum.UpgradeGeneralUserToTheaterAdmin);
+
+                    if (!isAuthorized)
+                    {
+                        return Unauthorized();
+                    }
+
+                    var isTheaterAdmin = userService.HasUserRole(userId, DataAccessLayer.Enums.RoleEnum.TheaterAdmin);
+
+                    if (!isTheaterAdmin)
+                    {
+                        userService.AddUserRole(userId, DataAccessLayer.Enums.RoleEnum.TheaterAdmin);
+                        dbcontext.SaveChanges();
+                    }
+
+                    return Ok();
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpPut]
+        [Route("downgrade/{userId}")]
+
+        public IHttpActionResult DowngradeUser([FromUri] int userId)
+        {
+            var token = ControllerHelper.GetTokenFromAuthorizationHeader(Request.Headers);
+
+            try
+            {
+                using (var dbcontext = new BroadwayBuilderContext())
+                {
+                    var authorizationService = new AuthorizationService(dbcontext);
+
+                    var userService = new UserService(dbcontext);
+
+                    var requestingUser = userService.GetUserByToken(token);
+
+                    var isAuthorized = authorizationService.HasPermission(requestingUser, DataAccessLayer.Enums.PermissionsEnum.DowngradeTheaterAdminToGeneralUser);
+
+                    if (!isAuthorized)
+                    {
+                        return Unauthorized();
+                    }
+
+                    var isTheaterAdmin = userService.HasUserRole(userId, DataAccessLayer.Enums.RoleEnum.TheaterAdmin);
+
+                    if (isTheaterAdmin)
+                    {
+                        userService.RemoveUserRole(userId, DataAccessLayer.Enums.RoleEnum.TheaterAdmin);
+                        dbcontext.SaveChanges();
+                    }
+
+                    return Ok();
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpGet]
+        [Route("getrole")]
+        public IHttpActionResult GetUserRole()
+        {
+            var token = ControllerHelper.GetTokenFromAuthorizationHeader(Request.Headers);
+            if (token == null)
+            {
+                return Unauthorized();
+            }
+            try
+            {
+                using(var dbcontext = new BroadwayBuilderContext())
+                {
+                    var userService = new UserService(dbcontext);
+
+                    var userId = userService.GetUserByToken(token).UserId;
+
+                    var roles = userService.GetUserRoles(userId)
+                        .Select(o => Enum.GetName(typeof(DataAccessLayer.Enums.RoleEnum), o))
+                        .ToList();
+
+                    return Ok(roles);
+                }
+            } 
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
             }
         }
     }

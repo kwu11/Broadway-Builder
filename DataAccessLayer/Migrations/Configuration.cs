@@ -65,19 +65,32 @@ namespace DataAccessLayer.Migrations
                 });
             }
 
-            //context.Users.AddOrUpdate(x => x.UserId, new User() {
-            //    UserId = 1,
-            //    StreetAddress = "street",
-            //    City = "LA",
-            //    Country = "USA",
-            //    FirstName = "Jose",
-            //    LastName = "Ramirez",
-            //    DateCreated = DateTime.Now,
-            //    IsEnabled = true,
-            //    Username = "joseramir1240@yahoo.com",
-            //    UserGuid = Guid.NewGuid(),
-            //    StateProvince = "CA",
-            //});
+
+            context.Users.AddOrUpdate(x => x.UserId, new User()
+            {
+                UserId = 101,
+                StreetAddress = "123 Rule Breaker",
+                City = "Rules Suck",
+                Country = "USA",
+                FirstName = "SysAdmin",
+                LastName = "RuleBrkr",
+                DateCreated = DateTime.Now,
+                IsEnabled = true,
+                IsComplete = true,
+                Username = "ffantasticvsysadmin@gmail.com",
+                UserGuid = Guid.NewGuid(),
+                StateProvince = "AZ",
+            });
+
+            context.UserRoles.AddOrUpdate(o => new { o.UserId, o.RoleId },
+                new UserRole()
+                {
+                    DateCreated = DateTime.UtcNow,
+                    RoleId = Enums.RoleEnum.SysAdmin,
+                    IsEnabled = true,
+                    UserId = 101
+                });
+
 
             context.Theaters.AddOrUpdate(x => x.TheaterID,
                 new Theater { TheaterID = 1, TheaterName = "Dramatic", CompanyName = "Company1", StreetAddress = "street", City = "LA", State = "CA", Country = "USA", PhoneNumber = "222-222-2222", DateCreated = DateTime.Now },
