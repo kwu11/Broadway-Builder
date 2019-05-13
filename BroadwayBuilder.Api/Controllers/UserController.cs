@@ -349,6 +349,7 @@ namespace BroadwayBuilder.Api.Controllers
                     if (!isTheaterAdmin)
                     {
                         userService.AddUserRole(userId, DataAccessLayer.Enums.RoleEnum.TheaterAdmin);
+                        dbcontext.SaveChanges();
                     }
 
                     return Ok();
