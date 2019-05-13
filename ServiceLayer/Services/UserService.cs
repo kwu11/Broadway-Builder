@@ -217,5 +217,19 @@ namespace ServiceLayer.Services
         {
             return _dbContext.Users;
         }
+
+        public void RemoveUserRole(int userId, DataAccessLayer.Enums.RoleEnum role)
+        {
+            var userRoleEntity = _dbContext.UserRoles
+                .Where(o => o.UserId == userId && o.RoleId == role)
+                .FirstOrDefault();
+
+            if (userRoleEntity != null)
+            {
+                _dbContext.UserRoles.Remove(userRoleEntity);
+            }
+             
+            
+        }
     }
 }
