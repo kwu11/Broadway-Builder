@@ -360,5 +360,76 @@ namespace BroadwayBuilder.Api.Controllers
                 return InternalServerError(ex);
             }
         }
+
+        [HttpPut]
+        [Route("downgrade/{userId}")]
+
+        public IHttpActionResult DowngradeUser([FromUri] int userId)
+        {
+            var token = ControllerHelper.GetTokenFromAuthorizationHeader(Request.Headers);
+
+            try
+            {
+                using (var dbcontext = new BroadwayBuilderContext())
+                {
+                    var authorizationService = new AuthorizationService(dbcontext);
+
+                    var userService = new UserService(dbcontext);
+
+                    var requestingUser = userService.GetUserByToken(token);
+
+                    var isAuthorized = authorizationService.HasPermission(requestingUser, DataAccessLayer.Enums.PermissionsEnum.DowngradeTheaterAdminToGeneralUser);
+
+                    if (!isAuthorized)
+                    {
+                        return Unauthorized();
+                    }
+
+                    var isTheaterAdmin = userService.HasUserRole(userId, DataAccessLayer.Enums.RoleEnum.TheaterAdmin);
+
+                    if (isTheaterAdmin)
+                    {
+                        userService.RemoveUserRole(userId, DataAccessLayer.Enums.RoleEnum.TheaterAdmin);
+                        dbcontext.SaveChanges();
+                    }
+
+                    return Ok();
+                }
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpGet]
+        [Route("getrole")]
+        public IHttpActionResult GetUserRole()
+        {
+            var token = ControllerHelper.GetTokenFromAuthorizationHeader(Request.Headers);
+            if (token == null)
+            {
+                return Unauthorized();
+            }
+            try
+            {
+                using(var dbcontext = new BroadwayBuilderContext())
+                {
+                    var userService = new UserService(dbcontext);
+
+                    var userId = userService.GetUserByToken(token).UserId;
+
+                    var roles = userService.GetUserRoles(userId)
+                        .Select(o => Enum.GetName(typeof(DataAccessLayer.Enums.RoleEnum), o))
+                        .ToList();
+
+                    return Ok(roles);
+                }
+            } 
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
     }
 }

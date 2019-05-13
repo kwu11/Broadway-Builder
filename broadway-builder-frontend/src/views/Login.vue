@@ -8,6 +8,7 @@
 
 <script>
 import axios from "axios";
+import User from '@/User.js';
 //axios.get()
 
 export default {
@@ -27,6 +28,8 @@ export default {
     const token = this.getParameterByName('token', window.location.href);
     window.localStorage.setItem('token', token);
 
+    User.init();
+
     await axios
       .get("https://api.broadwaybuilder.xyz/user/registrationstatus", {
         headers: {
@@ -41,6 +44,7 @@ export default {
         }
       });
       // TODO: Add another axios call to get userRole if UserRole is SysAdmin show SysAdminAccountPage.
+
       // IF userRole is Theater Admin just show Account tab
       // If userRole is General User just show Home, Theaters, and About Us
   }
