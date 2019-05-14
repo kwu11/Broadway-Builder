@@ -52,7 +52,8 @@ export default {
       { title: "Theaters", link: "/theaters", show: true },
       { title: "Account", link: "/sysadminaccount/{userID}", show: this.$store.state.isSysAdmin },
       { title: "Account", link: "/adminaccount/{userID}", show: this.$store.state.isTheaterAdmin },
-      { title: "About Us", link: "/aboutus", show: true }
+      { title: "About Us", link: "/aboutus", show: true },
+      { title:"Log out",link: "/logout",show : User.token !==null}
     ];
   }
 };
