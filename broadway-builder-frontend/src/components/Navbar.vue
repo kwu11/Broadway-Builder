@@ -45,22 +45,18 @@ import { mapState } from 'vuex'
 export default {
   data: function() {
     return {
-      pageRoutes: []
     };
   },
   computed: mapState({
-    hasToken: state => state.token !== null
-  }),
-  async mounted() {
-    this.pageRoutes = [
+    pageRoutes: state => [
       { title: "Home", link: "/", show: true },
       { title: "Theaters", link: "/theaters", show: true },
-      { title: "Account", link: "/sysadminaccount/{userID}", show: this.$store.state.isSysAdmin },
-      { title: "Account", link: "/adminaccount/{userID}", show: this.$store.state.isTheaterAdmin },
+      { title: "Account", link: "/sysadminaccount/{userID}", show: state.isSysAdmin },
+      { title: "Account", link: "/adminaccount/{userID}", show: state.isTheaterAdmin },
       { title: "About Us", link: "/aboutus", show: true },
-      { title: "Log out", link: "/logout", show: this.hasToken }
-    ];
-  }
+      { title: "Log out", link: "/logout", show: state.token !== null }
+    ]
+  })
 };
 </script>
 
