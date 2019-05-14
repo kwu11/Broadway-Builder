@@ -34,5 +34,10 @@ namespace DataAccessLayer
             this.UserId = userid;
             this.ResumeGuid = resumeGuid;
         }
+
+        public Resume()
+        {
+
+        }
     }
 }

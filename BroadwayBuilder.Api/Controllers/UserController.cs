@@ -285,7 +285,30 @@ namespace BroadwayBuilder.Api.Controllers
                 }
             }
         }
+        [HttpPost,Route("applogout")]
+        public IHttpActionResult LogoutFromApp()
+        {
+            string token = ControllerHelper.GetTokenFromAuthorizationHeader(Request.Headers);
+            if(token == null)
+            {
+                return Unauthorized();
+            }
+            try
+            {
+                using (var dbContext = new BroadwayBuilderContext())
+                {
+                    dbContext.Sessions.Remove(dbContext.Sessions
+                        .Where(session => session.Token == token).First());
+                    dbContext.SaveChanges();
+                    return Ok("User has successfully logged out.");
+                }
+            }
+            catch(Exception e)
+            {
+                return InternalServerError(e);
+            }
 
+        }
         [HttpPost]
         [Route("delete")]
         [SwaggerResponse(HttpStatusCode.OK)]
