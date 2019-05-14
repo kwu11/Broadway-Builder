@@ -40,24 +40,24 @@
 </template>
 
 <script>
-import User from '@/User.js';
-
 export default {
   data: function() {
     return {
       pageRoutes: []
     };
   },
+  computed: {
+    hasToken: () => this.$store.state.token !== null
+  },
   async mounted() {
-    await User.init();
     this.pageRoutes = [
       { title: "Home", link: "/", show: true },
       { title: "Theaters", link: "/theaters", show: true },
-      { title: "Account", link: "/sysadminaccount/{userID}", show: User.isSysAdmin },
-      { title: "Account", link: "/adminaccount/{userID}", show: User.isTheaterAdmin },
+      { title: "Account", link: "/sysadminaccount/{userID}", show: this.$store.state.isSysAdmin },
+      { title: "Account", link: "/adminaccount/{userID}", show: this.$store.state.isTheaterAdmin },
       { title: "About Us", link: "/aboutus", show: true },
-      { title:"Log out",link: "/logout",show : User.token !==null}
-    ]
+      { title: "Log out", link: "/logout", show: this.hasToken }
+    ];
   }
 };
 </script>

@@ -1,20 +1,18 @@
 <script>
 import axios from "axios";
-import User from '@/User.js';
 export default {
     methods:{
         async Logout(){
             await axios
             .post("https://api.broadwaybuilder.xyz/user/applogout",undefined,{
                 headers:{
-                    'Authorization':'Bearer ${User.token}'
+                    Authorization: `Bearer ${this.$store.state.token}`
                 }
             })
             .then(
-                response =>{
-                    if(response.status==200){
-                        window.localStorage.removeItem('token');
-                    }
+                async () => {
+                    window.localStorage.removeItem('token');
+                    await this.$store.dispatch('updateUserInfo');
                     this.$router.push({name:'home'});
                 }
             )
