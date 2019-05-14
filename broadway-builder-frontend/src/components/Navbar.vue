@@ -40,15 +40,17 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   data: function() {
     return {
       pageRoutes: []
     };
   },
-  computed: {
-    hasToken: () => this.$store.state.token !== null
-  },
+  computed: mapState({
+    hasToken: state => state.token !== null
+  }),
   async mounted() {
     this.pageRoutes = [
       { title: "Home", link: "/", show: true },
