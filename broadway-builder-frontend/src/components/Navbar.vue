@@ -55,8 +55,9 @@ export default {
       { title: "Theaters", link: "/theaters", show: true },
       { title: "Account", link: "/sysadminaccount/{userID}", show: User.isSysAdmin },
       { title: "Account", link: "/adminaccount/{userID}", show: User.isTheaterAdmin },
-      { title: "About Us", link: "/aboutus", show: true }
-    ];
+      { title: "About Us", link: "/aboutus", show: true },
+      { title:"Log out",link: "/logout",show : User.token !==null}
+    ]
   }
 };
 </script>
