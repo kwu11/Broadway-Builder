@@ -53,7 +53,7 @@ export default {
       { title: "Account", link: "/sysadminaccount/{userID}", show: this.$store.state.isSysAdmin },
       { title: "Account", link: "/adminaccount/{userID}", show: this.$store.state.isTheaterAdmin },
       { title: "About Us", link: "/aboutus", show: true },
-      { title:"Log out",link: "/logout",show : User.token !==null}
+      { title: "Log out", link: "/logout", show: this.$store.state.token !== null}
     ];
   }
 };
