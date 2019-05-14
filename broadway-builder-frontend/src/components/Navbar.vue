@@ -40,8 +40,6 @@
 </template>
 
 <script>
-import User from '@/User.js';
-
 export default {
   data: function() {
     return {
@@ -49,12 +47,11 @@ export default {
     };
   },
   async mounted() {
-    await User.init();
     this.pageRoutes = [
       { title: "Home", link: "/", show: true },
       { title: "Theaters", link: "/theaters", show: true },
-      { title: "Account", link: "/sysadminaccount/{userID}", show: User.isSysAdmin },
-      { title: "Account", link: "/adminaccount/{userID}", show: User.isTheaterAdmin },
+      { title: "Account", link: "/sysadminaccount/{userID}", show: this.$store.state.isSysAdmin },
+      { title: "Account", link: "/adminaccount/{userID}", show: this.$store.state.isTheaterAdmin },
       { title: "About Us", link: "/aboutus", show: true }
     ];
   }

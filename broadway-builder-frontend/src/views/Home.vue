@@ -9,7 +9,7 @@
           <v-layout align-center column justify-center>
             <h1 class="display-2 font-weight-thin mb-3">Welcome</h1>
             <h4 class="subheading">And <strong>thank you</strong> for choosing Broadway Builder</h4>
-            <div v-if="!User.token" style="margin: 4em 1em">
+            <div v-if="!$store.state.token" style="margin: 4em 1em">
               <v-btn href="https://kfc-sso.com/#/register" depressed>Register</v-btn>
               or
               <v-btn href="https://kfc-sso.com/#/login" depressed>Sign In</v-btn>
@@ -24,17 +24,11 @@
 <script>
 // @ is an alias to /src
 import SearchBar from "@/components/SearchBar.vue";
-import User from "@/User.js";
 
 export default {
   name: "home",
   components: {
     SearchBar
-  },
-  data() {
-    return {
-      User
-    };
   }
 };
 </script>

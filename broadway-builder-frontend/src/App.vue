@@ -20,6 +20,9 @@ export default {
   components: {
     Navbar,
     Footer
+  },
+  async created() {
+    await this.$store.dispatch('updateUserInfo');
   }
 };
 </script>

@@ -76,8 +76,6 @@
 </template>
 
 <script>
-import User from "@/User.js";
-
 export default {
   name: "TheaterProfile",
   data() {
@@ -86,7 +84,7 @@ export default {
       show: false,
       theater: this.$route.params.theater,
       permission: true,
-      isTheaterAdmin: User.isTheaterAdmin
+      isTheaterAdmin: this.$store.state.isTheaterAdmin
     };
   },
   methods: {

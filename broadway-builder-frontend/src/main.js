@@ -11,6 +11,7 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { faCloudUploadAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import vGallery from "v-gallery";
+import store from "./store";
 library.add(faTimes);
 library.add(faCloudUploadAlt);
 
@@ -24,5 +25,6 @@ Vue.config.productionTip = false;
 
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount("#app");

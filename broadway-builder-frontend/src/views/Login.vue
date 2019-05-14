@@ -8,7 +8,7 @@
 
 <script>
 import axios from "axios";
-import User from '@/User.js';
+//import User from '@/User.js';
 //axios.get()
 
 export default {
@@ -28,8 +28,8 @@ export default {
     const token = this.getParameterByName('token', window.location.href);
     window.localStorage.setItem('token', token);
 
-    await User.init();
-
+    await this.$store.dispatch('updateUserInfo');
+    
     await axios
       .get("https://api.broadwaybuilder.xyz/user/registrationstatus", {
         headers: {
