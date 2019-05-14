@@ -1,5 +1,5 @@
 <template>
-
+  <div></div>
 </template>
 
 
@@ -8,6 +8,7 @@
 
 <script>
 import axios from "axios";
+import User from '@/User.js';
 //axios.get()
 
 export default {
@@ -26,6 +27,8 @@ export default {
   async mounted() {
     const token = this.getParameterByName('token', window.location.href);
     window.localStorage.setItem('token', token);
+
+    await User.init();
 
     await axios
       .get("https://api.broadwaybuilder.xyz/user/registrationstatus", {

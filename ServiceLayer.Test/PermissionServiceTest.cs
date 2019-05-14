@@ -90,15 +90,7 @@ namespace ServiceLayer.Test
 
 
             //Act
-
-            permissionService.CreatePermission(permission);
-
-            context.SaveChanges();
-
-
-
-            Permission getPermission = permissionService.GetPermission(permission.PermissionID);
-
+            Permission getPermission = permissionService.GetPermission(DataAccessLayer.Enums.PermissionsEnum.ActivateAbusiveAccount);
             if (getPermission != null)
 
                 actual = true;

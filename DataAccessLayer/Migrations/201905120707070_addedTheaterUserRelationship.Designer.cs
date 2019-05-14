@@ -7,13 +7,13 @@ namespace DataAccessLayer.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class updateSessionModel : IMigrationMetadata
+    public sealed partial class addedTheaterUserRelationship : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(updateSessionModel));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(addedTheaterUserRelationship));
         
         string IMigrationMetadata.Id
         {
-            get { return "201905070635080_updateSessionModel"; }
+            get { return "201905120707070_addedTheaterUserRelationship"; }
         }
         
         string IMigrationMetadata.Source

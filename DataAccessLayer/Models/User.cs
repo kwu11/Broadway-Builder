@@ -55,7 +55,6 @@ namespace DataAccessLayer
         //[Column(Order =1)]
         public int UserId { get; set; }
 
-
         [Required]
         //[Key]
         //[Column(Order = 2)]
@@ -87,7 +86,7 @@ namespace DataAccessLayer
         [Required]
         public DateTime DateCreated { get; set; }
 
-        public virtual ICollection<UserPermission> UserPermissions { get; set; }
+        public virtual ICollection<UserRole> UserPermissions { get; set; }
         public ICollection<Resume> Resumes { get; set; }
     }
 }

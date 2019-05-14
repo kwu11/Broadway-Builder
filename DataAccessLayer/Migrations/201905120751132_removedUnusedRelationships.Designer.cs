@@ -7,13 +7,13 @@ namespace DataAccessLayer.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class InitialCreate : IMigrationMetadata
+    public sealed partial class removedUnusedRelationships : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(InitialCreate));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(removedUnusedRelationships));
         
         string IMigrationMetadata.Id
         {
-            get { return "201903251740017_InitialCreate"; }
+            get { return "201905120751132_removedUnusedRelationships"; }
         }
         
         string IMigrationMetadata.Source
