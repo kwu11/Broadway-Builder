@@ -15,7 +15,11 @@ export default {
                     await this.$store.dispatch('updateUserInfo');
                     this.$router.push({name:'home'});
                 }
-            )
+            ).catch(() => {
+                window.localStorage.removeItem('token');
+                await this.$store.dispatch('updateUserInfo');
+                this.$router.push({name:'home'});
+            });
         }
     },
     created() {
