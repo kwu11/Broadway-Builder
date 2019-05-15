@@ -28,7 +28,6 @@ namespace ServiceLayer.Services
             IEnumerable errorLogs = mongoDbContext.ErrorLogs.Find(log => log.TimeStamp>=minimumDate & log.TimeStamp<=maximumDate).ToList();
             return errorLogs;
         }
-
         public void DeleteErrorLogs(DateTime minimumDate, DateTime maximumDate)
         {
             mongoDbContext.ErrorLogs.DeleteManyAsync(log => log.TimeStamp >= minimumDate & log.TimeStamp <= maximumDate);

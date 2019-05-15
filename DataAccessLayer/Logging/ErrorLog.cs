@@ -39,15 +39,16 @@ namespace DataAccessLayer.Logging
         public Dictionary<string, object> AdditionalInfo { get; set; }
 
 
-        public ErrorLog(int userId, string httpMethod, string request, string message, string stack, string targetSite, DateTime timeStamp)
+        public ErrorLog(int userId, string httpMethod, string request, Exception exception,Dictionary<string,object>additionalInfo)
         {
             this.UserId = userId;
             this.HttpMethod = httpMethod;
             this.Request = request;
-            this.Message = message;
-            this.StackTrace = stack;
-            this.TargetSite = targetSite;
-            this.TimeStamp = timeStamp;
+            this.Message = exception.Message;
+            this.StackTrace = exception.StackTrace;
+            this.TargetSite = exception.TargetSite.ToString();
+            this.TimeStamp = DateTime.UtcNow;
+            this.AdditionalInfo = additionalInfo;
         }
     }
 }
