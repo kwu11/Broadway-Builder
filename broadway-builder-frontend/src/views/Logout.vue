@@ -1,3 +1,8 @@
+<template>
+    <div></div>
+</template>
+
+
 <script>
 import axios from "axios";
 export default {
@@ -9,13 +14,12 @@ export default {
                     Authorization: `Bearer ${this.$store.state.token}`
                 }
             })
-            .then(
-                async () => {
-                    window.localStorage.removeItem('token');
-                    await this.$store.dispatch('updateUserInfo');
-                    this.$router.push({name:'home'});
-                }
-            ).catch(() => {
+            .then(async () => {
+                window.localStorage.removeItem('token');
+                await this.$store.dispatch('updateUserInfo');
+                this.$router.push({name:'home'});
+            })
+            .catch(async () => {
                 window.localStorage.removeItem('token');
                 await this.$store.dispatch('updateUserInfo');
                 this.$router.push({name:'home'});
