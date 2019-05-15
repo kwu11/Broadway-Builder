@@ -89,26 +89,25 @@ export default {
   },
   methods: {
     async filterJobPostings(filters) {
-      this.jobType = Array.from(filters.jobTypeFilters);
-      this.position = Array.from(filters.rolesFilters);
-
-      await axios
-        .get(
-          "https://api.broadwaybuilder.xyz/helpwanted/getfilteredtheaterjobs",
-          {
-            params: {
-              theaterid: this.theater.TheaterId,
-              jobType: this.jobtype,
-              position: this.position,
-              currentPage: this.currentPage,
-              numberOfItems: this.numberOfItems
-            }
-          }
-        )
-        .then(response => {
-          this.jobs = response.data.theaterJobList;
-          this.totalPages = Math.ceil(response.data.count / this.numberOfItems);
-        });
+      // this.jobType = Array.from(filters.jobTypeFilters);
+      // this.position = Array.from(filters.rolesFilters);
+      // await axios
+      //   .get(
+      //     "https://api.broadwaybuilder.xyz/helpwanted/getfilteredtheaterjobs",
+      //     {
+      //       params: {
+      //         theaterid: this.theater.TheaterId,
+      //         jobType: this.jobType,
+      //         position: this.position,
+      //         currentPage: this.currentPage,
+      //         numberOfItems: this.numberOfItems
+      //       }
+      //     }
+      //   )
+      //   .then(response => {
+      //     this.jobs = response.data.theaterJobList;
+      //     this.totalPages = Math.ceil(response.data.count / this.numberOfItems);
+      //   });
     },
     async choosePage(page) {
       this.currentPage = page;
