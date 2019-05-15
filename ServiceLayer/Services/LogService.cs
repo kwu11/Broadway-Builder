@@ -17,19 +17,19 @@ namespace ServiceLayer.Services
         {
         }
 
-        public void LogError(HttpContext httpContext,Exception exception)
-        {
-            string request = httpContext.Request.Url.ToString();
-            string httpMethod = httpContext.Request.HttpMethod;
-            DateTime time = httpContext.Timestamp;
-            string message = exception.Message;
-            string stackTrace = exception.StackTrace;
-            string targetSite = exception.TargetSite.ToString();
+        //public void LogError(HttpContext httpContext,Exception exception)
+        //{
+        //    string request = httpContext.Request.Url.ToString();
+        //    string httpMethod = httpContext.Request.HttpMethod;
+        //    DateTime time = httpContext.Timestamp;
+        //    string message = exception.Message;
+        //    string stackTrace = exception.StackTrace;
+        //    string targetSite = exception.TargetSite.ToString();
 
-            ErrorLog log = new ErrorLog(1, httpMethod, request, message, stackTrace, targetSite, time);
-            ErrorLogService errorLogService = new ErrorLogService();
-            errorLogService.CreateErrorLog(log);
-        }
+        //    ErrorLog log = new ErrorLog(1, httpMethod, request, message, stackTrace, targetSite, time);
+        //    ErrorLogService errorLogService = new ErrorLogService();
+        //    errorLogService.CreateErrorLog(log);
+        //}
         public IEnumerable GetErrorLogs(DateTime minimumDate, DateTime maximumDate)
         {
             ErrorLogService errorLogService = new ErrorLogService();
