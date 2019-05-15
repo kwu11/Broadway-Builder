@@ -29,6 +29,9 @@ export default {
   name: "home",
   components: {
     SearchBar
+  },
+  created() {
+    console.log("User Token: " + this.$store.state.token);
   }
 };
 </script>
