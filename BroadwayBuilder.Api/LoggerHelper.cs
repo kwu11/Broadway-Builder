@@ -33,6 +33,23 @@ namespace BroadwayBuilder.Api
             }
         }
 
+        public static void LogError(string product, int userId,Exception ex)
+        {
+            var httpRequest = HttpContext.Current.Request;
+            string url, httpMethod;
+            var data = GetRequestData(httpRequest, out url, out httpMethod);
+            var errorLog = new ErrorLog(userId, httpMethod, url, ex, data);
+            try
+            {
+                var errorLogService = new ErrorLogService();
+                errorLogService.CreateErrorLog(errorLog);
+            }
+            catch
+            {
+                //TODO: Retry log and update # of logs failed
+            }
+        }
+
         private static Dictionary<string, object> GetRequestData(HttpRequest httpRequest,out string url, out string httpMethod)
         {
             var data = new Dictionary<string, object>();

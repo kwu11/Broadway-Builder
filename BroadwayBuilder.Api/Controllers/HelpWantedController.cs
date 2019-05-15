@@ -327,6 +327,92 @@ namespace BroadwayBuilder.Api.Controllers
             }
         }
 
+        [HttpPut, Route("uploaduserresume")]
+        public IHttpActionResult UploadUserResume()
+        {
+            string token = ControllerHelper.GetTokenFromAuthorizationHeader(Request.Headers);
+            if (token == null)
+            {
+                return Unauthorized();
+            }
+            //A list in case we want to accept more than one file type
+            List<string> allowedFileExtension = new List<string> { ".pdf" };
+            //Business Rule - only one file allowed to submit
+            int maxFileCount = 1;
+            // Max file size is 1MB
+            const int maxContentLength = 1024 * 1024 * 1;
+
+            try
+            {
+                //get the content, headers, etc the full request of the current http request
+                var httpRequest = HttpContext.Current.Request;
+                var fileValidator = new FileValidator();
+                //Validate the submitted file to verify that it complies with Business Rules
+                var validationResult = fileValidator.ValidateFiles(httpRequest.Files, allowedFileExtension, maxContentLength, maxFileCount);
+                if (!validationResult.ValidationSuccessful)//if one or more business rules were violated
+                {
+                    var errorMessage = string.Join("\n", validationResult.Reasons);
+                    return Content((HttpStatusCode)406, errorMessage);
+                }
+                // Grab current file of the request
+                var postedFile = httpRequest.Files[0];
+                using (var dbContext = new BroadwayBuilderContext())
+                {
+                    var userService = new UserService(dbContext);
+                    var user = userService.GetUserByToken(token);
+                    if (user == null)//check if user exists
+                    {
+                        return Content((HttpStatusCode)404, "User does not exist");
+                    }
+                    var resumeService = new ResumeService(dbContext);
+                    Resume resume = resumeService.GetResumeByUserID(user.UserId);
+                    if (resume == null)//check if user has already submitted a resume
+                    {
+                        Resume userResume = new Resume(user.UserId, Guid.NewGuid());
+                        resumeService.CreateResume(userResume);
+                        var result = dbContext.SaveChanges();
+                        if (result <= 0)
+                        {
+                            return Content((HttpStatusCode)500, "Failed to add a resume onto our database");
+                        }
+                        resume = userResume;
+                    }
+                    //Folder path of the user
+                    var subdir = Path.Combine(ConfigurationManager.AppSettings["ResumeDir"], (resume.ResumeGuid.ToString() + "/")); //@"C:\Resumes\"+resume.ResumeGuid;
+                    //Filepath of the submitted file
+                    var filePath = Path.Combine(subdir, resume.ResumeGuid.ToString() + ".pdf");// subdir+@"\"+resume.ResumeGuid+".pdf";
+
+                    if (!Directory.Exists(subdir))//check if the directory exists
+                    {
+                        Directory.CreateDirectory(subdir);//create the directory if it doesnt exist
+                    }
+                    //saves file onto the specified file path and overwrites any file that may exist in that shares the same path
+                    postedFile.SaveAs(filePath);
+                    return Content((HttpStatusCode)200, "File Uploaded");
+                }
+            }
+            catch (HttpException e)//HttpPostedFile.SaveAs exception
+            {
+                return Content((HttpStatusCode)500, "Unable to save the file onto our file system.");
+            }
+            catch (IOException e)//Exception thrown when creating directory
+            {
+                return Content((HttpStatusCode)500, "Unable to delete the job posting");
+            }
+            catch (DbUpdateException e)//exception thrown while saving the database
+            {
+                return Content((HttpStatusCode)500, "Unable to delete the job posting");
+            }
+            catch (DbEntityValidationException dbEntityValidationException)
+            {
+                return Content((HttpStatusCode)500, "Unable to delete the job posting");
+            }
+            catch (Exception e)
+            {
+                return Content((HttpStatusCode)400, e.Message);
+            }
+        }
+
         /// <summary>
         /// Retrieves a resume file of the user
         /// </summary>
@@ -365,6 +451,49 @@ namespace BroadwayBuilder.Api.Controllers
                 }
             }
             catch(Exception e)
+            {
+                return Content((HttpStatusCode)500, e.Message);
+            }
+        }
+
+        [HttpGet, Route("getuserresume")]
+        [SwaggerResponse((HttpStatusCode)200, "The uri of the resume that is on the server")]
+        public IHttpActionResult GetUserResume()
+        {
+            string token = ControllerHelper.GetTokenFromAuthorizationHeader(Request.Headers);
+            if (token == null)
+            {
+                return Unauthorized();
+            }
+            try
+            {
+                using (var dbContext = new BroadwayBuilderContext())
+                {
+                    var userService = new UserService(dbContext);
+                    var user = userService.GetUserByToken(token);
+                    if (user == null)//check if user exists
+                    {
+                        return Content((HttpStatusCode)404, "User does not exist");
+                    }
+                    var resumeService = new ResumeService(dbContext);
+                    Resume resume = resumeService.GetResumeByUserID(user.UserId);
+                    if (resume == null)//check if user has already submitted a resume
+                    {
+                        return Content((HttpStatusCode)404, "No resume on file");
+                    }
+                    var subdir = Path.Combine(ConfigurationManager.AppSettings["ResumeDir"], resume.ResumeGuid.ToString());
+                    var filePath = Path.Combine(subdir, (resume.ResumeGuid.ToString() + ".pdf"));
+                    string url = "";
+                    if (File.Exists(filePath))//check if the file exists in the specified path
+                    {
+                        //virtual directory of the file
+                        url = ConfigurationManager.AppSettings["ApiResumeDir"] + resume.ResumeGuid + "/" + resume.ResumeGuid + ".pdf";
+                        return Content((HttpStatusCode)200, url);
+                    }
+                    return Content((HttpStatusCode)404, "No resume on file");
+                }
+            }
+            catch (Exception e)
             {
                 return Content((HttpStatusCode)500, e.Message);
             }
@@ -409,6 +538,55 @@ namespace BroadwayBuilder.Api.Controllers
                 }
             }
             catch(Exception e)
+            {
+                return Content((HttpStatusCode)400, e.Message);
+            }
+        }
+
+        [HttpPost, Route("userapply")] //apply to a theater job
+        [SwaggerResponse((HttpStatusCode)200, "A string status message.")]
+        public IHttpActionResult UserApplyToJob(int helpwantedid)
+        {
+            string token = ControllerHelper.GetTokenFromAuthorizationHeader(Request.Headers);
+            if (token == null)
+            {
+                return Unauthorized();
+            }
+            try
+            {
+                using (var dbContext = new BroadwayBuilderContext())
+                {
+                    var userService = new UserService(dbContext);
+                    var user = userService.GetUserByToken(token);
+                    if(user == null)
+                    {
+                        return Content(HttpStatusCode.NotFound, "User was not found within the database");
+                    }
+                    var resumeService = new ResumeService(dbContext);
+                    Resume resume = resumeService.GetResumeByUserID(user.UserId);
+                    if (resume == null)//check if user has already submitted a resume; null
+                    {
+                        return Content((HttpStatusCode)404, "No resume on file");
+                    }
+                    var theaterJobService = new TheaterJobPostingService(dbContext);
+                    TheaterJobPosting job = theaterJobService.GetTheaterJob(helpwantedid);
+                    if (job == null)//check if job exists
+                    {
+                        return Content((HttpStatusCode)404, "No job on file");
+                    }
+
+                    var resumeJobPosting = new ResumeTheaterJob(job.HelpWantedID, resume.ResumeID);
+                    var resumeJobService = new ResumeTheaterJobService(dbContext);
+                    resumeJobService.CreateResumeTheaterJob(resumeJobPosting);
+                    var result = dbContext.SaveChanges();
+                    if (result > 0)//check if any rows were affected in the database
+                    {
+                        return Content((HttpStatusCode)200, "Successfully Applied!");
+                    }
+                    return Content((HttpStatusCode)500, "Wasn't able to successfully apply");
+                }
+            }
+            catch (Exception e)
             {
                 return Content((HttpStatusCode)400, e.Message);
             }
