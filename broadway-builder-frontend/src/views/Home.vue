@@ -23,10 +23,10 @@
 
 <script>
 export default {
-  name: "home"
-  // created() {
-  //   console.log("User Token: " + this.$store.state.token);
-  // }
+  name: "home",
+  created() {
+    console.log("User Token: " + this.$store.state.token);
+  }
 };
 </script>
 

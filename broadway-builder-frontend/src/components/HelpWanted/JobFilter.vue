@@ -31,8 +31,8 @@
         <hr>
       </div>
 
-      <a class="button is-medium" @click="applyFilter()">Submit Filters</a>
     </div>
+    <a class="button is-medium" @click="applyFilter()">Submit Filters</a>
   </div>
 </template>
 
@@ -69,12 +69,15 @@ export default {
         jobTypeFilters: this.jobTypeFilters,
         rolesFilters: this.rolesFilters
       });
+      console.log("Filterd");
     }
   }
 };
 </script>
 
 <style lang="sass" scoped>
+@import '../../../node_modules/bulma/bulma.sass'
+
 .JobFilter
   margin-top: 1em
 
