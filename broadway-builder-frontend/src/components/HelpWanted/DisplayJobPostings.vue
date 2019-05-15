@@ -63,7 +63,7 @@
             <a class="card-footer-item" v-if="!job.edit" @click="deleteConfirmation = true; helpWantedId = job.HelpWantedId; jobIndex = index">Delete</a>
           </footer>
           <footer class="card-footer" v-else-if="!permission && job.show">
-            <a class="card-footer-item" :helpWantedId="helpWantedId" @click="helpWantedId = job.HelpWantedId; applyToJob()">Apply</a>
+            <a class="card-footer-item" @click="applyToJob(job.HelpWantedId)">Apply</a>
           </footer>
         </div>
       </div>
@@ -155,12 +155,14 @@ export default {
           )
         );
     },
-    async applyToJob() {
+    async applyToJob(helpWantedId) {
       await axios
-        .post("https://api.broadwaybuilder.xyz/helpwanted/apply", {
+        .post("https://api.broadwaybuilder.xyz/helpwanted/userapply", {
           params: {
-            id: this.userid,
-            helpwantedid: this.helpWantedId
+            helpwantedid: helpWantedId
+          },
+          headers: {
+            Authorization: `Bearer ${this.$store.state.token}`
           }
         })
         .then(response => alert(response.data))

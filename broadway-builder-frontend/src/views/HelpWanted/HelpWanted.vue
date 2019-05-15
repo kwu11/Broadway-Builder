@@ -129,8 +129,8 @@ export default {
     async getResume() {
       await axios
         .get("https://api.broadwaybuilder.xyz/helpwanted/myresume", {
-          params: {
-            userId: this.userId
+          headers: {
+            Authorization: `Bearer ${this.$store.state.token}`
           }
         })
         .then(response => (this.file = response.data));
