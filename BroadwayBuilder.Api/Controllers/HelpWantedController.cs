@@ -388,6 +388,7 @@ namespace BroadwayBuilder.Api.Controllers
                     }
                     //saves file onto the specified file path and overwrites any file that may exist in that shares the same path
                     postedFile.SaveAs(filePath);
+                    LoggerHelper.LogUsage("Upload Resume", user.UserId);
                     return Content((HttpStatusCode)200, "File Uploaded");
                 }
             }
@@ -465,6 +466,7 @@ namespace BroadwayBuilder.Api.Controllers
             {
                 return Unauthorized();
             }
+            int id=0;
             try
             {
                 using (var dbContext = new BroadwayBuilderContext())
@@ -475,8 +477,9 @@ namespace BroadwayBuilder.Api.Controllers
                     {
                         return Content((HttpStatusCode)404, "User does not exist");
                     }
+                    id = user.UserId;
                     var resumeService = new ResumeService(dbContext);
-                    Resume resume = resumeService.GetResumeByUserID(user.UserId);
+                    Resume resume = resumeService.GetResumeByUserID(id);
                     if (resume == null)//check if user has already submitted a resume
                     {
                         return Content((HttpStatusCode)404, "No resume on file");
@@ -488,6 +491,7 @@ namespace BroadwayBuilder.Api.Controllers
                     {
                         //virtual directory of the file
                         url = ConfigurationManager.AppSettings["ApiResumeDir"] + resume.ResumeGuid + "/" + resume.ResumeGuid + ".pdf";
+                        LoggerHelper.LogUsage("Get User Resume", user.UserId);
                         return Content((HttpStatusCode)200, url);
                     }
                     return Content((HttpStatusCode)404, "No resume on file");
@@ -495,6 +499,7 @@ namespace BroadwayBuilder.Api.Controllers
             }
             catch (Exception e)
             {
+                LoggerHelper.LogError("Get User Resume", id,e);
                 return Content((HttpStatusCode)500, e.Message);
             }
         }
@@ -552,6 +557,7 @@ namespace BroadwayBuilder.Api.Controllers
             {
                 return Unauthorized();
             }
+            int id=0;
             try
             {
                 using (var dbContext = new BroadwayBuilderContext())
@@ -563,7 +569,8 @@ namespace BroadwayBuilder.Api.Controllers
                         return Content(HttpStatusCode.NotFound, "User was not found within the database");
                     }
                     var resumeService = new ResumeService(dbContext);
-                    Resume resume = resumeService.GetResumeByUserID(user.UserId);
+                    id = user.UserId;
+                    Resume resume = resumeService.GetResumeByUserID(id);
                     if (resume == null)//check if user has already submitted a resume; null
                     {
                         return Content((HttpStatusCode)404, "No resume on file");
@@ -581,6 +588,7 @@ namespace BroadwayBuilder.Api.Controllers
                     var result = dbContext.SaveChanges();
                     if (result > 0)//check if any rows were affected in the database
                     {
+                        LoggerHelper.LogUsage("Apply to Theater Job", user.UserId);
                         return Content((HttpStatusCode)200, "Successfully Applied!");
                     }
                     return Content((HttpStatusCode)500, "Wasn't able to successfully apply");
@@ -588,6 +596,7 @@ namespace BroadwayBuilder.Api.Controllers
             }
             catch (Exception e)
             {
+                LoggerHelper.LogError("User applying to TheaterJob", id, e);
                 return Content((HttpStatusCode)400, e.Message);
             }
         }
