@@ -152,7 +152,9 @@ export default {
             Authorization: `Bearer ${this.$store.state.token}`
           }
         })
-        .then(response => (this.file = response.data));
+        .then(response => {
+          this.file = response.data;
+        });
     },
     async getJobPostings() {
       // Obtain all jobs from the database within a range

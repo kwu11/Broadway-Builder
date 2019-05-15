@@ -156,16 +156,29 @@ export default {
     },
     async applyToJob(helpWantedId) {
       await axios
-        .post("https://api.broadwaybuilder.xyz/helpwanted/userapply", {
-          params: {
-            helpwantedid: helpWantedId
+        .post(
+          "https://api.broadwaybuilder.xyz/helpwanted/userapply",
+          {
+            params: {
+              helpwantedid: helpWantedId
+            }
           },
-          headers: {
-            Authorization: `Bearer ${this.$store.state.token}`
+          {
+            headers: {
+              Authorization: `Bearer ${this.$store.state.token}`
+            }
           }
-        })
+        )
         .then(response => alert(response.data))
-        .catch(error => alert(error));
+        .catch(error =>
+          alert(
+            error +
+              " " +
+              helpWantedId +
+              " " +
+              `Bearer ${this.$store.state.token}`
+          )
+        );
     },
     calculateDateDifference(datePosted) {
       var dateCreated = new Date(Date.parse(datePosted));
