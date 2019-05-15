@@ -63,7 +63,7 @@
             <a class="card-footer-item" v-if="!job.edit" @click="deleteConfirmation = true; helpWantedId = job.HelpWantedId; jobIndex = index">Delete</a>
           </footer>
           <footer class="card-footer" v-else-if="!permission && job.show">
-            <a class="card-footer-item" :helpWantedId="helpWantedId" @click="applyToJob(helpWantedId)">Apply</a>
+            <a class="card-footer-item" @click="applyToJob(job.HelpWantedId)">Apply</a>
           </footer>
         </div>
       </div>
