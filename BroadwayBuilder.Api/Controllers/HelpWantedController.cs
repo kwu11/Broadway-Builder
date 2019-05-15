@@ -550,7 +550,7 @@ namespace BroadwayBuilder.Api.Controllers
 
         [HttpPost, Route("userapply")] //apply to a theater job
         [SwaggerResponse((HttpStatusCode)200, "A string status message.")]
-        public IHttpActionResult UserApplyToJob(int helpwantedid)
+        public IHttpActionResult UserApplyToJob([FromBody]int helpwantedid)
         {
             string token = ControllerHelper.GetTokenFromAuthorizationHeader(Request.Headers);
             if (token == null)
