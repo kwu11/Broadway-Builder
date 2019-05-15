@@ -41,7 +41,7 @@
 
         <!-- Pagination for job postings -->
         <div class="text-sm-center">
-          <v-pagination v-model="currentPage" @input="choosePage(currentPage)" color="#6F0000" :length="totalPages" :total-visible="10"></v-pagination>
+          <v-pagination v-model="currentPage" @input="choosePage(currentPage)" color="#6F0000" :length="totalPages" :total-visible="7"></v-pagination>
         </div>
       </div>
     </div>
@@ -79,7 +79,8 @@ export default {
       // Boolean value to display new job posting inputs
       addJob: false,
       // Filter applied to a job
-      filters: [],
+      jobType: [],
+      position: [],
       // Resume file
       file: "",
       // Mocked user
@@ -87,8 +88,26 @@ export default {
     };
   },
   methods: {
-    filterJobPostings(jobFilters) {
-      this.filters = jobFilters;
+    async filterJobPostings(filters) {
+      // this.jobType = Array.from(filters.jobTypeFilters);
+      // this.position = Array.from(filters.rolesFilters);
+      // await axios
+      //   .get(
+      //     "https://api.broadwaybuilder.xyz/helpwanted/getfilteredtheaterjobs",
+      //     {
+      //       params: {
+      //         theaterid: this.theater.TheaterId,
+      //         jobType: this.jobType,
+      //         position: this.position,
+      //         currentPage: this.currentPage,
+      //         numberOfItems: this.numberOfItems
+      //       }
+      //     }
+      //   )
+      //   .then(response => {
+      //     this.jobs = response.data.theaterJobList;
+      //     this.totalPages = Math.ceil(response.data.count / this.numberOfItems);
+      //   });
     },
     async choosePage(page) {
       this.currentPage = page;
@@ -113,13 +132,11 @@ export default {
         formData.append(this.file.name, this.file);
         await axios
           .put(
-            "https://api.broadwaybuilder.xyz/helpwanted/uploadresume",
+            "https://api.broadwaybuilder.xyz/helpwanted/uploaduserresume",
             formData,
             {
-              params: {
-                userId: this.userId
-              },
               headers: {
+                Authorization: `Bearer ${this.$store.state.token}`,
                 "Content-Type": "multipart/form-data"
               }
             }
@@ -130,9 +147,9 @@ export default {
     },
     async getResume() {
       await axios
-        .get("https://api.broadwaybuilder.xyz/helpwanted/myresume", {
-          params: {
-            userId: this.userId
+        .get("https://api.broadwaybuilder.xyz/helpwanted/getuserresume", {
+          headers: {
+            Authorization: `Bearer ${this.$store.state.token}`
           }
         })
         .then(response => (this.file = response.data));
@@ -150,12 +167,10 @@ export default {
           }
         })
         // Set the jobs to the queryed job posting selection
-        .then(
-          response => (
-            (this.jobs = response.data.JobPosting),
-            (this.totalPages = response.data.Count)
-          )
-        );
+        .then(response => {
+          this.jobs = response.data.theaterJobList;
+          this.totalPages = Math.ceil(response.data.count / this.numberOfItems);
+        });
 
       for (var i = 0; i < this.jobs.length; i++) {
         // Appends a "show" attribute to display more details about the job

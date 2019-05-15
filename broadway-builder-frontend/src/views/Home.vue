@@ -22,14 +22,11 @@
 </template>
 
 <script>
-// @ is an alias to /src
-import SearchBar from "@/components/SearchBar.vue";
-
 export default {
-  name: "home",
-  components: {
-    SearchBar
-  }
+  name: "home"
+  // created() {
+  //   console.log("User Token: " + this.$store.state.token);
+  // }
 };
 </script>
 
