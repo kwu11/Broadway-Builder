@@ -41,7 +41,7 @@
 
         <!-- Pagination for job postings -->
         <div class="text-sm-center">
-          <v-pagination v-model="currentPage" @input="choosePage(currentPage)" color="#6F0000" :length="totalPages" :total-visible="10"></v-pagination>
+          <v-pagination v-model="currentPage" @input="choosePage(currentPage)" color="#6F0000" :length="totalPages" :total-visible="7"></v-pagination>
         </div>
       </div>
     </div>
@@ -113,12 +113,9 @@ export default {
         formData.append(this.file.name, this.file);
         await axios
           .put(
-            "https://api.broadwaybuilder.xyz/helpwanted/uploadresume",
+            "https://api.broadwaybuilder.xyz/helpwanted/uploaduserresume",
             formData,
             {
-              params: {
-                userId: this.userId
-              },
               headers: {
                 "Content-Type": "multipart/form-data"
               }
@@ -150,12 +147,10 @@ export default {
           }
         })
         // Set the jobs to the queryed job posting selection
-        .then(
-          response => (
-            (this.jobs = response.data.JobPosting),
-            (this.totalPages = response.data.Count)
-          )
-        );
+        .then(response => {
+          this.jobs = response.data.theaterJobList;
+          this.totalPages = Math.ceil(response.data.count / this.numberOfItems);
+        });
 
       for (var i = 0; i < this.jobs.length; i++) {
         // Appends a "show" attribute to display more details about the job
