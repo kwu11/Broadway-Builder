@@ -117,6 +117,7 @@ export default {
             formData,
             {
               headers: {
+                Authorization: `Bearer ${this.$store.state.token}`,
                 "Content-Type": "multipart/form-data"
               }
             }
