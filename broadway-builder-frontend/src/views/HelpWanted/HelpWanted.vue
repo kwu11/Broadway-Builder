@@ -79,7 +79,8 @@ export default {
       // Boolean value to display new job posting inputs
       addJob: false,
       // Filter applied to a job
-      filters: [],
+      jobType: [],
+      position: [],
       // Resume file
       file: "",
       // Mocked user
@@ -87,8 +88,27 @@ export default {
     };
   },
   methods: {
-    filterJobPostings(jobFilters) {
-      this.filters = jobFilters;
+    async filterJobPostings(filters) {
+      this.jobType = Array.from(filters.jobTypeFilters);
+      this.position = Array.from(filters.rolesFilters);
+
+      await axios
+        .get(
+          "https://api.broadwaybuilder.xyz/helpwanted/getfilteredtheaterjobs",
+          {
+            params: {
+              theaterid: this.theater.TheaterId,
+              jobType: this.jobtype,
+              position: this.position,
+              currentPage: this.currentPage,
+              numberOfItems: this.numberOfItems
+            }
+          }
+        )
+        .then(response => {
+          this.jobs = response.data.theaterJobList;
+          this.totalPages = Math.ceil(response.data.count / this.numberOfItems);
+        });
     },
     async choosePage(page) {
       this.currentPage = page;
@@ -128,7 +148,7 @@ export default {
     },
     async getResume() {
       await axios
-        .get("https://api.broadwaybuilder.xyz/helpwanted/myresume", {
+        .get("https://api.broadwaybuilder.xyz/helpwanted/getuserresume", {
           headers: {
             Authorization: `Bearer ${this.$store.state.token}`
           }
