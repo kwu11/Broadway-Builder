@@ -154,24 +154,16 @@ export default {
           )
         );
     },
-    async applyToJob(helpWantedId) {
+    async applyToJob(helpwantedid) {
       await axios
         .post("https://api.broadwaybuilder.xyz/helpwanted/userapply", {
-          helpwantedid: helpWantedId,
+          helpwantedid,
           headers: {
-            'Authorization': `Bearer ${this.$store.state.token}`
+            Authorization: `Bearer ${this.$store.state.token}`
           }
         })
         .then(response => alert(response.data))
-        .catch(error =>
-          alert(
-            error +
-              " " +
-              helpWantedId +
-              " " +
-              `Bearer ${this.$store.state.token}`
-          )
-        );
+        .catch(error => alert(error));
     },
     calculateDateDifference(datePosted) {
       var dateCreated = new Date(Date.parse(datePosted));
