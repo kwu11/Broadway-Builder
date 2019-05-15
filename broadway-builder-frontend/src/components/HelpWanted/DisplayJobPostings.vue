@@ -156,10 +156,10 @@ export default {
     },
     async applyToJob(helpwantedid) {
       await axios
-        .post("https://api.broadwaybuilder.xyz/helpwanted/userapply", {
-          helpwantedid,
+        .post("https://api.broadwaybuilder.xyz/helpwanted/userapply", 
+          helpwantedid, {
           headers: {
-            Authorization: `Bearer ${this.$store.state.token}`
+            'Authorization': `Bearer ${this.$store.state.token}`
           }
         })
         .then(response => alert(response.data))
