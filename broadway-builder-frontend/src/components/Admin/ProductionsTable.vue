@@ -363,11 +363,9 @@ export default {
         .post(
           "https://api.broadwaybuilder.xyz/production/" + newProdID + "/create",
           {
-            params: {
-              ProductionID: newProdID,
-              Date: this.date,
-              Time: this.openTime
-            }
+            ProductionID: newProdID,
+            Date: this.date,
+            Time: this.openTime
           }
         )
         .then(console.log("Successfully created production!!!"))
@@ -388,18 +386,18 @@ export default {
         this.editedIndex = -1;
       }, 300);
     },
-    confirm() {
+    async confirm() {
       if (this.editedIndex > -1) {
         Object.assign(
           this.productions[this.editedIndex],
           this.editedProduction
         );
       } else {
-        this.createProduction(this.editedProduction);
+        await this.createProduction(this.editedProduction);
 
         this.editedProduction.ProductionID = this.newProd.ProductionID;
 
-        this.addDateTime(this.editedProduction.ProductionID);
+      await this.addDateTime(this.editedProduction.ProductionID);
       }
 
       this.close();

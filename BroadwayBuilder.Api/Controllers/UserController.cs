@@ -309,39 +309,48 @@ namespace BroadwayBuilder.Api.Controllers
             }
 
         }
+        //[HttpPost]
+        //[Route("delete")]
+        //[SwaggerResponse(HttpStatusCode.OK)]
+        //public IHttpActionResult DeleteUserFromSSO([FromBody] LoginRequestModel request)
+        //{
+        //    using (var _dbcontext = new BroadwayBuilderContext())
+        //    {
+        //        try
+        //        {
+        //            ControllerHelper.ValidateLoginRequestModel(ModelState, request);
+
+        //            Guid userSsoId = ControllerHelper.ParseAndCheckId(request.SSOUserId);
+
+        //            SignatureService signatureService = new SignatureService();
+        //            if (!signatureService.IsValidClientRequest(request.SSOUserId, request.Email, request.Timestamp, request.Signature))
+        //            {
+        //                return Content(HttpStatusCode.Unauthorized, "Invalid Signature Token");
+        //            }
+
+        //            UserService userService = new UserService(_dbcontext);
+        //            var user = userService.GetUser(request.Email);
+        //            userService.DeleteUser(request.Email);
+
+        //            _dbcontext.Sessions.RemoveRange(_dbcontext.Sessions.Where(o => o.UserId == user.UserId));
+        //            _dbcontext.SaveChanges();
+
+        //            return Ok("User deleted");
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            return InternalServerError(e);
+        //        }
+        //    }
+        //}
+
+        
         [HttpPost]
         [Route("delete")]
         [SwaggerResponse(HttpStatusCode.OK)]
-        public IHttpActionResult DeleteUserFromSSO([FromBody] LoginRequestModel request)
+        public IHttpActionResult DeleteUserFromSSO()
         {
-            using (var _dbcontext = new BroadwayBuilderContext())
-            {
-                try
-                {
-                    ControllerHelper.ValidateLoginRequestModel(ModelState, request);
-
-                    Guid userSsoId = ControllerHelper.ParseAndCheckId(request.SSOUserId);
-
-                    SignatureService signatureService = new SignatureService();
-                    if (!signatureService.IsValidClientRequest(request.SSOUserId, request.Email, request.Timestamp, request.Signature))
-                    {
-                        return Content(HttpStatusCode.Unauthorized, "Invalid Signature Token");
-                    }
-
-                    UserService userService = new UserService(_dbcontext);
-                    var user = userService.GetUser(request.Email);
-                    userService.DeleteUser(request.Email);
-
-                    _dbcontext.Sessions.RemoveRange(_dbcontext.Sessions.Where(o => o.UserId == user.UserId));
-                    _dbcontext.SaveChanges();
-
-                    return Ok("User deleted");
-                }
-                catch (Exception e)
-                {
-                    return InternalServerError(e);
-                }
-            }
+            return Ok();
         }
 
         [HttpPut]

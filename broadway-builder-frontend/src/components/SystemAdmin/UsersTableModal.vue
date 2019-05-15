@@ -1,6 +1,85 @@
 <template>
 <div>
-  <transition name="modal-fade">
+  <br>
+  <v-flex xs10 md10 lg4 offset-xs1 offset-sm3 offset-md1 offset-lg4>
+    <v-card >
+      <v-card-title primary-title>
+        <span>
+          <h2>Theater Information</h2>
+        </span>
+      </v-card-title>
+      
+      <v-card-text>
+
+        <v-form 
+          ref="form"
+          v-model="valid"
+          lazy-validation
+        >
+          <v-text-field
+            v-model="user.FirstName"
+            :counter="10"
+            :rules="FirstNameRules"
+            label="First Name"
+            required
+          ></v-text-field>
+
+          <v-text-field
+            v-model="user.LastName"
+            :counter="10"
+            :rules="LastNameRules"
+            label="Last Name"
+            required
+          ></v-text-field>
+
+          <v-text-field
+            v-model="user.StreetAddress"
+            :rules="StreetAddressRules"
+            label="Street Address"
+            required
+          ></v-text-field>
+
+          <v-text-field
+            v-model="user.City"
+            :rules="CityRules"
+            label="City"
+            required
+          ></v-text-field>
+
+          <v-select
+            v-model="user.StateProvince"
+            :rules="StateRules"
+            :items="states"
+            label="State"
+            required
+          ></v-select>
+
+          <v-text-field
+            v-model="user.Country"
+            :rules="CountryRules"
+            label="Country"
+            required
+          ></v-text-field>
+
+          <v-btn
+            color="info"
+            v-on:click="editUserInfo"
+            @click="close"
+          >
+            Submit
+          </v-btn>
+
+          <v-btn
+            color="warning"
+            @click="close"
+          >
+            Cancel
+          </v-btn>
+        </v-form>
+      </v-card-text>  
+    </v-card>
+  </v-flex>
+  <!-- <transition name="modal-fade">
     <div class="modal-backdrop">
       <div
         class="modal"
@@ -66,7 +145,7 @@
         </footer>
       </div>
     </div>
-  </transition>
+  </transition> -->
   </div>
 </template>
 
@@ -80,6 +159,7 @@ export default {
   },
   data() {
     return {
+        valid: true,
         user: {
             UserId: this.passedUser.UserId,
             Username: this.passedUser.Username,
@@ -89,7 +169,80 @@ export default {
             City: this.passedUser.City,
             StateProvince: this.passedUser.StateProvince,
             Country: this.passedUser.Country
-        }
+        },
+        
+        FirstNameRules: [
+          v => !!v || 'First Name is required',
+          v => (v && v.length <= 10) || 'Name must be less than 10 characters'
+        ],
+        LastNameRules: [
+          v => !!v || 'Last Name is required',
+          v => (v && v.length <= 10) || 'Name must be less than 10 characters'
+        ],
+        StreetAddressRules: [
+          v => !!v || 'Street Address is required',
+        ],
+        CityRules: [
+          v => !!v || 'City is required',
+        ],
+        StateRules: [
+          v => !!v || 'State is required',
+        ],
+        CountryRules: [
+          v => !!v || 'Country is required',
+        ],
+        states: [
+          "AL",
+          "AK",
+          "AZ",
+          "AR",
+          "CA",
+          "CO",
+          "CT",
+          "DE",
+          "FL",
+          "GA",
+          "HI",
+          "ID",
+          "IL",
+          "IN",
+          "IA",
+          "KS",
+          "KY",
+          "LA",
+          "ME",
+          "MD",
+          "MA",
+          "MI",
+          "MN",
+          "MS",
+          "MO",
+          "MT",
+          "NE",
+          "NV",
+          "NH",
+          "NJ",
+          "NM",
+          "NY",
+          "NC",
+          "ND",
+          "OH",
+          "OK",
+          "OR",
+          "PA",
+          "RI",
+          "SC",
+          "SD",
+          "TN",
+          "TX",
+          "UT",
+          "VT",
+          "VA",
+          "WA",
+          "WV",
+          "WI",
+          "WY"
+        ]
     }
   },
   methods: {
