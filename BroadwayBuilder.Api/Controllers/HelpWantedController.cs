@@ -631,26 +631,26 @@ namespace BroadwayBuilder.Api.Controllers
             }
         }
 
-        [HttpGet,Route("log")]
-        public IHttpActionResult Log(int id)
-        {
-            try
-            {
-                LogService logService = new LogService();
-                //logService.TestLogger();
-                DateTime old = new DateTime(2019,4,20);
-                DateTime dateTime = DateTime.UtcNow;
-                var list = logService.GetErrorLogs(old,dateTime);
-                return Content(HttpStatusCode.OK,list);
-            }
-            catch(Exception e)
-            {
-                LogService logService2 = new LogService();
-                var context = HttpContext.Current;
-                logService2.LogError(context,e);
-                return Ok("Check Atlas!");
-            }
-        }
+        //[HttpGet,Route("log")]
+        //public IHttpActionResult Log(int id)
+        //{
+        //    try
+        //    {
+        //        LogService logService = new LogService();
+        //        //logService.TestLogger();
+        //        DateTime old = new DateTime(2019,4,20);
+        //        DateTime dateTime = DateTime.UtcNow;
+        //        var list = logService.GetErrorLogs(old,dateTime);
+        //        return Content(HttpStatusCode.OK,list);
+        //    }
+        //    catch(Exception e)
+        //    {
+        //        LogService logService2 = new LogService();
+        //        var context = HttpContext.Current;
+        //        logService2.LogError(context,e);
+        //        return Ok("Check Atlas!");
+        //    }
+        //}
 
     }
 }
