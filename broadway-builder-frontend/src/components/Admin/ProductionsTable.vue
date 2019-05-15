@@ -1,12 +1,13 @@
 <template>
-  <div class="ProductionsTable">
+  <div>
     <v-toolbar flat color="white">
       <v-toolbar-title>Productions</v-toolbar-title>
       <v-divider class="mx-2" inset vertical></v-divider>
       <v-spacer></v-spacer>
+      <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
       <v-dialog v-model="dialog" max-width="600px">
         <template v-slot:activator="{on}">
-          <v-btn @click="refreshForm" color="primary" dark class="mb-2" v-on="on">New Production</v-btn>
+          <v-btn color="primary" dark class="mb-2" v-on="on">New Production</v-btn>
         </template>
         <v-card>
           <v-card-title>
@@ -87,19 +88,30 @@
                 <v-flex>
                   <v-text-field value="United States" readonly></v-text-field>
                 </v-flex>
+                <v-flex v-if="editedIndex=-1">
+                  <v-subheader>Select an opening date for the show:</v-subheader>
+                  <v-date-picker v-model="date"></v-date-picker>
+                  <v-subheader>Time of the show</v-subheader>
+                  <v-text-field
+                    v-model="openTime"
+                    label="Start of Show:"
+                    value="19:30:00"
+                    type="time"
+                  ></v-text-field>
+                </v-flex>
               </v-layout>
             </v-container>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" flat @click="close, refreshForm">Cancel</v-btn>
+            <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
             <v-btn color="blue darken-1" flat @click="confirm">Confirm</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
     </v-toolbar>
 
-    <v-data-table :headers="headers" :items="productions" class="elevation-1">
+    <v-data-table :headers="headers" :items="productions" :search="search" class="elevation-1">
       <template v-slot:items="props">
         <td>{{props.item.ProductionID}}</td>
         <td>{{props.item.ProductionName}}</td>
@@ -107,7 +119,7 @@
         <td>{{props.item.DirectorFirstName}} {{props.item.DirectorLastName}}</td>
         <td>{{props.item.Street}}, {{props.item.City}}, {{props.item.StateProvince}} {{props.item.Zipcode}}</td>
         <td>
-          <a @click="editProduction(props.item), refreshForm">
+          <a @click="editProduction(props.item)">
             <img src="@/assets/edit.png" alt="Edit">
           </a>
         </td>
@@ -136,12 +148,14 @@
 <script>
 import axios from "axios";
 export default {
-  name: "ProductionsTable",
   data() {
     return {
       productions: [],
+      date: "",
+      openTime: "",
       dialog: false,
-
+      dialog2: false,
+      search: "",
       file: "",
       programID: 0,
       states: [
@@ -197,7 +211,19 @@ export default {
         "WY"
       ],
 
-      editedItem: -1,
+      editedIndex: -1,
+      newProd: {
+        productionName: "",
+        theaterID: 1,
+        directorFirstName: "",
+        directorLastName: "",
+        street: "",
+        city: "",
+        stateProvince: "",
+        zipcode: "",
+        country: "United States",
+        ProductionID: 0
+      },
       editedProduction: {
         productionName: "",
         theaterID: 1,
@@ -207,7 +233,8 @@ export default {
         city: "",
         stateProvince: "",
         zipcode: "",
-        country: "United States"
+        country: "United States",
+        ProductionID: 0
       },
       defaultProduction: {
         productionName: "",
@@ -218,7 +245,8 @@ export default {
         city: "",
         stateProvince: "",
         zipcode: "",
-        country: "United States"
+        country: "United States",
+        ProductionID: 0
       },
       headers: [
         {
@@ -267,10 +295,10 @@ export default {
   },
   computed: {
     formTitle() {
-      return this.editedItem === -1 ? "New Production" : "Edit Production";
+      return this.editedIndex === -1 ? "New Production" : "Edit Production";
     }
   },
-  watched: {
+  watch: {
     dialog(val) {
       val || this.close();
     }
@@ -311,7 +339,7 @@ export default {
         .get("https://api.broadwaybuilder.xyz/production/getProductions", {
           params: {
             previousDate: today,
-            // theaterID: 2,
+            theaterID: 1,
             pageSize: 1000
           }
         })
@@ -323,11 +351,28 @@ export default {
           "https://api.broadwaybuilder.xyz/production/create",
           createdProduction
         )
-        .then(function() {
-          console.log("New Production Created!");
+        .then(response => {
+          this.newProd = response.data;
         })
         .catch(function() {
           console.log("Failure.");
+        });
+    },
+    async addDateTime(newProdID) {
+      await axios
+        .post(
+          "https://api.broadwaybuilder.xyz/production/" + newProdID + "/create",
+          {
+            params: {
+              ProductionID: newProdID,
+              Date: this.date,
+              Time: this.openTime
+            }
+          }
+        )
+        .then(console.log("Successfully created production!!!"))
+        .catch(function() {
+          console.log("Failure!");
         });
     },
     onFileChange() {
@@ -350,18 +395,19 @@ export default {
           this.editedProduction
         );
       } else {
-        this.productions.push(this.editedProduction);
+        this.createProduction(this.editedProduction);
+
+        this.editedProduction.ProductionID = this.newProd.ProductionID;
+
+        this.addDateTime(this.editedProduction.ProductionID);
       }
+
       this.close();
     },
     editProduction(item) {
-      this.editedIndex = 0;
+      this.editedIndex = this.productions.indexOf(item);
       this.editedProduction = Object.assign({}, item);
       this.dialog = true;
-    },
-    refreshForm() {
-      this.$refs.form.resetValidation();
-      this.$refs.form.reset();
     }
   }
 };
@@ -373,6 +419,6 @@ img
  width: 2em
  height: 2em
 
-
 </style>
+
 
