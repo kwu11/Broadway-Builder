@@ -159,7 +159,7 @@ export default {
         .post("https://api.broadwaybuilder.xyz/helpwanted/userapply", {
           helpwantedid: helpWantedId,
           headers: {
-            Authorization: `Bearer ${this.$store.state.token}`
+            'Authorization': `Bearer ${this.$store.state.token}`
           }
         })
         .then(response => alert(response.data))
