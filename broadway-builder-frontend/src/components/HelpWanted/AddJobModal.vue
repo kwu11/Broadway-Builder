@@ -120,13 +120,11 @@ export default {
           this.newJob
         )
         .then(
-          response => (
-            (this.notifyUser = true),
-            (this.notifyMessage = "New job posting successfully added"),
-            setTimeout(() => {
-              this.$emit("cancel");
-            }, this.modalTimeout)
-          )
+          (this.notifyUser = true),
+          (this.notifyMessage = "New job posting successfully added"),
+          setTimeout(() => {
+            this.$emit("cancel");
+          }, this.modalTimeout)
         )
         .catch(err => alert(err));
     }

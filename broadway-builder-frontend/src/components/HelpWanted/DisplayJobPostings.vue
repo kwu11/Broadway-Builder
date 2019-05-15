@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="columns" v-for="(job, index) in filteredValues" v-bind:key="index">
+    <div class="columns" v-for="(job, index) in jobPostings" v-bind:key="index">
       <!-- This coloumn just displays a brief description for the job posting -->
       <div class="column is-12">
         <div class="card">
@@ -82,7 +82,7 @@ import DeleteJobModal from "@/components/HelpWanted/DeleteConfirmationModal.vue"
 import EditJobModal from "@/components/HelpWanted/EditConfirmationModal.vue";
 
 export default {
-  props: ["jobPostings", "hasPermission", "filters", "file"],
+  props: ["jobPostings", "hasPermission", "file"],
   components: {
     ResumeModal,
     DeleteJobModal,
@@ -94,7 +94,6 @@ export default {
       maxTextLength: 340,
       textTail: "...",
       jobs: this.jobPostings,
-      jobFilters: this.filters,
       permission: this.hasPermission,
       deleteConfirmation: false,
       editConfirmation: false,
@@ -106,17 +105,17 @@ export default {
       userid: 1
     };
   },
-  computed: {
-    filteredValues() {
-      if (!this.filters.length) return this.jobPostings;
+  // computed: {
+  //   filteredValues() {
+  //     if (!this.filters.length) return this.jobPostings;
 
-      return this.jobPostings.filter(
-        job =>
-          this.filters.includes(job.Position) ||
-          this.filters.includes(job.JobType)
-      );
-    }
-  },
+  //     return this.jobPostings.filter(
+  //       job =>
+  //         this.filters.includes(job.Position) ||
+  //         this.filters.includes(job.JobType)
+  //     );
+  //   }
+  // },
   methods: {
     formatLongText(text, length, tail) {
       // Create new div element

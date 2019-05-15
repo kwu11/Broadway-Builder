@@ -34,8 +34,8 @@
       <div class="column is-10">
 
         <!-- This displays all jobs stored in the database as cards on the page -->
-        <DisplayJobPostings v-if="hasPermission" :jobPostings="jobs" :hasPermission="true" :filters="filters" @deleteFinished="getTotalPages(), getJobPostings()" />
-        <DisplayJobPostings v-else :jobPostings="jobs" :hasPermission="false" :filters="filters" :file="file" @deleteFinished="getTotalPages(), getJobPostings()" />
+        <DisplayJobPostings v-if="hasPermission" :jobPostings="jobs" :hasPermission="true" :filters="filters" @deleteFinished="getJobPostings" />
+        <DisplayJobPostings v-else :jobPostings="jobs" :hasPermission="false" :filters="filters" :file="file" @deleteFinished="getJobPostings" />
         <h1 v-if="jobs.length === 0">No job postings available</h1>
         <v-divider></v-divider>
 
@@ -88,27 +88,27 @@ export default {
     };
   },
   methods: {
-    async filterJobPostings(filters) {
-      // this.jobType = Array.from(filters.jobTypeFilters);
-      // this.position = Array.from(filters.rolesFilters);
-      // await axios
-      //   .get(
-      //     "https://api.broadwaybuilder.xyz/helpwanted/getfilteredtheaterjobs",
-      //     {
-      //       params: {
-      //         theaterid: this.theater.TheaterId,
-      //         jobType: this.jobType,
-      //         position: this.position,
-      //         currentPage: this.currentPage,
-      //         numberOfItems: this.numberOfItems
-      //       }
-      //     }
-      //   )
-      //   .then(response => {
-      //     this.jobs = response.data.theaterJobList;
-      //     this.totalPages = Math.ceil(response.data.count / this.numberOfItems);
-      //   });
-    },
+    //async filterJobPostings(filters) {
+    // this.jobType = Array.from(filters.jobTypeFilters);
+    // this.position = Array.from(filters.rolesFilters);
+    // await axios
+    //   .get(
+    //     "https://api.broadwaybuilder.xyz/helpwanted/getfilteredtheaterjobs",
+    //     {
+    //       params: {
+    //         theaterid: this.theater.TheaterId,
+    //         jobType: this.jobType,
+    //         position: this.position,
+    //         currentPage: this.currentPage,
+    //         numberOfItems: this.numberOfItems
+    //       }
+    //     }
+    //   )
+    //   .then(response => {
+    //     this.jobs = response.data.theaterJobList;
+    //     this.totalPages = Math.ceil(response.data.count / this.numberOfItems);
+    //   });
+    //},
     async choosePage(page) {
       this.currentPage = page;
       await this.getJobPostings();
