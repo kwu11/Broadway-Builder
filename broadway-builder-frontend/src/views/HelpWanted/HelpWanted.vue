@@ -125,7 +125,7 @@ export default {
       this.file = this.$refs.file.files[0];
     },
     async uploadResume() {
-      if (this.fileName === "") {
+      if (this.file === "") {
         alert("Please enter a resume...");
       } else {
         let formData = new FormData();
@@ -141,7 +141,10 @@ export default {
               }
             }
           )
-          .then(response => alert(response.data))
+          .then(response => {
+            alert(response.data);
+            this.getResume();
+          })
           .catch(error => alert(error));
       }
     },
@@ -152,7 +155,10 @@ export default {
             Authorization: `Bearer ${this.$store.state.token}`
           }
         })
-        .then(response => (this.file = response.data));
+        .then(response => {
+          this.file = response.data;
+          console.log(this.file);
+        });
     },
     async getJobPostings() {
       // Obtain all jobs from the database within a range
