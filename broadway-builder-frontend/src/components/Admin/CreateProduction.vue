@@ -1,3 +1,4 @@
+<!--Basic modal for inputting information to create a new production.-->
 <template>
   <div>
     <h1>Create A Production</h1>

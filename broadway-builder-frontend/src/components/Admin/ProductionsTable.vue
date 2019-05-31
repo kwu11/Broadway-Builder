@@ -1,3 +1,4 @@
+<!-- Displays all productions associated with the theater, as well as CRUD operations for them. -->
 <template>
   <div>
     <v-toolbar flat color="white">
@@ -5,6 +6,8 @@
       <v-divider class="mx-2" inset vertical></v-divider>
       <v-spacer></v-spacer>
       <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
+      
+      <!-- Dialog with input fields for either creating or editing a production. -->
       <v-dialog v-model="dialog" max-width="600px">
         <template v-slot:activator="{on}">
           <v-btn color="primary" dark class="mb-2" v-on="on">New Production</v-btn>
@@ -111,6 +114,8 @@
       </v-dialog>
     </v-toolbar>
 
+
+    <!-- Setting the headers/columns for the production table. -->
     <v-data-table :headers="headers" :items="productions" :search="search" class="elevation-1">
       <template v-slot:items="props">
         <td>{{props.item.ProductionID}}</td>
@@ -118,16 +123,19 @@
         <td>{{props.item.TheaterID}}</td>
         <td>{{props.item.DirectorFirstName}} {{props.item.DirectorLastName}}</td>
         <td>{{props.item.Street}}, {{props.item.City}}, {{props.item.StateProvince}} {{props.item.Zipcode}}</td>
+        <!-- Edit Production -->
         <td>
           <a @click="editProduction(props.item)">
             <img src="@/assets/edit.png" alt="Edit">
           </a>
         </td>
+        <!-- Delete Production -->
         <td>
           <a v-on:click="deleteProduction(props.item.ProductionID)">
             <img src="@/assets/tester.png" alt="Delete">
           </a>
         </td>
+        <!-- Upload a new program for that production. -->
         <td>
           <a
             v-if="programID != props.item.ProductionID"
@@ -150,11 +158,12 @@ import axios from "axios";
 export default {
   data() {
     return {
+      //List of productions mounted at beginning of load
       productions: [],
+      //date and OpenTime used to create the Date and Time of a productions performance
       date: "",
       openTime: "",
       dialog: false,
-      dialog2: false,
       search: "",
       file: "",
       programID: 0,
@@ -212,6 +221,7 @@ export default {
       ],
 
       editedIndex: -1,
+      //Template for new production object
       newProd: {
         productionName: "",
         theaterID: 1,
@@ -224,6 +234,7 @@ export default {
         country: "United States",
         ProductionID: 0
       },
+      //Template for edited production object
       editedProduction: {
         productionName: "",
         theaterID: 1,
@@ -248,6 +259,7 @@ export default {
         country: "United States",
         ProductionID: 0
       },
+      //Setting headers/columns for the table of productions
       headers: [
         {
           text: "Production ID",
@@ -293,6 +305,7 @@ export default {
       ]
     };
   },
+  //Determines to either create a production or edit existing one
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "New Production" : "Edit Production";
@@ -303,6 +316,7 @@ export default {
       val || this.close();
     }
   },
+  //Gets list of theater's productions upon loading
   async mounted() {
     var today = new Date();
     this.getProductions(today);
