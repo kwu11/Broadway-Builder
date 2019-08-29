@@ -3,7 +3,7 @@
 using DataAccessLayer;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using ServiceLayer.Services;
 
 namespace ServiceLayer.Test
 
@@ -25,7 +25,7 @@ namespace ServiceLayer.Test
 
             var aString = "Rate Show";
 
-            var permission = new Permission(aString);
+            var permission = new Permission(aString,true);
 
 
 
@@ -76,7 +76,7 @@ namespace ServiceLayer.Test
 
             var aString = "RateShow";
 
-            var permission = new Permission(aString);
+            var permission = new Permission(aString,true);
 
             var context = new BroadwayBuilderContext();
 
@@ -90,15 +90,7 @@ namespace ServiceLayer.Test
 
 
             //Act
-
-            permissionService.CreatePermission(permission);
-
-            context.SaveChanges();
-
-
-
-            Permission getPermission = permissionService.GetPermission(aString);
-
+            Permission getPermission = permissionService.GetPermission(DataAccessLayer.Enums.PermissionsEnum.ActivateAbusiveAccount);
             if (getPermission != null)
 
                 actual = true;
@@ -126,7 +118,7 @@ namespace ServiceLayer.Test
 
             var aString = "Rate Show";
 
-            var permission = new Permission(aString);
+            var permission = new Permission(aString,true);
 
 
 

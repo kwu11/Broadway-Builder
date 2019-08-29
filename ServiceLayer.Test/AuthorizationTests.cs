@@ -1,8 +1,8 @@
 ﻿using System;
 using DataAccessLayer;
-using DataAccessLayer.Enums;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using ServiceLayer.Services;
 
 namespace ServiceLayer.Test
 {
@@ -13,47 +13,46 @@ namespace ServiceLayer.Test
         public void AuthorizationService_UserHasPermission_Pass()
         {
             // Arrange
+            BroadwayBuilderContext broadwayBuilderContext = new BroadwayBuilderContext();
+
             var username = "abixcastro@gmail.com";
-            var password = "abc123@@@!!!";
+            var firstName = "Abi";
+            var lastName = "Castro";
+            int age = 24;
             var dob = new DateTime(1994, 1, 7);
+            var streetAddress ="address1"; 
             var city = "San Diego";
             var stateProvince = "California";
             var country = "United States";
-            var role = "general";
             var enable = true;
 
-            var user = new User(username, password, dob, city, stateProvince, country, role, enable);
-            var permission = new Permission("CreateUser");
-            user.Permissions.Add(permission);
-            var NewRole = new Role("general");
+            var user = new User(username, firstName, lastName, age, dob, streetAddress,city, stateProvince, country, enable,Guid.NewGuid());
+            var permission = new Permission("RateShow", true);
+            var theater = new Theater("someTheater", "Regal", "theater st", "LA", "CA", "US", "323323");
 
-            BroadwayBuilderContext broadwayBuilderContext = new BroadwayBuilderContext();
-
+            
             var expected = true;
             var actual = false;
             
 
             var service = new AuthorizationService(broadwayBuilderContext);
             var userService = new UserService(broadwayBuilderContext);
-            var roleService = new RoleService(broadwayBuilderContext);
+            var theaterService = new TheaterService(broadwayBuilderContext);
             var permissionService = new PermissionService(broadwayBuilderContext);
 
             //Adding data into tables
-            permissionService.CreatePermission(permission);
-            broadwayBuilderContext.SaveChanges();
-            roleService.CreateRole(NewRole);
-            broadwayBuilderContext.SaveChanges();
             userService.CreateUser(user);
+            theaterService.CreateTheater(theater);
             broadwayBuilderContext.SaveChanges();
+            userService.AddUserRole(user.UserId, DataAccessLayer.Enums.RoleEnum.SysAdmin);
+            broadwayBuilderContext.SaveChanges();
+
 
             // Act 
-            actual = service.HasPermission(user,permission);
+            actual = service.HasPermission(user, DataAccessLayer.Enums.PermissionsEnum.ActivateAbusiveAccount);
 
-
-            userService.DeleteUserPermission(user, permission);
             userService.DeleteUser(user);
-            roleService.DeleteRole(NewRole);
-            permissionService.DeletePermission(permission);
+            theaterService.DeleteTheater(theater);
             broadwayBuilderContext.SaveChanges();
 
             // Assert
@@ -68,17 +67,18 @@ namespace ServiceLayer.Test
         {
             // Arrange
             var username = "abixcastro@gmail.com";
-            var password = "abc123@@@!!!";
+            var firstName = "Abi";
+            var lastName = "Castro";
+            int age = 24;
             var dob = new DateTime(1994, 1, 7);
+            var streetAddress = "address";
             var city = "San Diego";
             var stateProvince = "California";
             var country = "United States";
-            var role = "general";
             var enable = true;
 
-            var user = new User(username, password, dob, city, stateProvince, country, role, enable);
-            var permission = new Permission("CreateUser");
-            var NewRole = new Role("general");
+            var user = new User(username, firstName, lastName, age, dob, streetAddress,city, stateProvince, country, enable,Guid.NewGuid());
+            var theater = new Theater("someTheater", "Regal", "theater st", "LA", "CA", "US", "323323");
 
             BroadwayBuilderContext broadwayBuilderContext = new BroadwayBuilderContext();
 
@@ -88,23 +88,20 @@ namespace ServiceLayer.Test
 
             var service = new AuthorizationService(broadwayBuilderContext);
             var userService = new UserService(broadwayBuilderContext);
-            var roleService = new RoleService(broadwayBuilderContext);
             var permissionService = new PermissionService(broadwayBuilderContext);
+            var theaterService = new TheaterService(broadwayBuilderContext);
 
-            permissionService.CreatePermission(permission);
-            broadwayBuilderContext.SaveChanges();
-            roleService.CreateRole(NewRole);
-            broadwayBuilderContext.SaveChanges();
+            theaterService.CreateTheater(theater);
             userService.CreateUser(user);
+            broadwayBuilderContext.SaveChanges();
+            userService.AddUserRole(user.UserId, DataAccessLayer.Enums.RoleEnum.GeneralUser);
             broadwayBuilderContext.SaveChanges();
 
             // Act 
-            actual = service.HasPermission(user, permission);
-
+            actual = service.HasPermission(user, DataAccessLayer.Enums.PermissionsEnum.ActivateAbusiveAccount);
             
             userService.DeleteUser(user);
-            roleService.DeleteRole(NewRole);
-            permissionService.DeletePermission(permission);
+            theaterService.DeleteTheater(theater);
             broadwayBuilderContext.SaveChanges();
 
             // Assert

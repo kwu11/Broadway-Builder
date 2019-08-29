@@ -31,15 +31,35 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DnsClient, Version=1.2.0.0, Culture=neutral, PublicKeyToken=4574bb5573c51424, processorArchitecture=MSIL">
+      <HintPath>..\packages\DnsClient.1.2.0\lib\net471\DnsClient.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="MongoDB.Bson, Version=2.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Bson.2.9.0-beta1\lib\net452\MongoDB.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver, Version=2.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Driver.2.9.0-beta1\lib\net452\MongoDB.Driver.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver.Core, Version=2.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MongoDB.Driver.Core.2.9.0-beta1\lib\net452\MongoDB.Driver.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -48,18 +68,64 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Enums\RoleType.cs" />
-    <Compile Include="Permission.cs" />
-    <Compile Include="Production.cs" />
+    <Compile Include="Enums\PermissionEnum.cs" />
+    <Compile Include="Enums\RoleEnum.cs" />
+    <Compile Include="Logging\ErrorLog.cs" />
+    <Compile Include="Logging\LogDetail.cs" />
+    <Compile Include="Logging\PerformanceTracker.cs" />
+    <Compile Include="Logging\UsageLog.cs" />
+    <Compile Include="Migrations\201905120618060_InitialMigration.cs" />
+    <Compile Include="Migrations\201905120618060_InitialMigration.Designer.cs">
+      <DependentUpon>201905120618060_InitialMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201905120707070_addedTheaterUserRelationship.cs" />
+    <Compile Include="Migrations\201905120707070_addedTheaterUserRelationship.Designer.cs">
+      <DependentUpon>201905120707070_addedTheaterUserRelationship.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201905120725291_updatedTheaterUser.cs" />
+    <Compile Include="Migrations\201905120725291_updatedTheaterUser.Designer.cs">
+      <DependentUpon>201905120725291_updatedTheaterUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201905120751132_removedUnusedRelationships.cs" />
+    <Compile Include="Migrations\201905120751132_removedUnusedRelationships.Designer.cs">
+      <DependentUpon>201905120751132_removedUnusedRelationships.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\ProductionDateTime.cs" />
+    <Compile Include="Models\ResumeTheaterJob.cs" />
+    <Compile Include="Models\Session.cs" />
+    <Compile Include="Models\TheaterJobPosting.cs" />
+    <Compile Include="Models\Permission.cs" />
+    <Compile Include="Models\Production.cs" />
+    <Compile Include="Models\ProductionJobPosting.cs" />
+    <Compile Include="Models\TheaterUser.cs" />
+    <Compile Include="MongoDb\MongoDbContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BroadwayBuilderContext.cs" />
-    <Compile Include="Role.cs" />
-    <Compile Include="Theater.cs" />
-    <Compile Include="User.cs" />
+    <Compile Include="Models\Role.cs" />
+    <Compile Include="Models\RolePermission.cs" />
+    <Compile Include="Models\Theater.cs" />
+    <Compile Include="Models\User.cs" />
+    <Compile Include="Models\UserRole.cs" />
+    <Compile Include="Models\Resume.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201905120618060_InitialMigration.resx">
+      <DependentUpon>201905120618060_InitialMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905120707070_addedTheaterUserRelationship.resx">
+      <DependentUpon>201905120707070_addedTheaterUserRelationship.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905120725291_updatedTheaterUser.resx">
+      <DependentUpon>201905120725291_updatedTheaterUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905120751132_removedUnusedRelationships.resx">
+      <DependentUpon>201905120751132_removedUnusedRelationships.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

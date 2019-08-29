@@ -32,9 +32,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+    <Reference Include="MongoDB.Driver, Version=2.9.0.0, Culture=neutral, PublicKeyToken=null" />
+    <Reference Include="MongoDB.Driver.Core, Version=2.9.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,15 +47,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AuthorizationService.cs" />
-    <Compile Include="IAuthorizationService.cs" />
-    <Compile Include="PasswordValidatorService.cs" />
-    <Compile Include="PermissionService.cs" />
-    <Compile Include="ProductionService.cs" />
+    <Compile Include="Exceptions\Exceptions.cs" />
+    <Compile Include="Exceptions\InvalidGuidException.cs" />
+    <Compile Include="Exceptions\InvalidLoginRequestModelException.cs" />
+    <Compile Include="Exceptions\ProductionDateTimeNotFoundException.cs" />
+    <Compile Include="Exceptions\ProductionNotFoundException.cs" />
+    <Compile Include="Exceptions\UserNotFoundException.cs" />
+    <Compile Include="KFC_API_Services\SignatureService.cs" />
+    <Compile Include="KFC_API_Services\SSO_API_Service.cs" />
+    <Compile Include="Services\AuthorizationService.cs" />
+    <Compile Include="Services\EncryptionService.cs" />
+    <Compile Include="Services\ErrorLogService.cs" />
+    <Compile Include="Services\LogService.cs" />
+    <Compile Include="Services\TheaterJobPostingService.cs" />
+    <Compile Include="Services\IAuthorizationService.cs" />
+    <Compile Include="Services\PasswordValidatorService.cs" />
+    <Compile Include="Services\PermissionService.cs" />
+    <Compile Include="Services\ProductionJobService.cs" />
+    <Compile Include="Services\ProductionService.cs" />
+    <Compile Include="Services\ResumeService.cs" />
+    <Compile Include="Services\ResumeTheaterJobService.cs" />
+    <Compile Include="Services\RoleService.cs" />
+    <Compile Include="Services\SecurityService.cs" />
+    <Compile Include="Services\TheaterService.cs" />
+    <Compile Include="Services\UsageLogService.cs" />
+    <Compile Include="Services\UserService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RoleService.cs" />
-    <Compile Include="SecurityService.cs" />
-    <Compile Include="UserService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj">

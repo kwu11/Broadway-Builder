@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Web.Hosting;
 using System.Web.Http;
 using System.Web.Http.Cors;
 
@@ -20,7 +23,7 @@ namespace BroadwayBuilder.Api
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
-            EnableCorsAttribute cors = new EnableCorsAttribute("*", "*", "GET,POST"); // HACK: only using * for testing. will be updated
+            EnableCorsAttribute cors = new EnableCorsAttribute("*", "*", "GET, POST, DELETE, PUT");//"http://www.broadwaybuilder.xyz", "*", "GET,POST"); // HACK: only using * for testing. will be updated
             config.EnableCors(cors);
         }
     }
