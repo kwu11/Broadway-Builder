@@ -5,6 +5,7 @@ import Home from "./views/Home.vue";
 Vue.use(Router);
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: "/",
@@ -17,7 +18,7 @@ export default new Router({
       component: () => import("./views/ViewAllTheaters.vue")
     },
     {
-      path: "/theater/:TheaterName",
+      path: "/theater/:TheaterID",
       name: "theater",
       props: true,
       component: () => import("./views/TheaterProfile.vue")
@@ -33,7 +34,7 @@ export default new Router({
       component: () => import("./views/SysAdminAccount.vue")
     },
     {
-      path: "/theater/{theaterid}/helpwanted",
+      path: "/theater/:TheaterID/helpwanted",
       name: "helpwanted",
       props: true,
       component: () => import("./views/HelpWanted/HelpWanted.vue")
@@ -77,3 +78,84 @@ export default new Router({
 
   ]
 });
+
+// const router = new Router({
+//   mode: 'history',
+//   routes: [
+//     {
+//       path: "/",
+//       name: "home",
+//       component: Home
+//     },
+//     {
+//       path: "/theaters",
+//       name: "theaters",
+//       component: () => import("./views/ViewAllTheaters.vue")
+//     },
+//     {
+//       path: "/theater/:TheaterName",
+//       name: "theater",
+//       props: true,
+//       component: () => import("./views/TheaterProfile.vue")
+//     },
+//     {
+//       path: "/adminaccount/{userID}",
+//       name: "adminaccount",
+//       component: () => import("./views/AdminAccount.vue")
+//     },
+//     {
+//       path: "/sysadminaccount/{userID}",
+//       name: "sysadminaccount",
+//       component: () => import("./views/SysAdminAccount.vue")
+//     },
+//     {
+//       path: "/theater/{theaterid}/helpwanted",
+//       name: "helpwanted",
+//       props: true,
+//       component: () => import("./views/HelpWanted/HelpWanted.vue")
+//     },
+//     {
+//       path: "/theater/:TheaterID/userproductioninfo",
+//       name: "userproductioninfo",
+//       props: true,
+//       component: () => import("./views/ProductionInfo/UserProductionInfo.vue")
+//     },
+//     {
+//       path: "/theater/{theaterid}/adminproductioninfo",
+//       name: "adminproductioninfo",
+//       component: () => import("./views/ProductionInfo/AdminProductionInfo.vue")
+//     },
+//     {
+//       path: "/theater/{theaterid}/adminproductioninfo/{productionid}",
+//       name: "adminpicturewheel",
+//       component: () => import("./views/ProductionInfo/AdminProductionInfo.vue")
+//     },
+//     {
+//       path: "/sysadminaccount/{userID}/SysAdminViewAllTheaters",
+//       name: "SysAdminViewAllTheaters",
+//       component: () => import("./views/SysAdminViewAllTheaters.vue")
+//     },
+//     {
+//       path:"/registration",
+//       name:'registration',
+//       component: () => import("./views/Registration.vue")
+//     },
+//     {
+//       path:"/login",
+//       name:'login',
+//       component: () => import("./views/Login.vue")
+//     },
+//     {
+//       path:"/logout",
+//       name:'logout',
+//       component: () => import("./views/Logout.vue")
+//     }
+
+//   ]
+// });
+
+// router.beforeEach((to, from, next) => {
+//   router.push()
+// });
+
+// export default router

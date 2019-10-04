@@ -8,8 +8,9 @@
           <!-- Clicking on the image goes to that theater -->
           <v-card>
             <v-img src="https://picsum.photos/510/300?random" height="200px" @click="goToProfile(theater)"></v-img>
-            <v-card-title primary-title>
-              <div @click="goToProfile(theater)">
+            <v-card-title primary-title @click="goToProfile(theater)">
+              <!-- <div @click="goToProfile(theater)"> -->
+              <div>
                 <div class="headline">{{ theater.TheaterName }}</div>
                 <span class="grey--text">{{ theater.CompanyName }}</span>
               </div>
@@ -56,8 +57,9 @@ export default {
   methods: {
     goToProfile(theater) {
       this.$router.push({
-        name: "theater",
+        name: 'theater',
         params: {
+          TheaterID: theater.TheaterID,
           theater: theater
         }
       });
