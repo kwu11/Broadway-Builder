@@ -81,13 +81,12 @@
 
   export default {
     name: "TheaterProfile",
+    props: ['TheaterID'],
     data() {
       return {
         lorem: `Lorem ipsum dolor sit amet, mel at clita quando. Te sit oratio vituperatoribus, nam ad ipsum posidonium mediocritatem, explicari dissentiunt cu mea. Repudiare disputationi vim in, mollis iriure nec cu, alienum argumentum ius ad. Pri eu justo aeque torquatos.`,
         show: false,
-        // theater: this.$route.params.theater,
         theater: {},
-        TheaterID: this.$route.params.TheaterID,
         permission: true,
         isTheaterAdmin: this.$store.state.isTheaterAdmin
       };
@@ -110,12 +109,17 @@
             hasPermission: permission
           }
         });
-      },
-      async mounted() {
+      }
+    },
+    async mounted() {
+      if (this.TheaterID) {
         await axios
-          .get(`https://api.broadwaybuilder.xyz/theater/get/${this.TheaterID}`)
-          .then(response => (this.theater = response.data));
-      },
+        .get(`https://api.broadwaybuilder.xyz/theater/get/${this.TheaterID}`)
+        .then(response => (this.theater = response.data));
+      }
+      else {
+        console.error(`Failed to get theatre for ID: ${this.TheaterID}`)
+      }
     }
   };
 </script>
