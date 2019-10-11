@@ -57,8 +57,8 @@ import JobFilter from "@/components/HelpWanted/JobFilter.vue";
 import axios from "axios";
 
 export default {
-  name: "Help Wanted",
-  props: ["theater", "hasPermission"],
+  name: "HelpWanted",
+  props: ["TheaterID", "theater", "hasPermission"],
   components: {
     AddJobModal,
     DisplayJobPostings,
@@ -66,6 +66,7 @@ export default {
   },
   data() {
     return {
+      TheaterID: this.$route.params.TheaterID,
       // This array stores the jobs obtained from the database.
       jobs: [],
       // Stores the current page the user is on
@@ -165,7 +166,7 @@ export default {
       await axios
         .get("https://api.broadwaybuilder.xyz/helpwanted/gettheaterjobs", {
           params: {
-            theaterId: this.theater.TheaterID,
+            theaterId: this.TheaterID,
             // The current page. This will be used to calculate starting point of query
             currentPage: this.currentPage,
             // The number of items starting at the startingPoint

@@ -4,19 +4,19 @@
     <v-layout row wrap>
       <v-flex xs12 sm6 md6 lg4 v-for="(theater, index) in theaters" :key="index">
         <v-flex xs12>
-
           <!-- Clicking on the image goes to that theater -->
-          <v-card>
-            <v-img src="https://picsum.photos/510/300?random" height="200px" @click="goToProfile(theater)"></v-img>
+          <v-card @click="goToProfile(theater)">
+            <v-img src="https://picsum.photos/510/300?random" height="200px"></v-img>
             <v-card-title primary-title>
-              <div @click="goToProfile(theater)">
+              <div>
+              <!-- <div> -->
                 <div class="headline">{{ theater.TheaterName }}</div>
                 <span class="grey--text">{{ theater.CompanyName }}</span>
               </div>
               <v-spacer></v-spacer>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn icon @click="show = !show">
+                <v-btn icon @click.stop="show = !show">
                   <v-icon>{{ show ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</v-icon>
                 </v-btn>
               </v-card-actions>
@@ -56,9 +56,9 @@ export default {
   methods: {
     goToProfile(theater) {
       this.$router.push({
-        name: "theater",
+        name: 'theater',
         params: {
-          theater: theater
+          TheaterID: theater.TheaterID
         }
       });
     }
@@ -78,6 +78,7 @@ export default {
 
 .v-card {
   margin: 1em;
+  cursor: pointer;
 }
 
 #applicationPortal {

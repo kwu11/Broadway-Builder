@@ -75,38 +75,53 @@
 
 </template>
 
+
 <script>
-export default {
-  name: "TheaterProfile",
-  data() {
-    return {
-      lorem: `Lorem ipsum dolor sit amet, mel at clita quando. Te sit oratio vituperatoribus, nam ad ipsum posidonium mediocritatem, explicari dissentiunt cu mea. Repudiare disputationi vim in, mollis iriure nec cu, alienum argumentum ius ad. Pri eu justo aeque torquatos.`,
-      show: false,
-      theater: this.$route.params.theater,
-      permission: true,
-      isTheaterAdmin: this.$store.state.isTheaterAdmin
-    };
-  },
-  methods: {
-    goToPictures(theater) {
-      this.$router.push({
-        name: "userproductioninfo",
-        params: {
-          TheaterID: theater.TheaterID
-        }
-      });
+  import axios from "axios";
+
+  export default {
+    name: "TheaterProfile",
+    props: ['TheaterID'],
+    data() {
+      return {
+        lorem: `Lorem ipsum dolor sit amet, mel at clita quando. Te sit oratio vituperatoribus, nam ad ipsum posidonium mediocritatem, explicari dissentiunt cu mea. Repudiare disputationi vim in, mollis iriure nec cu, alienum argumentum ius ad. Pri eu justo aeque torquatos.`,
+        show: false,
+        theater: {},
+        permission: true,
+        isTheaterAdmin: this.$store.state.isTheaterAdmin
+      };
     },
-    goToHelpWanted(theater, permission) {
-      this.$router.push({
-        name: "helpwanted",
-        params: {
-          theater: theater,
-          hasPermission: permission
-        }
-      });
+    methods: {
+      goToPictures(theater) {
+        this.$router.push({
+          name: "userproductioninfo",
+          params: {
+            TheaterID: this.TheaterID
+          }
+        });
+      },
+      goToHelpWanted(theater, permission) {
+        this.$router.push({
+          name: "helpwanted",
+          params: {
+            TheaterID: this.TheaterID,
+            theater: theater,
+            hasPermission: permission
+          }
+        });
+      }
+    },
+    async mounted() {
+      if (this.TheaterID) {
+        await axios
+        .get(`https://api.broadwaybuilder.xyz/theater/get/${this.TheaterID}`)
+        .then(response => (this.theater = response.data));
+      }
+      else {
+        console.error(`Failed to get theatre for ID: ${this.TheaterID}`)
+      }
     }
-  }
-};
+  };
 </script>
 
 

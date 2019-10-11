@@ -5,6 +5,7 @@ import Home from "./views/Home.vue";
 Vue.use(Router);
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: "/",
@@ -17,7 +18,7 @@ export default new Router({
       component: () => import("./views/ViewAllTheaters.vue")
     },
     {
-      path: "/theater/:TheaterName",
+      path: "/theater/:TheaterID",
       name: "theater",
       props: true,
       component: () => import("./views/TheaterProfile.vue")
@@ -33,7 +34,7 @@ export default new Router({
       component: () => import("./views/SysAdminAccount.vue")
     },
     {
-      path: "/theater/{theaterid}/helpwanted",
+      path: "/theater/:TheaterID/helpwanted",
       name: "helpwanted",
       props: true,
       component: () => import("./views/HelpWanted/HelpWanted.vue")
