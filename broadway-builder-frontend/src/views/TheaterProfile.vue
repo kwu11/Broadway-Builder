@@ -112,13 +112,13 @@ export default {
 
 <style lang="css" scoped>
 #theater-profile {
-  margin: 2em 8em;
-  padding-bottom: 0;
-  max-height: 575px;
+  margin: 2em 2em;
+  /* padding-bottom: 0; */
+  /* max-height: 575px; */
 }
 
 #theater-actions {
-  margin-top: 1em;
+  margin-top: 2em;
 }
 
 .theater-info {
