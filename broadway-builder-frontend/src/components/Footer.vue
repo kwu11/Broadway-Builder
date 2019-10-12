@@ -25,5 +25,6 @@ export default {
 .footer {
   color: white;
   background: linear-gradient(to right, #6f0000, #000);
+  z-index: 10;
 }
 </style>
