@@ -68,9 +68,9 @@ export default {
   methods: {
     goToProfile(theater) {
       this.$router.push({
-        name: "theater",
+        name: 'theater',
         params: {
-          theater: theater
+          TheaterID: theater.TheaterID
         }
       });
     }
