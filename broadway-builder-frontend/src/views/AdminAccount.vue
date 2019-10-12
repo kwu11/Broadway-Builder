@@ -3,7 +3,10 @@
     <v-container text-xs-center fluid>
       <v-layout row wrap>
         <v-flex xs3>
-          <AccountSideBar @productions="viewProductions = true; viewAnalytics = false;" @analytics="viewProductions = false; viewAnalytics = true;"/>
+          <AccountSideBar
+            @productions="viewProductions = true; viewAnalytics = false;"
+            @analytics="viewProductions = false; viewAnalytics = true;"
+          />
         </v-flex>
         <v-flex xs9>
           <ProductionsTable v-if="viewProductions" />
@@ -20,6 +23,7 @@ import EditTheater from "@/components/Admin/EditTheater.vue";
 import CreateProduction from "@/components/Admin/CreateProduction.vue";
 import ProductionsTable from "@/components/Admin/ProductionsTable.vue";
 import AnalyticsDashboard from "@/components/Admin/AnalyticsDashboard.vue";
+
 export default {
   name: "AdminAccount",
   components: {
