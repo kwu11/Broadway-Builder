@@ -5,7 +5,7 @@
       class="hidden-xs-only hidden-md-and-up text-xs-center font-weight-bold display-2"
     >List of Theaters</h1>
     <h1
-      class="hidden-sm-and-down hidden-lg-and-up text-xs-center font-weight-bold display-3"
+      class="hidden-sm-and-down hidden-lg-and-up text-xs-center font-weight-bold display-2"
     >List of Theaters</h1>
     <h1 class="hidden-md-and-down text-xs-center font-weight-bold display-3">List of Theaters</h1>
     <v-container>
