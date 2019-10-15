@@ -9,7 +9,7 @@
       <div class="column is-2 is-narrow">
 
         <div id="buttons" v-if="hasPermission === true">
-          <a class="button is-medium" @click="addJob = true">Post A New Job</a>
+          <a class="button is-medium" @click="addJob = true">Post New Job</a>
         </div>
         <div id="buttons" v-else>
           <!-- Upload resume functionality -->
@@ -200,7 +200,7 @@ export default {
 @import '../../../node_modules/bulma/bulma.sass'
 
 #HelpWanted
-  margin: 0 8em
+  margin: 0 2em
   padding-bottom: 3.5em
 
 #buttons
@@ -208,7 +208,7 @@ export default {
   margin-top: 1em
 
 h1 
-  margin: 1em
+  margin: 0.5em
   font-size: 30px
 
 a
