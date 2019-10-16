@@ -243,7 +243,7 @@ namespace BroadwayBuilder.Api.Controllers
                     //Logging Usage
                     //TODO: possibly change the userid argument for LogUsage
                     LoggerHelper.LogUsage("Login", user.UserId);
-                    var redirectURL = $"http://ui.broadwaybuilder.xyz/#/login?token={session.Token}";
+                    var redirectURL = $"https://ui.broadwaybuilder.xyz/#/login?token={session.Token}";
                     return Redirect(redirectURL);
                 }
                 catch (Exception e)
