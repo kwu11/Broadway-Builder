@@ -29,7 +29,7 @@ namespace BroadwayBuilder.Api.Controllers
 
                 using (var client = new HttpClient())
                 {
-                    var response = await client.GetAsync("http://www.broadwaybuilder.xyz");
+                    var response = await client.GetAsync("http://ui.broadwaybuilder.xyz");
                     if (!response.IsSuccessStatusCode)
                     {
                         return Content(HttpStatusCode.InternalServerError, "SPA is down");
