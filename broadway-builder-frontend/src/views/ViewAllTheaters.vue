@@ -1,24 +1,17 @@
 <template>
   <div id="view-theaters">
     <h1 class="hidden-sm-and-up text-xs-center font-weight-bold display-1">List of Theaters</h1>
-    <h1
-      class="hidden-xs-only hidden-md-and-up text-xs-center font-weight-bold display-2"
-    >List of Theaters</h1>
-    <h1
-      class="hidden-sm-and-down hidden-lg-and-up text-xs-center font-weight-bold display-2"
-    >List of Theaters</h1>
+    <h1 class="hidden-xs-only hidden-md-and-up text-xs-center font-weight-bold display-2">List of Theaters</h1>
+    <h1 class="hidden-sm-and-down hidden-lg-and-up text-xs-center font-weight-bold display-2">List of Theaters</h1>
     <h1 class="hidden-md-and-down text-xs-center font-weight-bold display-3">List of Theaters</h1>
+    
     <v-container>
       <v-layout row wrap>
         <v-flex xs12 sm6 md6 lg4 v-for="(theater, index) in theaters" :key="index">
           <v-flex xs12>
             <!-- Clicking on the image goes to that theater -->
             <v-card>
-              <v-img
-                src="https://picsum.photos/510/300?random"
-                height="200px"
-                @click="goToProfile(theater)"
-              ></v-img>
+              <v-img :src="`https://picsum.photos/500/300?image=${index % 100}`" height="150px" @click="goToProfile(theater)"></v-img>
               <v-card-title primary-title>
                 <div @click="goToProfile(theater)">
                   <div class="headline">{{ theater.TheaterName }}</div>
@@ -86,7 +79,7 @@ export default {
 <style scoped>
 #view-theaters {
   /* top, left/right, bottom */
-  margin: 2em 1em 5em;
+  margin: 2em 1em 0em;
 }
 
 .v-card {
