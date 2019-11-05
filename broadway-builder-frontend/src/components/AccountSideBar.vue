@@ -11,7 +11,7 @@
       <v-list-tile>
         <v-list-tile-action>
           <v-btn icon @click.stop="miniMode">
-            <v-icon>home</v-icon>
+            <v-icon>menu</v-icon>
           </v-btn>
         </v-list-tile-action>
         <v-list-tile-title>Admin Dashboard</v-list-tile-title>

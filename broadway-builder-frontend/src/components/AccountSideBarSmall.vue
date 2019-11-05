@@ -1,9 +1,9 @@
 <template>
   <v-layout wrap>
-    <v-container>
+    <v-container id="menu-row">
       <v-layout justify-left>
-        <v-btn @click.stop="drawer = !drawer">
-          <v-icon>settings</v-icon>
+        <v-btn id="menu-btn" flat @click.stop="drawer = !dnpmrawer">
+          <v-icon>menu</v-icon>
         </v-btn>
       </v-layout>
     </v-container>
@@ -13,7 +13,7 @@
         <v-list-tile
           @click="drawer = !drawer">
           <v-btn icon>
-            <v-icon>home</v-icon>
+            <v-icon></v-icon>
           </v-btn>
           <v-list-tile-title>Admin Dashboard</v-list-tile-title>
         </v-list-tile>
@@ -72,3 +72,14 @@ export default {
   })
 };
 </script>
+
+<style lang="css">
+#menu-btn {
+  margin: 0px 100% 0px 0px;
+  padding: 0em 4em 0em 0em;
+}
+
+#menu-row {
+  padding: 0px 0px 0px 0px;
+}
+</style>
