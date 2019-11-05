@@ -2,7 +2,6 @@
   <div class="PicGrid">
     <div id="view-theaters">
       <v-container v-if="viewPix === false" fluid grid-list-md>
-        <h1 class="text-lg-center font-weight-bold display-3">Productions</h1>
         <v-layout row wrap>
           <v-flex xs12 sm6 md6 lg4 v-for="(production, index) in productions" :key="index">
             <v-flex xs12>
@@ -13,7 +12,7 @@
                     <div class="headline">{{ production.ProductionName }}</div>
                     <span
                       class="grey--text"
-                    >Directed by {{production.DirectorFirstName}} {{production.DirectorLastName}}</span>
+                    >Directed by {{ production.DirectorFirstName }} {{ production.DirectorLastName }}</span>
                   </div>
                   <span class="grey--text">
                     <a v-on:click="viewCarousel(production.ProductionID)">Pictures</a> |
