@@ -1,9 +1,7 @@
 <template>
   <div id="HelpWanted">
-
-    <h1>
-      <strong>Job Opportunities</strong> | {{ theater.TheaterName }}
-    </h1>
+    <h1 class="hidden-sm-and-down display-2">Job Opportunities | {{ theater.TheaterName }}</h1>
+    <h2 class="hidden-md-and-up">Job Opportunities | {{ theater.TheaterName }}</h2>
 
     <div class="columns">
       <div class="column is-2 is-narrow">
@@ -208,8 +206,15 @@ export default {
   margin-top: 1em
 
 h1 
-  margin: 0.5em
-  font-size: 30px
+  font-weight: bold
+  margin-top: 1em
+  text-align: center
+
+h2
+  font-size: 24px
+  font-weight: bold
+  margin-top: 1em
+  text-align: center
 
 a
   margin-bottom: 0.5em
