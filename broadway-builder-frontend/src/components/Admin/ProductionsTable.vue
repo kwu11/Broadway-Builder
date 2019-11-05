@@ -10,7 +10,8 @@
       <!-- Dialog with input fields for either creating or editing a production. -->
       <v-dialog v-model="dialog" max-width="600px">
         <template v-slot:activator="{on}">
-          <v-btn color="primary" dark class="mb-2" v-on="on">New Production</v-btn>
+          <v-btn color="primary" dark class="mb-2 hidden-sm-and-down" v-on="on">New Production</v-btn>
+          <v-btn color="primary" dark class="mb-2 hidden-md-and-up" v-on="on">New</v-btn>
         </template>
         <v-card>
           <v-card-title>
