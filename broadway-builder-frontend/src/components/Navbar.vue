@@ -1,9 +1,9 @@
 <template>
   <div>
-    <!-- The entire navbar options and dropdown menu (navigation hamburger) -->
+    <!-- Navbar for desktop -->
     <v-toolbar
       class="hidden-sm-and-down"
-      style="padding: 0 4em; color: white; background: linear-gradient(to right, #6F0000, #000);"
+      style="color: white; background: #7d1b1b;"
     >
       <v-toolbar-title>Broadway Builder</v-toolbar-title>
       <v-spacer></v-spacer>
@@ -15,17 +15,17 @@
       </v-toolbar-items>
     </v-toolbar>
 
-    <!-- Navbar for medium-sized screens and up -->
+    <!-- Navbar for mobile -->
     <v-toolbar
       class="hidden-md-and-up"
-      style="padding: 0 0em; color: white; background: linear-gradient(to right, #6F0000, #000);"
+      style="color: white; background: #7d1b1b;"
     >
       <v-toolbar-title>Broadway Builder</v-toolbar-title>
       <v-spacer></v-spacer>
       <!-- When on a smaller screen, a navigation hamburger will show up -->
       <v-menu class="hidden-md-and-up" transition="slide-y-transition" bottom left>
         <template v-slot:activator="{ on }">
-          <v-toolbar-side-icon v-on="on" right style="color: white;"></v-toolbar-side-icon>
+          <v-toolbar-side-icon v-on="on" style="margin: 0 6px 0 0; color: white;"></v-toolbar-side-icon>
         </template>
         <!-- Using the list of destinations, display and route to the page link -->
         <v-list v-for="(route, index) in activeRoutes" :key="index">
@@ -51,8 +51,16 @@ export default {
     pageRoutes: state => [
       { title: "Home", link: "/", show: true },
       { title: "Theaters", link: "/theaters", show: true },
-      { title: "Account", link: "/sysadminaccount/{userID}", show: state.isSysAdmin },
-      { title: "Account", link: "/adminaccount/{userID}", show: state.isTheaterAdmin },
+      {
+        title: "Account",
+        link: "/sysadminaccount/{userID}",
+        show: state.isSysAdmin
+      },
+      {
+        title: "Account",
+        link: "/adminaccount/{userID}",
+        show: state.isTheaterAdmin
+      },
       { title: "About Us", link: "/aboutus", show: true },
       { title: "Log out", link: "/logout", show: state.token !== null }
     ],
@@ -63,8 +71,12 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 @import url("https://fonts.googleapis.com/css?family=Roboto");
+
+div.v-toolbar__content {
+  padding: 0 0 0 16px;
+}
 
 .color-white {
   color: white;
