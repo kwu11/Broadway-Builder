@@ -11,7 +11,7 @@
           <v-flex xs12>
             <!-- Clicking on the image goes to that theater -->
             <v-card>
-              <v-img :src="`https://picsum.photos/500/300?image=${index % 100}`" height="150px" @click="goToProfile(theater)"></v-img>
+              <v-img :src="`https://picsum.photos/500/300?image=${((3 * index + 17) % 67)}`" height="150px" @click="goToProfile(theater)"></v-img>
               <v-card-title primary-title>
                 <div @click="goToProfile(theater)">
                   <div class="headline">{{ theater.TheaterName }}</div>
