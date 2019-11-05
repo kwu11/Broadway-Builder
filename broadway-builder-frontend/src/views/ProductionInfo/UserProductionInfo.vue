@@ -1,6 +1,7 @@
 <template>
   <div class="UserProductionInfo">
-    <h1>{{theater.TheaterName}}</h1>
+    <h1 class="hidden-sm-and-down">Past Productions | {{ theater.TheaterName }}</h1>
+    <h2 class="hidden-md-and-up">Past Productions | {{ theater.TheaterName }}</h2>
 
     <PicGrid v-bind:TheaterID="TheaterID" :today="today"/>
   </div>
@@ -35,6 +36,14 @@ export default {
 
 h1 
   font-size: 3em
+  font-weight: bold
+  margin-top: 1em
+  text-align: center
 
+h2
+  font-size: 2em
+  font-weight: bold
+  margin-top: 1em
+  text-align: center
 
 </style>
