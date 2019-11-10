@@ -2,7 +2,11 @@
   <div>
     <!-- The entire navbar options and dropdown menu (navigation hamburger) -->
     <v-toolbar class="hidden-sm-and-down" style="padding: 0 10em; color: white; background: linear-gradient(to right, #6F0000, #000);">
-      <v-toolbar-title>Broadway Builder</v-toolbar-title>
+      <v-toolbar-title>
+        <a href="#/" class="remove-href-underline color-white">
+          Broadway Builder
+        </a>
+      </v-toolbar-title>
       <v-spacer></v-spacer>
       <!-- Displays the links that route to other pages -->
       <v-toolbar-items v-for="(route, index) in pageRoutes" :key="index">
@@ -69,5 +73,9 @@ export default {
 
 .color-black {
   color: black;
+}
+
+.remove-href-underline {
+  text-decoration: none;
 }
 </style>
