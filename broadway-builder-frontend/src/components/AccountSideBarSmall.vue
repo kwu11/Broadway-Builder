@@ -3,7 +3,7 @@
     <v-container id="menu-row">
       <v-layout justify-left>
         <v-btn id="menu-btn" flat @click.stop="drawer = !dnpmrawer">
-          <v-icon>menu</v-icon>
+          <v-icon>fa-ellipsis-v</v-icon>
         </v-btn>
       </v-layout>
     </v-container>
@@ -34,7 +34,7 @@
           </v-list-tile>
         </v-list-group>
 
-        <v-list-group sub-group no-action v-model="userManagementDropdownState">
+        <!-- <v-list-group sub-group no-action v-model="userManagementDropdownState">
           <template v-slot:activator>
             <v-list-tile>
               <v-list-tile-title>User Management</v-list-tile-title>
@@ -43,7 +43,7 @@
           <v-list-tile v-for="(crud, i) in cruds" :key="i">
             <v-list-tile-title v-text="crud[0]"></v-list-tile-title>
           </v-list-tile>
-        </v-list-group>
+        </v-list-group> -->
 
         <v-list-tile
           @click="$emit('analytics'),
@@ -60,7 +60,8 @@
 export default {
   data: () => ({
     drawer: null,
-    admins: [["Productions", "people_outline"], ["Help Wanted", "settings"]],
+    // admins: [["Productions", "people_outline"], ["Help Wanted", "settings"]],
+    admins: [["Productions", "people_outline"]],
     cruds: [
       ["Create", "add"],
       ["Read", "insert_drive_file"],
