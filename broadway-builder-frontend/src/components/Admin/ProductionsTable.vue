@@ -2,7 +2,8 @@
 <template>
   <div>
     <v-toolbar flat color="white">
-      <v-toolbar-title>Productions</v-toolbar-title>
+      <v-toolbar-title class="hidden-sm-and-down">Productions</v-toolbar-title>
+      <v-toolbar-title class="hidden-md-and-up body-1">Prods.</v-toolbar-title>
       <v-divider class="mx-2" inset vertical></v-divider>
       <v-spacer></v-spacer>
       <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
@@ -430,6 +431,11 @@ export default {
 img
  width: 2em
  height: 2em
+
+.v-toolbar__title
+  overflow: visible
+  margin-left: 0px
+  margin-right: 1em
 
 </style>
 
