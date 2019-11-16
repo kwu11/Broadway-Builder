@@ -1,11 +1,12 @@
 <template>
   <div>
-    <!-- Navbar for desktop -->
-    <v-toolbar
-      class="hidden-sm-and-down"
-      style="color: white; background: #7d1b1b;"
-    >
-      <v-toolbar-title>Broadway Builder</v-toolbar-title>
+    <!-- The entire navbar options and dropdown menu (navigation hamburger) -->
+    <v-toolbar class="hidden-sm-and-down" style="color: white; background: #7d1b1b;">
+      <v-toolbar-title>
+        <a href="#/" class="remove-href-underline color-white">
+          Broadway Builder
+        </a>
+      </v-toolbar-title>
       <v-spacer></v-spacer>
       <!-- Displays the links that route to other pages -->
       <v-toolbar-items v-for="(route, index) in pageRoutes" :key="index">
@@ -15,12 +16,12 @@
       </v-toolbar-items>
     </v-toolbar>
 
-    <!-- Navbar for mobile -->
-    <v-toolbar
-      class="hidden-md-and-up"
-      style="color: white; background: #7d1b1b;"
-    >
-      <v-toolbar-title>Broadway Builder</v-toolbar-title>
+    <v-toolbar class="hidden-md-and-up" style="color: white; background: #7d1b1b;">
+      <v-toolbar-title>
+        <a href="#/" class="remove-href-underline color-white">
+          Broadway Builder
+        </a>
+      </v-toolbar-title>
       <v-spacer></v-spacer>
       <!-- When on a smaller screen, a navigation hamburger will show up -->
       <v-menu class="hidden-md-and-up" transition="slide-y-transition" bottom left>
@@ -84,5 +85,9 @@ div.v-toolbar__content {
 
 .color-black {
   color: black;
+}
+
+.remove-href-underline {
+  text-decoration: none;
 }
 </style>
