@@ -19,7 +19,11 @@
     </v-toolbar>
 
     <v-toolbar class="hidden-md-and-up" style="padding: 0 0em; color: white; background: linear-gradient(to right, #6F0000, #000);">
-      <v-toolbar-title>Broadway Builder</v-toolbar-title>
+      <v-toolbar-title>
+        <a href="#/" class="remove-href-underline color-white">
+          Broadway Builder
+        </a>
+      </v-toolbar-title>
       <v-spacer></v-spacer>
 
       <!-- When on a smaller screen, a navigation hamburger will show up -->
