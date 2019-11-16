@@ -32,7 +32,7 @@
       </div>
 
     </div>
-    <a class="button is-medium" @click="applyFilter()">Submit Filters</a>
+    <a class="button is-medium" id="buttons" @click="applyFilter()">Submit Filters</a>
   </div>
 </template>
 
@@ -84,5 +84,8 @@ export default {
 .card
   padding: 1em
   box-shadow: 0 14px 75px rgba(0,0,0,0.19), 0 10px 10px rgba(0,0,0,0.22)
+
+#buttons
+  margin-top: 1em
 
 </style>

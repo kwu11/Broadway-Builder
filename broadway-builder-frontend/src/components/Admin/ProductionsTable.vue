@@ -2,19 +2,21 @@
 <template>
   <div>
     <v-toolbar flat color="white">
-      <v-toolbar-title>Productions</v-toolbar-title>
+      <v-toolbar-title class="hidden-sm-and-down">Productions</v-toolbar-title>
+      <v-toolbar-title class="hidden-md-and-up body-1">Prods.</v-toolbar-title>
       <v-divider class="mx-2" inset vertical></v-divider>
       <v-spacer></v-spacer>
       <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
-      
+
       <!-- Dialog with input fields for either creating or editing a production. -->
       <v-dialog v-model="dialog" max-width="600px">
         <template v-slot:activator="{on}">
-          <v-btn color="primary" dark class="mb-2" v-on="on">New Production</v-btn>
+          <v-btn color="primary" dark class="mb-2 hidden-sm-and-down" v-on="on">New Production</v-btn>
+          <v-btn color="primary" dark class="mb-2 hidden-md-and-up" v-on="on">New</v-btn>
         </template>
         <v-card>
           <v-card-title>
-            <span class="headline">{{formTitle}}</span>
+            <span class="headline">{{ formTitle }}</span>
           </v-card-title>
           <v-card-text>
             <v-container grid-list-md>
@@ -114,25 +116,24 @@
       </v-dialog>
     </v-toolbar>
 
-
     <!-- Setting the headers/columns for the production table. -->
-    <v-data-table :headers="headers" :items="productions" :search="search" class="elevation-1">
+    <v-data-table :headers="headers" :items="productions" :search="search" class="elevation-0">
       <template v-slot:items="props">
-        <td>{{props.item.ProductionID}}</td>
-        <td>{{props.item.ProductionName}}</td>
-        <td>{{props.item.TheaterID}}</td>
-        <td>{{props.item.DirectorFirstName}} {{props.item.DirectorLastName}}</td>
-        <td>{{props.item.Street}}, {{props.item.City}}, {{props.item.StateProvince}} {{props.item.Zipcode}}</td>
+        <td>{{ props.item.ProductionID }}</td>
+        <td>{{ props.item.ProductionName }}</td>
+        <td>{{ props.item.TheaterID }}</td>
+        <td>{{ props.item.DirectorFirstName }} {{ props.item.DirectorLastName }}</td>
+        <td>{{ props.item.Street }}, {{ props.item.City }}, {{ props.item.StateProvince }} {{ props.item.Zipcode }}</td>
         <!-- Edit Production -->
         <td>
           <a @click="editProduction(props.item)">
-            <img src="@/assets/edit.png" alt="Edit">
+            <img src="@/assets/edit.png" alt="Edit" />
           </a>
         </td>
         <!-- Delete Production -->
         <td>
           <a v-on:click="deleteProduction(props.item.ProductionID)">
-            <img src="@/assets/tester.png" alt="Delete">
+            <img src="@/assets/tester.png" alt="Delete" />
           </a>
         </td>
         <!-- Upload a new program for that production. -->
@@ -141,10 +142,10 @@
             v-if="programID != props.item.ProductionID"
             v-on:click="programIDSelect(props.item.ProductionID)"
           >
-            <img src="@/assets/upload.png" alt="Upload">
+            <img src="@/assets/upload.png" alt="Upload" />
           </a>
           <div v-if="programID === props.item.ProductionID">
-            <input type="file" ref="file" id="file" v-on:change="onFileChange()">
+            <input type="file" ref="file" id="file" v-on:change="onFileChange()" />
             <v-btn color="info" v-on:click="uploadProgram(programID)">Submit</v-btn>
           </div>
         </td>
@@ -263,43 +264,43 @@ export default {
       headers: [
         {
           text: "Production ID",
-          align: "right",
+          align: "center",
           value: "ProductionID"
         },
         {
           text: "Production Name",
-          align: "left",
+          align: "center",
           sortable: false,
           value: "ProductionName"
         },
         {
           text: "Theater ID",
-          align: "right",
+          align: "center",
           value: "TheaterID"
         },
         {
           text: "Director",
-          align: "right",
+          align: "center",
           sortable: false
         },
         {
           text: "Address",
-          align: "right",
+          align: "center",
           sortable: false
         },
         {
           text: "Edit",
-          align: "right",
+          align: "center",
           sortable: false
         },
         {
           text: "Delete",
-          align: "right",
+          align: "center",
           sortable: false
         },
         {
           text: "Upload Program",
-          align: "right",
+          align: "center",
           sortable: false
         }
       ]
@@ -411,7 +412,7 @@ export default {
 
         this.editedProduction.ProductionID = this.newProd.ProductionID;
 
-      await this.addDateTime(this.editedProduction.ProductionID);
+        await this.addDateTime(this.editedProduction.ProductionID);
       }
 
       this.close();
@@ -430,6 +431,11 @@ export default {
 img
  width: 2em
  height: 2em
+
+.v-toolbar__title
+  overflow: visible
+  margin-left: 0px
+  margin-right: 1em
 
 </style>
 

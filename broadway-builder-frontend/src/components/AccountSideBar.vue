@@ -1,10 +1,17 @@
 <template>
-  <v-navigation-drawer :mini-variant.sync="mini" stateless value="true" absolute floating style="height: auto; top: 81px; background-color: #fafafa;">
+  <v-navigation-drawer
+    :mini-variant.sync="mini"
+    stateless
+    value="true"
+    absolute
+    floating
+    style="height: auto; top: 81px; background-color: #fafafa;"
+  >
     <v-list>
       <v-list-tile>
         <v-list-tile-action>
           <v-btn icon @click.stop="miniMode">
-            <v-icon>home</v-icon>
+            <v-icon>menu</v-icon>
           </v-btn>
         </v-list-tile-action>
         <v-list-tile-title>Admin Dashboard</v-list-tile-title>
@@ -34,8 +41,7 @@
       </v-list-group>
 
       <v-list-tile @click="$emit('analytics')">
-        <v-list-tile-action>
-        </v-list-tile-action>
+        <v-list-tile-action></v-list-tile-action>
         <v-list-tile-title>Analytics</v-list-tile-title>
       </v-list-tile>
     </v-list>
