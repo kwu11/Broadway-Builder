@@ -4,7 +4,9 @@
       <div class="modal-background"></div>
       <div class="modal-card">
         <header class="modal-card-head">
-          <p class="modal-card-title"><strong>{{ modalTitle }}</strong></p>
+          <p class="modal-card-title">
+            <strong>{{ modalTitle }}</strong>
+          </p>
           <button class="delete" aria-label="close" @click="$emit('cancel')"></button>
         </header>
         <section class="modal-card-body" v-if="notifyUser">
@@ -31,7 +33,10 @@
                 <div class="control">
                   <div class="select">
                     <select v-model="newJob.Position">
-                      <option v-for="(jobPosition, index) in jobPositions" :key="index">{{ jobPosition }}</option>
+                      <option
+                        v-for="(jobPosition, index) in jobPositions"
+                        :key="index"
+                      >{{ jobPosition }}</option>
                     </select>
                   </div>
                 </div>
@@ -41,25 +46,42 @@
           <div class="field">
             <label class="label">Subject / Title</label>
             <div class="control">
-              <input class="input" type="text" placeholder="Enter a subject or a title" v-model="newJob.Title">
+              <input
+                class="input"
+                type="text"
+                placeholder="Enter a subject or a title"
+                v-model="newJob.Title"
+              />
             </div>
           </div>
           <div class="field">
             <label class="label">Description</label>
             <div class="control">
-              <textarea class="textarea" placeholder="Enter a description for the job" v-model="newJob.Description"></textarea>
+              <textarea
+                class="textarea"
+                placeholder="Enter a description for the job"
+                v-model="newJob.Description"
+              ></textarea>
             </div>
           </div>
           <div class="field">
             <label class="label">Schedule / Hours</label>
             <div class="control">
-              <textarea class="textarea" placeholder="Enter the preferred schedule for working hours" v-model="newJob.Hours"></textarea>
+              <textarea
+                class="textarea"
+                placeholder="Enter the preferred schedule for working hours"
+                v-model="newJob.Hours"
+              ></textarea>
             </div>
           </div>
           <div class="field">
             <label class="label">Requirements</label>
             <div class="control">
-              <textarea class="textarea" placeholder="Enter the requirements and experience needed for the job" v-model="newJob.Requirements"></textarea>
+              <textarea
+                class="textarea"
+                placeholder="Enter the requirements and experience needed for the job"
+                v-model="newJob.Requirements"
+              ></textarea>
             </div>
           </div>
         </section>

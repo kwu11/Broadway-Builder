@@ -1,9 +1,29 @@
 <template>
   <div id="admin-account">
-    <v-container text-xs-center fluid>
+    <!-- Small screen view, e.g., mobile phones, iPad help vertically -->
+    <v-container class="hidden-md-and-up" text-xs-center fluid>
+      <v-layout row wrap>
+        <v-flex xs12>
+          <AccountSideBarSmall
+            @productions="viewProductions = true; viewAnalytics = false;"
+            @analytics="viewProductions = false; viewAnalytics = true;"
+          />
+        </v-flex>
+        <v-flex xs12>
+          <ProductionsTable v-if="viewProductions" />
+          <AnalyticsDashboard v-if="viewAnalytics" />
+        </v-flex>
+      </v-layout>
+    </v-container>
+
+    <!-- Large screen view, e.g., iPad held horizontally, desktops, etc -->
+    <v-container class="hidden-sm-and-down" text-xs-center fluid>
       <v-layout row wrap>
         <v-flex xs3>
-          <AccountSideBar @productions="viewProductions = true; viewAnalytics = false;" @analytics="viewProductions = false; viewAnalytics = true;"/>
+          <AccountSideBar
+            @productions="viewProductions = true; viewAnalytics = false;"
+            @analytics="viewProductions = false; viewAnalytics = true;"
+          />
         </v-flex>
         <v-flex xs9>
           <ProductionsTable v-if="viewProductions" />
@@ -16,10 +36,12 @@
 
 <script>
 import AccountSideBar from "@/components/AccountSideBar.vue";
+import AccountSideBarSmall from "@/components/AccountSideBarSmall.vue";
 import EditTheater from "@/components/Admin/EditTheater.vue";
 import CreateProduction from "@/components/Admin/CreateProduction.vue";
 import ProductionsTable from "@/components/Admin/ProductionsTable.vue";
 import AnalyticsDashboard from "@/components/Admin/AnalyticsDashboard.vue";
+
 export default {
   name: "AdminAccount",
   components: {
@@ -27,6 +49,7 @@ export default {
     CreateProduction,
     ProductionsTable,
     AccountSideBar,
+    AccountSideBarSmall,
     AnalyticsDashboard
   },
   data() {
