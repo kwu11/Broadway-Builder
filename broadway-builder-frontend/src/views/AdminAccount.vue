@@ -56,7 +56,7 @@ export default {
     return {
       editTheater: false,
       createProduction: false,
-      viewProductions: false,
+      viewProductions: true,
       viewAnalytics: false,
       theater: {
         TheaterName: "Theater",

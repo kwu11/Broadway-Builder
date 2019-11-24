@@ -80,6 +80,10 @@ export default {
   padding: 0em 4em 0em 0em;
 }
 
+#menu-btn:before {
+  width: 40%;
+}
+
 #menu-row {
   padding: 0px 0px 0px 0px;
 }
