@@ -16,11 +16,11 @@
             <br>
             <p class="font-weight-light body-1">{{ lorem }}</p>
             <v-divider></v-divider>
-            <div id="theater-actions">
+            <!-- <div id="theater-actions">
               <v-btn @click="goToPictures(theater)" depressed large>Past Productions</v-btn>
               <v-btn v-if="isTheaterAdmin" @click="goToHelpWanted(theater, true)" depressed large>Job Opportunities Admin </v-btn>
               <v-btn @click="goToHelpWanted(theater, false)" depressed large>Job Opportunities User</v-btn>
-            </div>
+            </div> -->
           </v-container>
         </v-flex>
       </v-layout>
