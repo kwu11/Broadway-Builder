@@ -15,7 +15,7 @@
         <p class="font-weight-light body-1">
           Broadway Builder is a theatre social web application that will help theatres all over North America bring a fresh new feel to staged theatre.
           Broadway Builder allows users to browse theater profiles without the need of making an account. Users who decide to create an account will soon have
-          access to viewing theater past productions and program shows. Another cool aspect of being a memebr of broadway builder is that the user will be able to
+          access to viewing theater past productions and program shows. Another great benefit of being a memebr of broadway builder is that the user will be able to
           view theaters who are currently hiring. They can upload their resume and a hiring manager will be able to view it. This leads to expalning how broadway builder 
           is also not only for theater viewers but also theater companies.
         </p>
