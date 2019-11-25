@@ -72,7 +72,7 @@ export default {
       });
     },
     generateProfileImage() {
-      let num = Math.floor(Math.random()*1000);
+      let num = Math.floor(Math.random()*50);
       return `https://picsum.photos/500/300?image=${num}`;
     }
   },
