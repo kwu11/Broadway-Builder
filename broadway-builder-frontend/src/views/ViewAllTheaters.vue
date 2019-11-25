@@ -10,7 +10,7 @@
     <h1 class="hidden-md-and-down text-xs-center font-weight-bold display-3">List of Theaters</h1>
 
     <v-container>
-      <v-layout row wrap align-center>
+      <v-layout row wrap align-top>
         <v-flex id="foo" xs12 sm6 md6 lg4 v-for="(t, index) in theaters" :key="index">
           <TheaterCard :theater="t"/>
         </v-flex>
