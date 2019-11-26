@@ -38,6 +38,8 @@
 <script>
 import Vue from "vue";
 import ReadMore from "vue-read-more";
+import forcem from "forcem-ipsum";
+
 Vue.use(ReadMore);
 
 Vue.component("TheaterCard");
@@ -54,7 +56,7 @@ export default {
       button: {
         text: "Show Description"
       },
-      descriptionText: "Add a description here."
+      descriptionText: forcem(undefined, 1).join(" "),
     };
   },
   methods: {
