@@ -12,10 +12,10 @@
     <v-container>
       <v-layout row wrap align-top>
         <v-flex id="foo" xs12 sm6 md6 lg4 v-for="(t, index) in theaters" :key="index">
-          <TheaterCard :theater="t"/>
+          <TheaterCard :theater="t" />
         </v-flex>
       </v-layout>
-      <v-layout row justify-center>
+      <v-layout row justify-center v-if="hasNext">
         <v-btn @click="getMoreTheaters">Load more</v-btn>
       </v-layout>
     </v-container>
@@ -34,42 +34,110 @@ Vue.use(ReadMore);
 
 export default {
   name: "ViewAllTheaters",
+  
   components: {
     // SearchBar
     TheaterCard
   },
+
   data() {
     return {
       theaters: [],
-      currentPage: 1,
-      endpoint: `https://api.broadwaybuilder.xyz/ptheater/all?numberOfItems=24&currentPage=1`,
+      nextTheaters: [],
+      hasNext: false,
+      nextPage: 1,
+      numResults: 12,
+      endpoint: `https://api.broadwaybuilder.xyz/ptheater/all?numberOfItems=${this.numResults}&currentPage=1`
     };
   },
-  methods: {
-    getMoreTheaters() {
-      axios
-        .get(
-          "https://api.broadwaybuilder.xyz/ptheater/all?numberOfItems=12&currentPage=" +
-            this.currentPage
-        )
-        .then(response => {
-          for (let i = 0; i < response.data.length; i++) {
-            this.theaters.push(response.data[i]);
-          }
 
-          this.currentPage++;
-        });
-    }
-  },
   async mounted() {
+    var moreThanN = false;
+    // Initial theater list:
+    // Load one extra item to check if there are exactly N items, disable the 'load more' button if there are
     await axios
       .get(
-        "https://api.broadwaybuilder.xyz/ptheater/all?numberOfItems=12&currentPage=" +
-          this.currentPage
+        `https://api.broadwaybuilder.xyz/ptheater/all?numberOfItems=${this.numResults+1}&currentPage=${this.nextPage}`
       )
-      .then(response => (this.theaters = response.data));
+      .then(response => {
+        moreThanN = this.responseReturnsMoreThanNTheaters(response);
+      });
 
-    this.currentPage++;
+    if (moreThanN) {
+      await this.preloadTheaters();
+    }
+  },
+
+  methods: {
+    responseReturnsMoreThanNTheaters(response) {
+      let count = response.data.length;
+      var c = 0; // Number of items to load into theater list
+
+      if (count == this.numResults) {
+        this.hasNext = false;
+        c = count;
+      }
+      else {
+        c = count-1;
+      }        
+
+      for (let i = 0; i < c; i++) {
+        this.theaters.push(response.data[i]);
+      }
+
+      return count > this.numResults;
+    },
+
+    async preloadTheaters() {
+      this.nextPage++;
+
+      // Next theater list:
+      // Pre-load the next set of N items and activate the 'load more' button only if there are more items
+      await axios
+        .get(
+          `https://api.broadwaybuilder.xyz/ptheater/all?numberOfItems=${this.numResults}&currentPage=${this.nextPage}`
+        )
+        .then(r => {
+          for (let i = 0; i < r.data.length; i++) {
+            this.nextTheaters.push(r.data[i]);
+          }
+
+          this.hasNext = this.nextTheaters.length > 0;
+        });
+    },
+
+    checkAndAddMoreTheaters() {
+      this.nextTheaters = [];
+      this.nextPage++;
+
+      axios
+        .get(
+          `https://api.broadwaybuilder.xyz/ptheater/all?numberOfItems=${this.numResults}&currentPage=${this.nextPage}`
+        )
+        .then(response => {
+          let count = response.data.length;
+          this.hasNext = count > 0;
+
+          for (let i = 0; i < count; i++) {
+            this.nextTheaters.push(response.data[i]);
+          }
+        });
+    },
+
+    getMoreTheaters() {
+      if (this.nextTheaters.length > 0) {
+        this.theaters = this.theaters.concat(this.nextTheaters);
+
+        // If there were N or more items, check if there are more to load
+        if (this.nextTheaters.length >= this.numResults) {
+          this.checkAndAddMoreTheaters();
+        }
+        else {
+          this.hasNext = false;
+        }
+      }
+    }
+
   }
 };
 </script>
