@@ -38,6 +38,8 @@
 <script>
 import Vue from "vue";
 import ReadMore from "vue-read-more";
+import forcem from "forcem-ipsum";
+
 Vue.use(ReadMore);
 
 Vue.component("TheaterCard");
@@ -54,7 +56,7 @@ export default {
       button: {
         text: "Show Description"
       },
-      descriptionText: "Add a description here."
+      descriptionText: forcem(undefined, 1).join(" "),
     };
   },
   methods: {
@@ -72,7 +74,7 @@ export default {
       });
     },
     generateProfileImage() {
-      let num = Math.floor(Math.random()*1000);
+      let num = Math.floor(Math.random()*50);
       return `https://picsum.photos/500/300?image=${num}`;
     }
   },
